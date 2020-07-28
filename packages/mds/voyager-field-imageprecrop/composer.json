@@ -1,0 +1,26 @@
+{
+    "name": "mds/voyager-field-imageprecrop",
+    "description": "Crop image before upload",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Manuel lopez",
+            "email": "mlopez@mdsdigital.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "MDS\\Fields\\ImagePreCrop\\": "."
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MDS\\Fields\\ImagePreCrop\\ServiceProvider"
+            ]
+        }
+    }
+}
