@@ -42,9 +42,14 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
+            'driver' => 'jwt',
+            'provider' => 'app_users',
+            //'hash' => false,
+        ],
+
+        'app_users' => [
+            'driver' => 'session',
+            'provider' => 'app_users',
         ],
     ],
 
@@ -69,6 +74,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+
+        'app_users' => [
+            'driver' => 'eloquent',
+            'model' => App\AppUser::class,
         ],
 
         // 'users' => [
@@ -99,6 +109,13 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+
+        /*'admin_users' => [
+            'provider' => 'admin_users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],*/
     ],
 
     /*

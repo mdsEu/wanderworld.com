@@ -15,7 +15,7 @@ return [
 
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'user_not_found' => 'User not found.',
-    'credentials_not_valid' => 'Email or password incorrect.',
+    'user_not_found' => 'Usuario no encontrado.',
+    'credentials_not_valid' => 'Correo o contraseña incorrectos.',
 
 ];

@@ -14,9 +14,9 @@ class MultiPage extends Controller
 
     public function allOnboardingItems(Request $request) {
         try {
-            return OnboardingItem::withTranslations()->get();
-        } catch (\Exception $th) {
-            return [];
+            return sendResponse( OnboardingItem::withTranslations()->get() );
+        } catch (\Exception $e) {
+            return sendResponse( null, $e->getMessage(), false);
         }
     }
 
@@ -24,7 +24,7 @@ class MultiPage extends Controller
         try {
             return sendResponse( setting('admin.appversion', null) );
         } catch (\Exception $th) {
-            return null;
+            return sendResponse( null );
         }
     }
 }

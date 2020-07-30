@@ -6,7 +6,7 @@ if (!function_exists('sendJson')) {
      * @param $message string | array
      * @return ResponseJson
      */
-    function sendResponse($value,$messages = '')
+    function sendResponse($value,$messages = '', $success = true)
     {
         if (is_string($messages) && !empty($messages)) {
             $messages = [$messages];
@@ -14,6 +14,7 @@ if (!function_exists('sendJson')) {
             $messages = [];
         }
         return response()->json(array(
+                'success' => $success,
                 'data' => $value,
                 'messages' => $messages,
             )

@@ -18,10 +18,6 @@ use App\Http\Middleware\ModelActiveMiddleware;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::group(['prefix' => 'services/v1/'], function () {
 
     Route::middleware([SwitchLanguageMiddleware::class,ModelActiveMiddleware::class])->group(function () {
@@ -29,12 +25,33 @@ Route::group(['prefix' => 'services/v1/'], function () {
         Route::get('/onboarding-items', 'MultiPage@allOnboardingItems')->name('all-onboarding-item');
 
         Route::get('/version', 'MultiPage@getVersion');
-
-        /*Route::get('admin/profile', function () {
-            //
-        })->withoutMiddleware([SwitchLanguageMiddleware::class]);*/
     });
 });
 
+
+
+Route::group(['prefix' => 'auth'], function () {
+
+    Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
+        Route::post('/login', 'AuthController@login')->name('login');
+        Route::post('/me', 'AuthController@me');
+
+        Route::middleware(['auth:api'])->group(function () {
+            Route::post('/logout', 'AuthController@logout');
+            Route::post('/refresh', 'AuthController@refresh');
+        });
+
+    });
+});
+/*
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router) {
+
+
+
+});
+*/
 
 
