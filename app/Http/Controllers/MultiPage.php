@@ -19,4 +19,12 @@ class MultiPage extends Controller
             return [];
         }
     }
+
+    public function getVersion(Request $request) {
+        try {
+            return sendResponse( setting('admin.appversion', null) );
+        } catch (\Exception $th) {
+            return null;
+        }
+    }
 }

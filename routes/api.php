@@ -22,11 +22,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'wanderworld/services/v1/'], function () {
+Route::group(['prefix' => 'services/v1/'], function () {
 
     Route::middleware([SwitchLanguageMiddleware::class,ModelActiveMiddleware::class])->group(function () {
 
         Route::get('/onboarding-items', 'MultiPage@allOnboardingItems')->name('all-onboarding-item');
+
+        Route::get('/version', 'MultiPage@getVersion');
 
         /*Route::get('admin/profile', function () {
             //
