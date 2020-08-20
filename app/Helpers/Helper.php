@@ -102,7 +102,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
 
         $password = bcrypt(Str::random(40));
 
-        $avatar = secure_url('/users/default_avatar.png');
+        $avatar = secure_url('/storage/users/default_avatar.png');
 
         if (
             $userFBInfo['picture'] &&
@@ -119,7 +119,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
                 'email' => $userFBInfo['email'],
                 'password' => $password,
                 'avatar' => $avatar,
-                'email_verified_at' => strToday(),
+                'email_verified_at' => strNowTime(),
             ]);
             /**
              * To DO: Create Inbox Chat User in Chat Backend
