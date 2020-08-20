@@ -15,6 +15,7 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "mds/voyager-field-imageprecrop": "dev-stage",
+        "nesbot/carbon": "^2.38",
         "tcg/voyager": "^1.4",
         "tymon/jwt-auth": "^1.0"
     },

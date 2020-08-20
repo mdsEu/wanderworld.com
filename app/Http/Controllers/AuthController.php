@@ -38,6 +38,38 @@ class AuthController extends Controller
     }
 
     /**
+     * Get a JWT via given credentials.
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function facebookLogin(Request $request) {
+
+        $accessToken = $request->get('accessToken', null);
+
+        try {
+            if (!fbValidAccessToken($accessToken)) {
+                return sendResponse(null,__('auth.facebook_access_failed'), false);
+            }
+
+            $user = getOrCreateUserFromFacebook($accessToken);
+
+            $credentials = array(
+                'email' => $user->email,
+                'password' => $user->password,
+            );
+
+            $token = auth($this->guard)->attempt($credentials);
+
+            if (!$token) {
+                return sendResponse(null,__('auth.credentials_not_valid'), false);
+            }
+            return $this->respondWithToken($token);
+        } catch (\Exception $e) {
+            return sendResponse(null,$e->getMessage(), false);
+        }
+    }
+
+    /**
      * Get the authenticated User.
      *
      * @return \Illuminate\Http\JsonResponse
