@@ -21,7 +21,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
+        'avatar',
+        'email_verified_at',
     ];
 
     /**
@@ -38,8 +42,12 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      *
      * @var array
      */
-    protected $casts = [
+    /*protected $casts = [
         'email_verified_at' => 'datetime',
+    ];*/
+
+    protected $dates = [
+        'email_verified_at',
     ];
 
     /**
