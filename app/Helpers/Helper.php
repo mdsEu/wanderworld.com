@@ -100,7 +100,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
 
         $user = AppUser::where('email',$userFBInfo['email'])->first();
 
-        $password = Str::random(40);
+        $password = bcrypt(Str::random(40));
 
         $avatar = secure_url('/users/default_avatar.png');
 

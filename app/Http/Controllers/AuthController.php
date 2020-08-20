@@ -53,12 +53,7 @@ class AuthController extends Controller
 
             $user = getOrCreateUserFromFacebook($accessToken);
 
-            $credentials = array(
-                'email' => $user->email,
-                'password' => $user->password,
-            );
-
-            $token = auth($this->guard)->attempt($credentials);
+            $token = auth($this->guard)->login($user);
 
             if (!$token) {
                 return sendResponse(null,__('auth.credentials_not_valid'), false);
