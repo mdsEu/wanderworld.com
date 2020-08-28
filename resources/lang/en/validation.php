@@ -130,8 +130,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'city.country.code' => [
+            'in' => 'The country selected is not in our available country list',
         ],
     ],
 

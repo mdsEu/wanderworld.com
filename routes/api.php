@@ -35,6 +35,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
         Route::post('/login', 'AuthController@login')->name('login');
         Route::post('/facebook-login', 'AuthController@facebookLogin');
+        Route::post('/apple-login', 'AuthController@appleLogin');
+        Route::put('/sign-in', 'AuthController@registration');
         Route::post('/me', 'AuthController@me');
 
         Route::middleware(['auth:api'])->group(function () {

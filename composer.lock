@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "abf24dfc09f36ac9b1ac7daff5b6ebc8",
+    "content-hash": "cea7526852e86ec86d1341248e32be11",
     "packages": [
         {
             "name": "arrilot/laravel-widgets",
@@ -1058,6 +1058,56 @@
             "time": "2020-06-23T01:36:47+00:00"
         },
         {
+            "name": "firebase/php-jwt",
+            "version": "v5.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "feb0e820b8436873675fd3aca04f3728eb2185cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/feb0e820b8436873675fd3aca04f3728eb2185cb",
+                "reference": "feb0e820b8436873675fd3aca04f3728eb2185cb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8 <=9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "keywords": [
+                "jwt",
+                "php"
+            ],
+            "time": "2020-03-25T18:49:23+00:00"
+        },
+        {
             "name": "fruitcake/laravel-cors",
             "version": "v1.0.6",
             "source": {
@@ -1124,6 +1174,49 @@
                 "laravel"
             ],
             "time": "2020-04-28T08:47:37+00:00"
+        },
+        {
+            "name": "griffinledingham/php-apple-signin",
+            "version": "1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GriffinLedingham/php-apple-signin.git",
+                "reference": "069e79b7ca2366fdebd3f92289281912849e0cb1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GriffinLedingham/php-apple-signin/zipball/069e79b7ca2366fdebd3f92289281912849e0cb1",
+                "reference": "069e79b7ca2366fdebd3f92289281912849e0cb1",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AppleSignIn\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Griffin Ledingham",
+                    "email": "gcledingham@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to decode and parse Apple Sign In client tokens.",
+            "keywords": [
+                "JWK",
+                "apple",
+                "in",
+                "ios",
+                "jwt",
+                "php",
+                "sign"
+            ],
+            "time": "2020-04-06T16:05:53+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -6563,6 +6656,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2019-09-17T06:23:10+00:00"
         },
         {

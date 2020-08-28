@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use JWTAuth;
 
 class AuthController extends Controller
@@ -63,6 +65,69 @@ class AuthController extends Controller
             return sendResponse(null,$e->getMessage(), false);
         }
     }
+
+    /**
+     * Get a JWT via given credentials.
+     * @param \Illuminate\Http\Request $request
+     * @param String $identityToken
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function appleLogin(Request $request, $identityToken) {
+
+        try {
+            $email = $request->get('email', null);
+            $userAppleId = $request->get('user_apple_id', null);
+            $userName = $request->get('name', null);
+
+            $user = getOrCreateUserFromApple($identityToken, $email, $userName, $userAppleId);
+
+            $token = auth($this->guard)->login($user);
+            if (!$token) {
+                throw new \Exception("No fue posible realizar la autenticación. Intente nuevamente.");
+            }
+
+            return sendResponse($token);
+        } catch (\Exception $e) {
+            return sendResponse(null,$e->getMessage(),false);
+        }
+    }
+
+
+    /**
+     * Start registration process.
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function registration(Request $request) {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'full_name' => 'required|max:20',
+                'nickname' => 'required|max:20',//unique
+                'email' => 'required|email',//unique
+                'password' => 'required',
+                'birthday' => 'required',
+                'city.name' => 'required',
+                'city.place_id' => 'required',
+                'city.country.name' => 'required',
+                'city.country.code' => [
+                    'required',
+                    Rule::in(LIST_COUNTRYS_CODES),
+                ],
+                'cellphone.dial' => 'required',
+                'cellphone.number' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            return sendResponse($request->all());
+        } catch (\Exception $e) {
+            return sendResponse(null,$e->getMessage(),false);
+        }
+    }
+
 
     /**
      * Get the authenticated User.
