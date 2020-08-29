@@ -6,7 +6,7 @@ use App\AppUser;
 use Illuminate\Support\Str;
 use AppleSignIn\ASDecoder;
 use App\Mail\GenericMail;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 
 
