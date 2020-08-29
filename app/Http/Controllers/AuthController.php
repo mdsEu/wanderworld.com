@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\AppUser;
+
 use JWTAuth;
 
 class AuthController extends Controller
@@ -100,12 +103,52 @@ class AuthController extends Controller
      */
     public function registration(Request $request) {
         try {
+            $params = $request->only([
+                'full_name',
+                'nickname',
+                'email',
+                'password',
+                'birthday',
+                'city',
+                'cellphone',
+            ]);
 
-            $validator = Validator::make($request->all(), [
+            $validator = Validator::make($params, [
                 'full_name' => 'required|max:20',
-                'nickname' => 'required|max:20',//unique
-                'email' => 'required|email',//unique
-                'password' => 'required',
+                'nickname' => 'required|max:20|unique:app_users,nickname',
+                'email' => 'required|email|max:75|unique:app_users,email',
+                'password' => [
+                    'required',
+                    'max:20',
+                    function ($attribute, $value, $fail) {
+                        $minCharsPassword = env('MIN_CHARS_PASSWORD', 8);
+                        $validLength = strlen(trim($value)) >= $minCharsPassword;
+                        if (!$validLength) {
+                            $fail(__('validation.eight_field_rule',array(
+                                'nchars' => $minCharsPassword,
+                            )));
+                            return;
+                        }
+
+                        $validUpper = preg_match('/[A-Z]/',$value);
+                        if (!$validUpper) {
+                            $fail(__('validation.any_uppercase_letter_rule'));
+                            return;
+                        }
+
+                        $validLower = preg_match('/[a-z]/',$value);
+                        if (!$validLower) {
+                            $fail(__('validation.any_lowercase_letter_rule'));
+                            return;
+                        }
+
+                        $validNumber = preg_match('/[0-9]/',$value);
+                        if (!$validNumber) {
+                            $fail(__('validation.any_number_rule'));
+                            return;
+                        }
+                    }
+                ],
                 'birthday' => 'required',
                 'city.name' => 'required',
                 'city.place_id' => 'required',
@@ -122,7 +165,88 @@ class AuthController extends Controller
                 return sendResponse(null,$validator->messages(),false);
             }
 
-            return sendResponse($request->all());
+            $countries = readJsonCountries();
+
+            $idxFoundCountry = findInArray($params['city']['country']['code'], $countries, 'country_code');
+
+            if ($idxFoundCountry === false) {
+                //Never will happen. Previously validated....
+            }
+            $foundCountry = $countries[$idxFoundCountry];
+
+            $defaultAvatar = secure_url('storage/users/default_avatar.png');
+
+            $newAppUser = array(
+                'name' => $params['full_name'],
+                'email' => $params['email'],
+                'nickname' => $params['nickname'],
+                'avatar' => $defaultAvatar,
+                'continent_code' => $foundCountry['continent_code'],
+                'country_code' => $foundCountry['country_code'],
+                'city_gplace_id' => $params['city']['place_id'],
+                'password' => bcrypt($params['password']),
+            );
+
+            $user = AppUser::create($newAppUser);
+
+            if(!($user && $user->id)) {
+                throw new \Exception("xx:auth.user_not_created_try_again");
+            }
+
+            sendVerificationEmail($user);
+
+            return sendResponse($user);
+        } catch (\Exception $e) {
+            return sendResponse(null,$e->getMessage(),false);
+        }
+    }
+
+    /**
+     * Start recovery token verification process.
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyEmail(Request $request) {
+        try {
+            $token64 = $request->get('token64');
+
+            checkRecoveryToken($token64);
+
+            list($email,$token) = explode('::',base64_decode($token64));
+
+            $user = AppUser::where('email',$email)->first();
+
+            $user->email_verified_at = strNowTime();
+
+            if (!$user->save()) {
+                throw new \Exception(__('auth.something_wrong_updating_user_info'));
+            }
+
+            return sendResponse($user);
+        } catch (\Exception $e) {
+            return sendResponse(null,$e->getMessage(),false);
+        }
+    }
+
+    /**
+     * Update password.
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePassword(Request $request) {
+        try {
+            $password = $request->get('password');
+
+            $user = AppUser::where('email',$email)->firstOrFail();
+            $user->password = bcrypt($password);
+
+            if (!$user->save()) {
+                throw new \Exception(__('auth.something_wrong_updating_user_info'));
+            }
+
+            return sendResponse($user);
+        } catch (\ModelNotFoundException $notFoundE) {
+            return sendResponse(null,__('auth.user_not_found'),false);
         } catch (\Exception $e) {
             return sendResponse(null,$e->getMessage(),false);
         }

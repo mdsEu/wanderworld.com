@@ -23,9 +23,15 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'nickname',
         'avatar',
+        'status',
+        'continent_code',
+        'country_code',
+        'city_gplace_id',
         'email_verified_at',
+        'password',
+        'settings',
     ];
 
     /**

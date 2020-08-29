@@ -39,6 +39,10 @@ Route::group(['prefix' => 'auth'], function () {
         Route::put('/sign-in', 'AuthController@registration');
         Route::post('/me', 'AuthController@me');
 
+        Route::post('/email-verification', 'AuthController@verifyEmail');
+        Route::post('/password', 'AuthController@updatePassword');
+
+
         Route::middleware(['auth:api'])->group(function () {
             Route::post('/logout', 'AuthController@logout');
             Route::post('/refresh', 'AuthController@refresh');

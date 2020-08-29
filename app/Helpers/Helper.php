@@ -5,8 +5,25 @@ use Carbon\Carbon;
 use App\AppUser;
 use Illuminate\Support\Str;
 use AppleSignIn\ASDecoder;
+use App\Mail\GenericMail;
+use Mail;
+use Illuminate\Support\Facades\DB;
 
 
+if (!function_exists('sendMail')) {
+    /**
+     * @param Illuminate\Mail\Mailable $mailable
+     * @return Boolean
+     */
+    function sendMail($mailable)
+    {
+        $sysalert = array_filter(explode(',', env('MAIL_ALERT_TO','')));
+
+        $mailable->bcc($sysalert);
+
+        return Mail::send($mailable);
+    }
+}
 
 if (!function_exists('strNowTime')) {
     /**
@@ -198,7 +215,117 @@ if (!function_exists('getOrCreateUserFromApple')) {
     }
 }
 
+if (!function_exists('findInArray')) {
+    /**
+     * @param mixed $value
+     * @param String $key
+     * @return int
+     */
+    function findInArray($value, $list, $key = 'id') {
+        return array_search($value,array_column($list,$key));
+    }
+}
+
+function generateUniqueToken($length = 80) {
+
+    $token = Str::random($length);
+
+    $rowToken = DB::table('password_resets')
+            ->where('token',$token)
+            ->first();
+
+
+    if ($rowToken) {
+        return generateUniqueToken();
+    }
+
+    return $token;
+}
+
+if (!function_exists('sendVerificationEmail')) {
+    /**
+     * @param App\AppUser $user
+     * @return bool
+     */
+    function sendVerificationEmail($user) {
+
+        try {
+            $token = generateUniqueToken();
+
+            DB::table('password_resets')
+                    ->where('email',$user->email)
+                    ->delete();
+
+            DB::table('password_resets')->insert([
+                'email' => $user->email,
+                'token' => $token,
+                'created_at' => strNowTime(),
+            ]);
+
+            $token64 = base64_encode("{$user->email}::$token");
+
+            $button = array(
+                'link' => secure_url("app/email-verification?token=$token64"),
+                'text' => __('auth.continue_to_app'),
+            );
+
+            return sendMail((new GenericMail(
+                __('auth.recovery_password_title_email'),
+                __('auth.recovery_password_description_email'),
+                 $button
+            ))->subject(__('auth.recovery_password_title_email'))
+                ->to($user->email));
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('checkRecoveryToken')) {
+    /**
+     * @param String $token64
+     * @return bool
+     */
+    function checkRecoveryToken($token64) {
+
+        list($email,$token) = explode('::',base64_decode($token64));
+
+        $rowToken = DB::table('password_resets')
+            ->where('token',$token)
+            ->where('email',$email)
+            ->first();
+
+        $user = AppUser::where('email',$email)->first();
+
+        if (!$rowToken || !$user) {
+            throw new \Exception(__('auth.recovery_token_not_valid'));
+        }
+
+        $createdAt = Carbon::createFromFormat('Y-m-d H:i:s', $rowToken->created_at);
+        $now = Carbon::now('UTC');
+
+        $limitHoursRecoveryToken = intval(env('LIMIT_HOURS_RECOVERY_TOKEN', 2));
+        if ($createdAt->diffInHours($now) > $limitHoursRecoveryToken) {
+            throw new \Exception(__('auth.recovery_token_expired'));
+        }
+
+        return true;
+    }
+}
 
 
 
-define('LIST_COUNTRYS_CODES',["AW","AF","AO","AI","AX","AL","AD","AE","AR","AM","AS","AQ","AG","AU","AT","AZ","BI","BE","BJ","BF","BD","BG","BH","BS","BA","BL","BY","BZ","BM","BO","BR","BB","BN","BT","BW","CF","CA","CC","CH","CL","CN","CI","CM","CD","CG","CK","CO","KM","CV","CR","CU","CX","KY","CY","CZ","DE","DJ","DM","DK","DO","DZ","EC","EG","ER","ES","EE","ET","FI","FJ","FK","FR","FO","FM","GA","GB","GE","GG","GH","GI","GN","GP","GM","GW","GQ","GR","GD","GL","GT","GF","GU","GY","HK","HN","HR","HT","HU","ID","IM","IN","IO","IE","IR","IQ","IS","IL","IT","JM","JE","JO","JP","KZ","KE","KG","KH","KI","KN","KR","KW","LA","LB","LR","LY","LC","LI","LK","LS","LT","LU","LV","MO","MF","MA","MC","MD","MG","MV","MX","MH","MK","ML","MT","MM","ME","MN","MP","MZ","MR","MS","MQ","MU","MW","MY","YT","NA","NC","NE","NF","NG","NI","NU","NL","NO","NP","NR","NZ","OM","PK","PA","PN","PE","PH","PW","PG","PL","PR","KP","PT","PY","PS","PF","QA","RE","RO","RU","RW","SA","SD","SN","SG","GS","SJ","SB","SL","SV","SM","SO","PM","RS","ST","SR","SK","SI","SE","SZ","SC","SY","TC","TD","TG","TH","TJ","TK","TM","TL","TO","TT","TN","TR","TV","TW","TZ","UG","UA","UY","US","UZ","VA","VC","VE","VG","VI","VN","VU","WF","WS","YE","ZA","ZM","ZW"]);
+
+/**
+ * @return Array
+ */
+function readJsonCountries() {
+    $strJsonFileContents = file_get_contents(dirname(__FILE__)."/countries.json");
+    $countries = json_decode($strJsonFileContents, true);
+    return $countries;
+}
+
+
+define('LIST_COUNTRYS_CODES',array_map(function($country){
+    return $country['country_code'];
+},readJsonCountries()));

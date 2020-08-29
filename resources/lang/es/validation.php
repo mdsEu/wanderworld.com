@@ -147,7 +147,16 @@ return [
     */
 
     'attributes' => [
-        'city.country.code' => 'codigo de pais'
+        'full_name' => 'nombre completo',
+        'nickname' => 'nickname',
+        'email' => 'correo eléctronico',
+        'password' => 'contraseña',
+        'birthday' => 'fecha de nacimiento',
+        'city' => 'ciudad',
+        'cellphone' => 'número de celular',
+        'city.name' => 'ciudad',
+        'cellphone.dial' => 'indicativo',
+        'cellphone.number' => 'número de celular',
     ],
 
 ];

@@ -130,10 +130,24 @@ return [
     */
 
     'custom' => [
+        'city.place_id' => [
+            'required' => 'City selection was wrong.',
+        ],
+
+        'city.country.name' => [
+            'required' => 'City selection was wrong.',
+        ],
         'city.country.code' => [
+            'required' => 'City selection was wrong.',
             'in' => 'The country selected is not in our available country list',
         ],
     ],
+
+
+    'eight_field_rule' => 'The field :attribute doesn\'t have :nchars characters.',
+    'any_uppercase_letter_rule' => 'The field :attribute doesn\'t have any uppercase letter.',
+    'any_lowercase_letter_rule' => 'The field :attribute doesn\'t have any lowercase letter.',
+    'any_number_rule' => 'The field :attribute doesn\'t have any number.',
 
     /*
     |--------------------------------------------------------------------------
@@ -146,6 +160,17 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'full_name' => 'fullname',
+        'nickname' => 'nickname',
+        'email' => 'email',
+        'password' => 'password',
+        'birthday' => 'birthday',
+        'city' => 'city',
+        'cellphone' => 'cellphone',
+        'city.name' => 'city',
+        'cellphone.dial' => 'dial',
+        'cellphone.number' => 'cellphone number',
+    ],
 
 ];
