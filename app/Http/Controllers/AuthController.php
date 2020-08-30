@@ -55,7 +55,7 @@ class AuthController extends Controller
         } catch (ModelNotFoundException $notFoundE) {
             return sendResponse(null,__('auth.credentials_not_valid'), false);
         } catch (\Exception $e) {
-            return sendResponse(null,$e->getMessage()." eeee",false);
+            return sendResponse(null,$e->getMessage(),false);
         }
     }
 
