@@ -10,10 +10,13 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
-
-//class AppUser extends
 {
     use Notifiable;
+
+
+    const STATUS_PENDING    = '1';
+    const STATUS_ACTIVE     = '2';
+    const STATUS_INACTIVE   = '3';
 
     /**
      * The attributes that are mass assignable.

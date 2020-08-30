@@ -24,5 +24,7 @@ return [
     'recovery_password_subject_email' => 'Confirm your Email - Wander World',
     'recovery_password_title_email' => 'Confirmation Email',
     'recovery_password_description_email' => 'Click below button to confirm your email and finish the registration process. Thanks.',
+    'email_not_verified' => 'Your email has not been verified.',
+    'inactive_user' => 'Your has been disable to login. Please contact us to resolve this status.',
 
 ];

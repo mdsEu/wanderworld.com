@@ -31,15 +31,32 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
 
-        $token = auth($this->guard)->attempt($credentials);
+        try {
+            $credentials = request(['email', 'password']);
 
-        if (!$token) {
+            $user = AppUser::where('email',$credentials['email'])->firstOrFail();
+
+            $token = auth($this->guard)->attempt($credentials);
+
+            if (!$token) {
+                return sendResponse(null,__('auth.credentials_not_valid'), false);
+            }
+
+            if ($user->status == AppUser::STATUS_PENDING) {
+                return sendResponse(null,__('auth.email_not_verified'), false);
+            }
+
+            if ($user->status == AppUser::STATUS_INACTIVE) {
+                return sendResponse(null,__('auth.inactive_user'), false);
+            }
+
+            return $this->respondWithToken($token);
+        } catch (\ModelNotFoundException $notFoundE) {
             return sendResponse(null,__('auth.credentials_not_valid'), false);
+        } catch (\Exception $e) {
+            return sendResponse(null,$e->getMessage(),false);
         }
-
-        return $this->respondWithToken($token);
     }
 
     /**
@@ -217,6 +234,7 @@ class AuthController extends Controller
             $user = AppUser::where('email',$email)->first();
 
             $user->email_verified_at = strNowTime();
+            $user->status = AppUser::STATUS_ACTIVE;
 
             if (!$user->save()) {
                 throw new \Exception(__('auth.something_wrong_updating_user_info'));
