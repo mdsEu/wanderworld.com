@@ -52,10 +52,10 @@ class AuthController extends Controller
             }
 
             return $this->respondWithToken($token);
-        } catch (\ModelNotFoundException $notFoundE) {
+        } catch (ModelNotFoundException $notFoundE) {
             return sendResponse(null,__('auth.credentials_not_valid'), false);
         } catch (\Exception $e) {
-            return sendResponse(null,$e->getMessage(),false);
+            return sendResponse(null,$e->getMessage()." eeee",false);
         }
     }
 
@@ -263,7 +263,7 @@ class AuthController extends Controller
             }
 
             return sendResponse($user);
-        } catch (\ModelNotFoundException $notFoundE) {
+        } catch (ModelNotFoundException $notFoundE) {
             return sendResponse(null,__('auth.user_not_found'),false);
         } catch (\Exception $e) {
             return sendResponse(null,$e->getMessage(),false);
