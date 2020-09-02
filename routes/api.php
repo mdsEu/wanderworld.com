@@ -37,13 +37,13 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/facebook-login', 'AuthController@facebookLogin');
         Route::post('/apple-login', 'AuthController@appleLogin');
         Route::put('/sign-in', 'AuthController@registration');
-        Route::post('/me', 'AuthController@me');
 
         Route::post('/email-verification', 'AuthController@verifyEmail');
         Route::post('/password', 'AuthController@updatePassword');
 
 
         Route::middleware(['auth:api'])->group(function () {
+            Route::post('/me', 'AuthController@me');
             Route::post('/logout', 'AuthController@logout');
             Route::post('/refresh', 'AuthController@refresh');
         });
