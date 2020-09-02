@@ -291,7 +291,7 @@ class AuthController extends Controller
             return sendResponse(null,__('auth.token_absent'), false);
         }
         //return response()->json(auth($this->guard)->user());
-        return response()->json($user);
+        return sendResponse($user);
     }
 
     /**
