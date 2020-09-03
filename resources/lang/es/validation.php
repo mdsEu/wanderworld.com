@@ -143,11 +143,11 @@ return [
     ],
 
 
-    'eight_field_rule' => ':attribute no tiene :nchars caracteres minímo.',
+    'eight_field_rule' => ':attribute no tiene :nchars caracteres mínimo.',
     'any_uppercase_letter_rule' => ':attribute no tiene mayúsculas.',
     'any_lowercase_letter_rule' => ':attribute no tiene minúsculas.',
     'any_number_rule' => ':attribute no tiene numeros.',
-    'min_age_required' => ':age años minímo.',
+    'min_age_required' => ':age años mínimo.',
 
     /*
     |--------------------------------------------------------------------------

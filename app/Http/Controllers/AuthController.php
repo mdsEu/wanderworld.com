@@ -187,10 +187,17 @@ class AuthController extends Controller
                 ],
                 'birthday' => [
                     function ($attribute, $value, $fail) {
-                        $age = Carbon::createFromFormat('Y-m-d',$value)->age;
                         $minAge = intval(env('MIN_AGE_REGISTRATION', 18));
+
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
+                            $fail(__('validation.min_age_required', ['age' => $minAge]));
+                            return;
+                        }
+                        $age = Carbon::createFromFormat('Y-m-d',$value)->age;
+
                         if ($age < $minAge) {
                             $fail(__('validation.min_age_required', ['age' => $minAge]));
+                            return;
                         }
                     }
                 ],
