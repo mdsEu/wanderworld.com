@@ -140,6 +140,9 @@ return [
             'required' => 'City selection was wrong.',
             'in' => 'The country selected is not in our available country list',
         ],
+        'terms' => [
+            'accepted' => 'You must accept our terms and conditions.',
+        ],
     ],
 
 

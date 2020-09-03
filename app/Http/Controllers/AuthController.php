@@ -210,7 +210,7 @@ class AuthController extends Controller
                 ],
                 'cellphone.dial' => 'required',
                 'cellphone.number' => 'required',
-                'terms' => 'required|boolean',
+                'terms' => 'accepted',
             ]);
 
             if ($validator->fails()) {

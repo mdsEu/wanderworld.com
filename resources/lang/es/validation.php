@@ -140,6 +140,10 @@ return [
             'required' => 'Ciudad seleccionada no válida.',
             'in' => 'El país seleccionado no se encuentra en nuestro listado de paises permitidos',
         ],
+        'terms' => [
+            'accepted' => 'Debe aceptar nuestros término y condiciones.',
+        ],
+
     ],
 
 
