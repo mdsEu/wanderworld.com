@@ -96,7 +96,7 @@ return [
     'password' => 'The password is incorrect.',
     'present' => 'The :attribute field must be present.',
     'regex' => 'The :attribute format is invalid.',
-    'required' => 'The :attribute field is required.',
+    'required' => 'The :attribute is required.',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',
@@ -133,7 +133,6 @@ return [
         'city.place_id' => [
             'required' => 'City selection was wrong.',
         ],
-
         'city.country.name' => [
             'required' => 'City selection was wrong.',
         ],
@@ -148,6 +147,7 @@ return [
     'any_uppercase_letter_rule' => 'The field :attribute doesn\'t have any uppercase letter.',
     'any_lowercase_letter_rule' => 'The field :attribute doesn\'t have any lowercase letter.',
     'any_number_rule' => 'The field :attribute doesn\'t have any number.',
+    'min_age_required' => 'You must have :age years old minimal.',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +161,7 @@ return [
     */
 
     'attributes' => [
-        'full_name' => 'fullname',
+        'fullname' => 'fullname',
         'nickname' => 'nickname',
         'email' => 'email',
         'password' => 'password',

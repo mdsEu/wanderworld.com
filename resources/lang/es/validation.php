@@ -130,10 +130,24 @@ return [
     */
 
     'custom' => [
+        'city.place_id' => [
+            'required' => 'Ciudad seleccionada no válida.',
+        ],
+        'city.country.name' => [
+            'required' => 'Ciudad seleccionada no válida.',
+        ],
         'city.country.code' => [
+            'required' => 'Ciudad seleccionada no válida.',
             'in' => 'El país seleccionado no se encuentra en nuestro listado de paises permitidos',
         ],
     ],
+
+
+    'eight_field_rule' => ':attribute no tiene :nchars caracteres minímo.',
+    'any_uppercase_letter_rule' => ':attribute no tiene mayúsculas.',
+    'any_lowercase_letter_rule' => ':attribute no tiene minúsculas.',
+    'any_number_rule' => ':attribute no tiene numeros.',
+    'min_age_required' => ':age años minímo.',
 
     /*
     |--------------------------------------------------------------------------
@@ -147,9 +161,9 @@ return [
     */
 
     'attributes' => [
-        'full_name' => 'nombre completo',
+        'fullname' => 'nombre completo',
         'nickname' => 'nickname',
-        'email' => 'correo eléctronico',
+        'email' => 'correo electrónico',
         'password' => 'contraseña',
         'birthday' => 'fecha de nacimiento',
         'city' => 'ciudad',

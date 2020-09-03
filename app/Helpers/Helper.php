@@ -175,7 +175,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
         $isValid = $userAppleId && $appleSignInPayload->verifyUser($userAppleId);
 
         if (!$isValid) {
-            throw new \Exception("No fue posible verificar la autenticación. Intente nuevamente.");
+            throw new \Exception(__('app.apple_auth_failed'));
         }
 
         $credentials = array(
@@ -186,7 +186,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
         $emailLogin = empty($email) ? $hideEmail : $email;
 
         if (!filter_var($emailLogin, FILTER_VALIDATE_EMAIL)) {
-            throw new \Exception("No fue posible realizar la autenticación. Correo eléctronico no detectado.");
+            throw new \Exception(__('app.no_detected_email'));
         }
 
         $password = bcrypt(Str::random(40));

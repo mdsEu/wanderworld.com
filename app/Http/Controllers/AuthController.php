@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Carbon\Carbon;
 use App\AppUser;
 
 use JWTAuth;
@@ -37,18 +38,18 @@ class AuthController extends Controller
 
             $user = AppUser::where('email',$credentials['email'])->firstOrFail();
 
-            $token = auth($this->guard)->attempt($credentials);
-
-            if (!$token) {
-                return sendResponse(null,__('auth.credentials_not_valid'), false);
-            }
-
             if ($user->status == AppUser::STATUS_PENDING) {
                 return sendResponse(null,__('auth.email_not_verified'), false);
             }
 
             if ($user->status == AppUser::STATUS_INACTIVE) {
                 return sendResponse(null,__('auth.inactive_user'), false);
+            }
+
+            $token = auth($this->guard)->attempt($credentials);
+
+            if (!$token) {
+                return sendResponse(null,__('auth.credentials_not_valid'), false);
             }
 
             return $this->respondWithToken($token);
@@ -75,11 +76,20 @@ class AuthController extends Controller
 
             $user = getOrCreateUserFromFacebook($accessToken);
 
+            if ($user->status == AppUser::STATUS_PENDING) {
+                return sendResponse(null,__('auth.email_not_verified'), false);
+            }
+
+            if ($user->status == AppUser::STATUS_INACTIVE) {
+                return sendResponse(null,__('auth.inactive_user'), false);
+            }
+
             $token = auth($this->guard)->login($user);
 
             if (!$token) {
                 return sendResponse(null,__('auth.credentials_not_valid'), false);
             }
+
             return $this->respondWithToken($token);
         } catch (\Exception $e) {
             return sendResponse(null,$e->getMessage(), false);
@@ -101,9 +111,17 @@ class AuthController extends Controller
 
             $user = getOrCreateUserFromApple($identityToken, $email, $userName, $userAppleId);
 
+            if ($user->status == AppUser::STATUS_PENDING) {
+                return sendResponse(null,__('auth.email_not_verified'), false);
+            }
+
+            if ($user->status == AppUser::STATUS_INACTIVE) {
+                return sendResponse(null,__('auth.inactive_user'), false);
+            }
+
             $token = auth($this->guard)->login($user);
             if (!$token) {
-                throw new \Exception("No fue posible realizar la autenticación. Intente nuevamente.");
+                return sendResponse(null,__('auth.credentials_not_valid'), false);
             }
 
             return sendResponse($token);
@@ -121,17 +139,18 @@ class AuthController extends Controller
     public function registration(Request $request) {
         try {
             $params = $request->only([
-                'full_name',
+                'fullname',
                 'nickname',
                 'email',
                 'password',
                 'birthday',
                 'city',
                 'cellphone',
+                'terms',
             ]);
 
             $validator = Validator::make($params, [
-                'full_name' => 'required|max:20',
+                'fullname' => 'required|max:20',
                 'nickname' => 'required|max:20|unique:app_users,nickname',
                 'email' => 'required|email|max:75|unique:app_users,email',
                 'password' => [
@@ -166,7 +185,15 @@ class AuthController extends Controller
                         }
                     }
                 ],
-                'birthday' => 'required',
+                'birthday' => [
+                    function ($attribute, $value, $fail) {
+                        $age = Carbon::createFromFormat('Y-m-d',$value)->age;
+                        $minAge = intval(env('MIN_AGE_REGISTRATION', 18));
+                        if ($age < $minAge) {
+                            $fail(__('validation.min_age_required', ['age' => $minAge]));
+                        }
+                    }
+                ],
                 'city.name' => 'required',
                 'city.place_id' => 'required',
                 'city.country.name' => 'required',
@@ -176,6 +203,7 @@ class AuthController extends Controller
                 ],
                 'cellphone.dial' => 'required',
                 'cellphone.number' => 'required',
+                'terms' => 'required|boolean',
             ]);
 
             if ($validator->fails()) {
@@ -207,7 +235,7 @@ class AuthController extends Controller
             $user = AppUser::create($newAppUser);
 
             if(!($user && $user->id)) {
-                throw new \Exception("xx:auth.user_not_created_try_again");
+                throw new \Exception("auth.user_not_created_try_again");
             }
 
             sendVerificationEmail($user);
