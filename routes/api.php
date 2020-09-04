@@ -25,6 +25,8 @@ Route::group(['prefix' => 'services/v1/'], function () {
         Route::get('/onboarding-items', 'MultiPage@allOnboardingItems')->name('all-onboarding-item');
 
         Route::get('/version', 'MultiPage@getVersion');
+
+        Route::get('/settings', 'SettingsController@filterSettings');
     });
 });
 
