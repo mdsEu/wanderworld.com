@@ -21,6 +21,6 @@ class SettingsController extends Controller
         foreach($settingsNames as $sName) {
             $valsSettings[$sName] = setting("admin.{$sName}");
         }
-        return $valsSettings;
+        return sendResponse($valsSettings);
     }
 }
