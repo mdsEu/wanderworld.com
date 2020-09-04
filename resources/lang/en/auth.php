@@ -27,5 +27,8 @@ return [
     'email_not_verified' => 'Your email has not been verified.',
     'inactive_user' => 'Your has been disable to login. Please contact us to resolve this status.',
     'user_not_created_try_again' => 'It was not posible to create your account. Try again.',
-
+    'success_email_sent_recovery_account' => 'The email for recovering account has been sent successfully.',
+    'recovery_account_title_email' => 'Recovery Account',
+    'recovery_account_subject_email' => 'Recovery Account - Wander World',
+    'recovery_account_description_email' => 'Click below button to continue with the recovery account process:',
 ];

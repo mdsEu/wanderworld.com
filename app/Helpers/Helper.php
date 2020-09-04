@@ -242,6 +242,21 @@ function generateUniqueToken($length = 80) {
     return $token;
 }
 
+function generateVerificationToken($user) {
+    $token = generateUniqueToken();
+
+    DB::table('password_resets')
+            ->where('email',$user->email)
+            ->delete();
+
+    DB::table('password_resets')->insert([
+        'email' => $user->email,
+        'token' => $token,
+        'created_at' => strNowTime(),
+    ]);
+    return $token;
+}
+
 if (!function_exists('sendVerificationEmail')) {
     /**
      * @param App\AppUser $user
@@ -250,17 +265,8 @@ if (!function_exists('sendVerificationEmail')) {
     function sendVerificationEmail($user) {
 
         try {
-            $token = generateUniqueToken();
 
-            DB::table('password_resets')
-                    ->where('email',$user->email)
-                    ->delete();
-
-            DB::table('password_resets')->insert([
-                'email' => $user->email,
-                'token' => $token,
-                'created_at' => strNowTime(),
-            ]);
+            $token = generateVerificationToken($user);
 
             $token64 = base64_encode("{$user->email}::$token");
 
@@ -273,7 +279,37 @@ if (!function_exists('sendVerificationEmail')) {
                 __('auth.recovery_password_title_email'),
                 __('auth.recovery_password_description_email'),
                  $button
-            ))->subject(__('auth.recovery_password_title_email'))
+            ))->subject(__('auth.recovery_password_subject_email'))
+                ->to($user->email));
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('sendRecoveryAccountEmail')) {
+    /**
+     * @param App\AppUser $user
+     * @return bool
+     */
+    function sendRecoveryAccountEmail($user) {
+
+        try {
+
+            $token = generateVerificationToken($user);
+
+            $token64 = base64_encode("{$user->email}::$token");
+
+            $button = array(
+                'link' => secure_url("app/recovery-account?token=$token64"),
+                'text' => __('auth.continue_to_app'),
+            );
+
+            return sendMail((new GenericMail(
+                __('auth.recovery_account_title_email'),
+                __('auth.recovery_account_description_email'),
+                 $button
+            ))->subject(__('auth.recovery_account_subject_email'))
                 ->to($user->email));
         } catch (\Exception $e) {
             return false;
@@ -284,9 +320,10 @@ if (!function_exists('sendVerificationEmail')) {
 if (!function_exists('checkRecoveryToken')) {
     /**
      * @param String $token64
+     * @param int $hoursLimit
      * @return bool
      */
-    function checkRecoveryToken($token64) {
+    function checkRecoveryToken($token64, $hoursLimit = 0) {
 
         list($email,$token) = explode('::',base64_decode($token64));
 
@@ -304,7 +341,7 @@ if (!function_exists('checkRecoveryToken')) {
         $createdAt = Carbon::createFromFormat('Y-m-d H:i:s', $rowToken->created_at);
         $now = Carbon::now('UTC');
 
-        $limitHoursRecoveryToken = intval(env('LIMIT_HOURS_RECOVERY_TOKEN', 2));
+        $limitHoursRecoveryToken = $hoursLimit <= 0 ? intval(env('LIMIT_HOURS_RECOVERY_TOKEN', 2)) : intval($hoursLimit);
         if ($createdAt->diffInHours($now) > $limitHoursRecoveryToken) {
             throw new \Exception(__('auth.recovery_token_expired'));
         }

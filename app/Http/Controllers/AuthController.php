@@ -156,34 +156,7 @@ class AuthController extends Controller
                 'password' => [
                     'required',
                     'max:20',
-                    function ($attribute, $value, $fail) {
-                        $minCharsPassword = env('MIN_CHARS_PASSWORD', 8);
-                        $validLength = strlen(trim($value)) >= $minCharsPassword;
-                        if (!$validLength) {
-                            $fail(__('validation.eight_field_rule',array(
-                                'nchars' => $minCharsPassword,
-                            )));
-                            return;
-                        }
-
-                        $validUpper = preg_match('/[A-Z]/',$value);
-                        if (!$validUpper) {
-                            $fail(__('validation.any_uppercase_letter_rule'));
-                            return;
-                        }
-
-                        $validLower = preg_match('/[a-z]/',$value);
-                        if (!$validLower) {
-                            $fail(__('validation.any_lowercase_letter_rule'));
-                            return;
-                        }
-
-                        $validNumber = preg_match('/[0-9]/',$value);
-                        if (!$validNumber) {
-                            $fail(__('validation.any_number_rule'));
-                            return;
-                        }
-                    }
+                    $this->passwordRules
                 ],
                 'birthday' => [
                     function ($attribute, $value, $fail) {
@@ -305,6 +278,50 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Reset password.
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(Request $request) {
+        try {
+
+            $password = $request->get('password');
+
+            $validator = Validator::make(['password' => $password], [
+                'password' => [
+                    'required',
+                    'max:20',
+                    $this->passwordRules
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            $token64 = $request->get('token64');
+
+            checkRecoveryToken($token64);
+
+            list($email,$token) = explode('::',base64_decode($token64));
+
+            $user = AppUser::where('email',$email)->firstOrFail();
+
+            $user->password = bcrypt($password);
+
+            if (!$user->save()) {
+                throw new \Exception(__('auth.something_wrong_updating_user_info'));
+            }
+
+            return sendResponse($user);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null,__('auth.user_not_found'),false);
+        } catch (\Exception $e) {
+            return sendResponse(null,$e->getMessage(),false);
+        }
+    }
+
 
     /**
      * Get the authenticated User.
@@ -367,4 +384,62 @@ class AuthController extends Controller
         ]);*/
         return sendResponse($token);
     }
+
+
+    /**
+     * Update password.
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function sendEmailRecoveryAccount(Request $request)
+    {
+        try {
+            $email = $request->get('email', null);
+
+            $user = AppUser::where('email',$email)->firstOrFail();
+
+            if(!($user && $user->id)) {
+                throw new \Exception(__('auth.success_email_sent_recovery_account'));
+            }
+
+            sendRecoveryAccountEmail($user);
+
+            return sendResponse(__('auth.success_email_sent_recovery_account'));
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(__('auth.success_email_sent_recovery_account'));
+        } catch (\Exception $e) {
+            return sendResponse(__('auth.success_email_sent_recovery_account'));
+        }
+    }
+
+
+    public function passwordRules($attribute, $value, $fail) {
+        $minCharsPassword = env('MIN_CHARS_PASSWORD', 8);
+        $validLength = strlen(trim($value)) >= $minCharsPassword;
+        if (!$validLength) {
+            $fail(__('validation.eight_field_rule',array(
+                'nchars' => $minCharsPassword,
+            )));
+            return;
+        }
+
+        $validUpper = preg_match('/[A-Z]/',$value);
+        if (!$validUpper) {
+            $fail(__('validation.any_uppercase_letter_rule'));
+            return;
+        }
+
+        $validLower = preg_match('/[a-z]/',$value);
+        if (!$validLower) {
+            $fail(__('validation.any_lowercase_letter_rule'));
+            return;
+        }
+
+        $validNumber = preg_match('/[0-9]/',$value);
+        if (!$validNumber) {
+            $fail(__('validation.any_number_rule'));
+            return;
+        }
+    }
+
 }

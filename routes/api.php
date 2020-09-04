@@ -41,7 +41,9 @@ Route::group(['prefix' => 'auth'], function () {
         Route::put('/sign-in', 'AuthController@registration');
 
         Route::post('/email-verification', 'AuthController@verifyEmail');
-        Route::post('/password', 'AuthController@updatePassword');
+        //Route::post('/password', 'AuthController@updatePassword');
+        Route::post('/reset-password', 'AuthController@resetPassword');
+        Route::post('/recovery-account', 'AuthController@sendEmailRecoveryAccount');
 
 
         Route::middleware(['auth:api'])->group(function () {

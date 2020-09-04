@@ -27,4 +27,8 @@ return [
     'email_not_verified' => 'Su correo eléctonico no pudo ser verificado.',
     'inactive_user' => 'Usted esta inhabilitado para ingresar a su cuenta. Por favor pongase en contacto con nosotros para resolver su actual estado.',
     'user_not_created_try_again' => 'No fue posible crear la cuenta. Intente nuevamente.',
+    'success_email_sent_recovery_account' => 'El correo electrónico para recuperar su cuenta ha sido enviado con éxito.',
+    'recovery_account_title_email' => 'Recuperación de Cuenta',
+    'recovery_account_subject_email' => 'Recuperación de Cuenta - Wander World',
+    'recovery_account_description_email' => 'Presione el siguiente botón para continuar con el proceso de recuperación de cuenta:',
 ];
