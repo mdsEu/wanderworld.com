@@ -52,7 +52,7 @@ if (!function_exists('sendJson')) {
      * @param string|array $message
      * @return ResponseJson
      */
-    function sendResponse($value,$messages = '', $success = true)
+    function sendResponse($value = '',$messages = '', $success = true)
     {
         if (is_string($messages) && !empty($messages)) {
             $messages = [$messages];

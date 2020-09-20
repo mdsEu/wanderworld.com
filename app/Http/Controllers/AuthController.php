@@ -156,7 +156,9 @@ class AuthController extends Controller
                 'password' => [
                     'required',
                     'max:20',
-                    $this->passwordRules
+                    function($attribute, $value, $fail) {
+                        $this->passwordRules($attribute, $value, $fail);
+                    }
                 ],
                 'birthday' => [
                     function ($attribute, $value, $fail) {
@@ -292,7 +294,9 @@ class AuthController extends Controller
                 'password' => [
                     'required',
                     'max:20',
-                    $this->passwordRules
+                    function($attribute, $value, $fail) {
+                        $this->passwordRules($attribute, $value, $fail);
+                    }
                 ],
             ]);
 
@@ -355,7 +359,7 @@ class AuthController extends Controller
     {
         auth($this->guard)->logout(true);
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return sendResponse();
     }
 
     /**
