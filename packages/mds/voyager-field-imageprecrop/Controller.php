@@ -107,7 +107,7 @@ class Controller extends BaseController
 
             $success = true;
             $message = __('cropimage::general.success_crop_image');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $success = false;
             $message = $e->getMessage();
         }

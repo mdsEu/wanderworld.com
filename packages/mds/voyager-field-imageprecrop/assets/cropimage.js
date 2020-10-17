@@ -52,7 +52,7 @@ window.addEventListener('DOMContentLoaded',function(){
                 _token: csrf_token,
             };
 
-            var $container = _this.parent().parent();
+            var $container = _this.parent().parent().parent();
             var $wrapCrop = $container.find('.formfield-crop-container').first();
 
             var cropUrl = _this.data('cropurl');
@@ -99,9 +99,12 @@ window.addEventListener('DOMContentLoaded',function(){
             width = parseInt( width );
             height = parseInt( height );
 
-            var $cropBtn = $container.find('.btn-run-crop').first();
+            var $wrapCropAction = $container.find('.wrap-cropping-action').first();
 
-            new Cropper($image.get(0), {
+            var $cropBtn = $container.find('.btn-run-crop').first();
+            var $checkGifBtn = $container.find('.check-save-gif').first();
+
+            var cropper = new Cropper($image.get(0), {
                 minCropBoxWidth: width,
                 minCropBoxHeight: height,
                 minContainerWidth: width,
@@ -109,16 +112,22 @@ window.addEventListener('DOMContentLoaded',function(){
                 aspectRatio: width / height,
                 crop(event) {
 
-                   $cropBtn.data('x', Math.floor( event.detail.x ));
-                   $cropBtn.data('y', Math.floor( event.detail.y ));
-                   $cropBtn.data('height', Math.floor( event.detail.height ));
-                   $cropBtn.data('width', Math.floor( event.detail.width ));
+                    $cropBtn.data('x', Math.floor( event.detail.x ));
+                    $cropBtn.data('y', Math.floor( event.detail.y ));
+                    $cropBtn.data('height', Math.floor( event.detail.height ));
+                    $cropBtn.data('width', Math.floor( event.detail.width ));
                 },
             });
 
+            $cropBtn.data('cropper',cropper);
+            
             $cropBtn.data('infoimage',dataImage);
-            $cropBtn.show();
+            
 
+            $checkGifBtn.data('infoimage',dataImage);
+            $checkGifBtn.data('cropheight',height);
+            $checkGifBtn.data('cropwidth',width);
+            $wrapCropAction.show();
         };
 
         var loadImageCrop = function(e) {
@@ -137,6 +146,38 @@ window.addEventListener('DOMContentLoaded',function(){
                 });
 
 
+            }
+        };
+
+        var onSaveAsGif = function(e) {
+            e.preventDefault();
+
+            var _this = $(e.currentTarget);
+            var $container = _this.parent().parent().parent().parent();
+            var $cropBtn = $container.find('.btn-run-crop').first();
+            var $inputStore = $container.find('.el-input-store').first();
+            
+            var infoImage = _this.data('infoimage');
+
+            if(_this.prop('checked')) {
+                
+
+                $cropBtn.hide();
+                
+                $inputStore.val( infoImage.path+'/'+infoImage.name );
+
+                $cropBtn.data('cropper').destroy();
+                $container.find('.formfield-crop-container').first().attr('style','');
+            } else {
+                $cropBtn.show();
+                $inputStore.val( $inputStore.data('originval') );
+
+                iniCropImage(
+                    infoImage,
+                    $inputStore.data('cropheight'),
+                    $inputStore.data('cropwidth'),
+                    $container
+                );
             }
         };
 
@@ -163,6 +204,8 @@ window.addEventListener('DOMContentLoaded',function(){
         });
 
         $('.btn-run-crop').on('click',onCropImage);
+        $('.check-save-gif').on('change',onSaveAsGif);
+        
 
     })(jQuery);
 }, false);

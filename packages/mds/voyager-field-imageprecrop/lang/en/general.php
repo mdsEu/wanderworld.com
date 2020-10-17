@@ -9,4 +9,6 @@ return [
     'denyaccess' => 'Deny access',
     'data_saved_successfully' => 'Data has been saved successfully',
     'success_crop_image' => 'Image cropped successfully',
+    'is_your_image_gif' => 'do you want to upload a gif image?',
+    'is_gif' => 'Is this image a gif?',
 ];

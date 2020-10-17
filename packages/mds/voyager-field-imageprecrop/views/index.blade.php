@@ -1,6 +1,3 @@
-<?php
-use MDS\Fields\ImagePreCrop\FormField;
-?>
 @if( isset($row->details->image_description) )
 <br/>
 <h5><i>{{ $row->details->image_description }}</i></h5>
@@ -18,9 +15,17 @@ use MDS\Fields\ImagePreCrop\FormField;
         echo $row->required == 1 && !isset($item->{$row->field}) ? ' required' : '';
         echo $accept ? ' accept="'.$accept.'"' : '';
         ?>/>
-        <input class="el-input-store" type="hidden" name="{{ $row->field }}" value="{{ $item->{$row->field} ? $item->{$row->field} : '' }}" />
-        <a href="#{{ 'icrop_'.$row->field }}" data-pfolder="{{ $public_path }}" data-imageheight="{{ $imageHeight }}" data-imagewidth="{{ $imageWidth }}" data-ajaxurl="{{ route('crop.image.upload') }}" data-preview="{{ '#preview_name_icrop_'.$row->field }}" class="btn btn-primary input-file-crop-image"><?php echo __('cropimage::general.choose_image'); ?></a>
-        <a href="#" style="display: none;" data-cropurl="{{ route('crop.image') }}" class="btn btn-success btn-run-crop">@lang('cropimage::general.cut_image')</a>
+        <input class="el-input-store" type="hidden" name="{{ $row->field }}" value="{{ $item->{$row->field} ? $item->{$row->field} : '' }}" data-originval="{{ $item->{$row->field} ? $item->{$row->field} : '' }}" />
+        <a href="#{{ 'icrop_'.$row->field }}" data-pfolder="{{ $public_path }}" data-imageheight="{{ $imageHeight }}" data-imagewidth="{{ $imageWidth }}" data-ajaxurl="{{ route('crop.image.upload') }}" data-preview="{{ '#preview_name_icrop_'.$row->field }}" class="btn btn-primary input-file-crop-image">@lang('cropimage::general.choose_image')</a>
+
+        
+        <span class="wrap-cropping-action" style="display: none;">
+            <a href="#" data-cropurl="{{ route('crop.image') }}" class="btn btn-success btn-run-crop">@lang('cropimage::general.cut_image')</a>
+            <label class="wrap-gif">
+                <input type="checkbox" name="is_gif" value="" class="check-save-gif" />
+                <a href="#">@lang('cropimage::general.is_gif')</a>
+            </label>
+        </span>
         <span id="{{ 'preview_name_icrop_'.$row->field }}" class="preview-name"></span>
     </div>
 </div>
