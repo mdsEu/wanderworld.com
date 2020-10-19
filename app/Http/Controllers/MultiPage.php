@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\OnboardingItem;
+use App\Page;
 
 use Illuminate\Support\Facades\App;
 
@@ -25,6 +26,14 @@ class MultiPage extends Controller
             return sendResponse( setting('admin.appversion', null) );
         } catch (\Exception $th) {
             return sendResponse( null );
+        }
+    }
+
+    public function getPage(Request $request, $slug) {
+        try {
+            return sendResponse( Page::withTranslations()->where('slug',$slug)->first() );
+        } catch (\Exception $e) {
+            return sendResponse( null, $e->getMessage(), false);
         }
     }
 }

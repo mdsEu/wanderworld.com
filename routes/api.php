@@ -27,6 +27,8 @@ Route::group(['prefix' => 'services/v1/'], function () {
         Route::get('/version', 'MultiPage@getVersion');
 
         Route::get('/settings', 'SettingsController@filterSettings');
+
+        Route::get('/pages/{slug}', 'MultiPage@getPage')->name('single-page');
     });
 });
 
