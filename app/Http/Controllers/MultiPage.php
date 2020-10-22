@@ -7,8 +7,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\Request;
-use App\OnboardingItem;
-use App\Page;
+use App\Models\OnboardingItem;
+use App\Models\Page;
 
 use Illuminate\Support\Facades\App;
 

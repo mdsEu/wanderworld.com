@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
-use App\AppUser;
+use App\Models\AppUser;
 use Illuminate\Support\Str;
 use AppleSignIn\ASDecoder;
 use App\Mail\GenericMail;
@@ -82,7 +82,7 @@ if (!function_exists('sendJson')) {
         }
 
         if(env('APP_LOGS_ACTIVE', false) && !is_null($exceptionObject)) {
-            logActivity(Log::info(get_class($exceptionObject).' ==> '.$exceptionObject->getMessage()));
+            logActivity(get_class($exceptionObject).' ==> '.$exceptionObject->getMessage());
         }
         return response()->json(array(
                 'success' => $success,
@@ -284,7 +284,7 @@ function generateVerificationToken($user) {
 
 if (!function_exists('sendVerificationEmail')) {
     /**
-     * @param App\AppUser $user
+     * @param App\Models\AppUser $user
      * @return bool
      */
     function sendVerificationEmail($user) {
@@ -314,7 +314,7 @@ if (!function_exists('sendVerificationEmail')) {
 
 if (!function_exists('sendRecoveryAccountEmail')) {
     /**
-     * @param App\AppUser $user
+     * @param App\Models\AppUser $user
      * @return bool
      */
     function sendRecoveryAccountEmail($user) {

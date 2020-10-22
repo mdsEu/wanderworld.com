@@ -7,7 +7,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\Request;
-use App\AppUser;
+use App\Models\AppUser;
 
 use JWTAuth;
 

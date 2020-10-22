@@ -1,17 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 //use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, HasFactory;
 
 
     const STATUS_PENDING    = '1';
@@ -99,5 +100,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                             self::FRIEND_STATUS_BLOCKED,
                             self::FRIEND_STATUS_MUTED
                         ]);
+    }
+
+    public function appUsers() {
+        return $this->friends();
     }
 }

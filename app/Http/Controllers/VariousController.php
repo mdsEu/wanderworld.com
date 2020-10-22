@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-use App\Comment;
-use App\AppUser;
+use App\Models\Comment;
+use App\Models\AppUser;
 
 use JWTAuth;
 
