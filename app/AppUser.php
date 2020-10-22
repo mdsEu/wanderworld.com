@@ -18,12 +18,18 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     const STATUS_ACTIVE     = '2';
     const STATUS_INACTIVE   = '3';
 
+    const FRIEND_STATUS_PENDING    = '1';
+    const FRIEND_STATUS_ACTIVE     = '2';
+    const FRIEND_STATUS_BLOCKED    = '3';
+    const FRIEND_STATUS_MUTED      = '4';
+    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
+    /*protected $fillable = [
         'name',
         'email',
         'nickname',
@@ -35,7 +41,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         'email_verified_at',
         'password',
         'settings',
-    ];
+    ];*/
+
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -77,5 +85,19 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class,'user_id');
+    }
+
+    public function friends() {
+        return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id')
+                        //->withPivot('status')
+                        ->wherePivotIn('status', [
+                            self::FRIEND_STATUS_ACTIVE,
+                            self::FRIEND_STATUS_BLOCKED,
+                            self::FRIEND_STATUS_MUTED
+                        ]);
     }
 }

@@ -29,6 +29,14 @@ Route::group(['prefix' => 'services/v1/'], function () {
         Route::get('/settings', 'SettingsController@filterSettings');
 
         Route::get('/pages/{slug}', 'MultiPage@getPage')->name('single-page');
+
+        Route::middleware(['auth:api'])->group(function () {
+
+            Route::put('/comments', 'VariousController@addComment');
+
+            
+            
+        });
     });
 });
 
@@ -47,9 +55,14 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/reset-password', 'AuthController@resetPassword');
         Route::post('/recovery-account', 'AuthController@sendEmailRecoveryAccount');
 
+        Route::get('/me/friends/{id}', 'UserController@meFriend');
 
         Route::middleware(['auth:api'])->group(function () {
             Route::post('/me', 'AuthController@me');
+
+            Route::get('/me/friends', 'UserController@meFriends');
+            
+
             Route::post('/logout', 'AuthController@logout');
             Route::post('/refresh', 'AuthController@refresh');
         });

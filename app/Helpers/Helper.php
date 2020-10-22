@@ -8,7 +8,26 @@ use AppleSignIn\ASDecoder;
 use App\Mail\GenericMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use JWTAuth;
 
+
+if (!function_exists('logActivity')) {
+    /**
+     * @param string $message
+     * @return Boolean
+     */
+    function logActivity($message)
+    {
+        Log::info($message);
+        /**
+         * To DO
+         * Register logs in database
+         */
+
+        return true;
+    }
+}
 
 if (!function_exists('sendMail')) {
     /**
@@ -50,14 +69,20 @@ if (!function_exists('sendJson')) {
     /**
      * @param mixed $value
      * @param string|array $message
+     * @param bool $success
+     * @param \Exception $exceptionObject
      * @return ResponseJson
      */
-    function sendResponse($value = '',$messages = '', $success = true)
+    function sendResponse($value = '',$messages = '', $success = true, $exceptionObject = null)
     {
         if (is_string($messages) && !empty($messages)) {
             $messages = [$messages];
         } elseif (is_string($messages)) {
             $messages = [];
+        }
+
+        if(env('APP_LOGS_ACTIVE', false) && !is_null($exceptionObject)) {
+            logActivity(Log::info(get_class($exceptionObject).' ==> '.$exceptionObject->getMessage()));
         }
         return response()->json(array(
                 'success' => $success,
