@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\SwitchLanguageMiddleware;
 use App\Http\Middleware\ModelActiveMiddleware;
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\VariousController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MultiPage;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,17 +28,17 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
     Route::middleware([SwitchLanguageMiddleware::class,ModelActiveMiddleware::class])->group(function () {
 
-        Route::get('/onboarding-items', 'MultiPage@allOnboardingItems')->name('all-onboarding-item');
+        Route::get('/onboarding-items', [MultiPage::class, 'allOnboardingItems'])->name('all-onboarding-item');
 
-        Route::get('/version', 'MultiPage@getVersion');
+        Route::get('/version', [MultiPage::class, 'getVersion']);
 
-        Route::get('/settings', 'SettingsController@filterSettings');
+        Route::get('/settings', [SettingsController::class, 'filterSettings']);
 
-        Route::get('/pages/{slug}', 'MultiPage@getPage')->name('single-page');
+        Route::get('/pages/{slug}', [MultiPage::class, 'getPage'])->name('single-page');
 
         Route::middleware(['auth:api'])->group(function () {
 
-            Route::put('/comments', 'VariousController@addComment');
+            Route::put('/comments', [VariousController::class, 'addComment']);
 
             
             
@@ -45,26 +51,26 @@ Route::group(['prefix' => 'services/v1/'], function () {
 Route::group(['prefix' => 'auth'], function () {
 
     Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
-        Route::post('/login', 'AuthController@login')->name('login');
-        Route::post('/facebook-login', 'AuthController@facebookLogin');
-        Route::post('/apple-login', 'AuthController@appleLogin');
-        Route::put('/sign-in', 'AuthController@registration');
+        Route::post('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/facebook-login', [AuthController::class, 'facebookLogin']);
+        Route::post('/apple-login', [AuthController::class, 'appleLogin']);
+        Route::put('/sign-in', [AuthController::class, 'registration']);
 
-        Route::post('/email-verification', 'AuthController@verifyEmail');
-        //Route::post('/password', 'AuthController@updatePassword');
-        Route::post('/reset-password', 'AuthController@resetPassword');
-        Route::post('/recovery-account', 'AuthController@sendEmailRecoveryAccount');
+        Route::post('/email-verification', [AuthController::class, 'verifyEmail']);
+        //Route::post('/password', [AuthController::class, 'updatePassword']);
+        Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+        Route::post('/recovery-account', [AuthController::class, 'sendEmailRecoveryAccount']);
 
-        Route::get('/me/friends/{id}', 'UserController@meFriend');
+        Route::get('/me/friends/{id}', [UserController::class, 'meFriend']);
 
         Route::middleware(['auth:api'])->group(function () {
-            Route::post('/me', 'AuthController@me');
+            Route::post('/me', [AuthController::class, 'me']);
 
-            Route::get('/me/friends', 'UserController@meFriends');
+            Route::get('/me/friends', [UserController::class, 'meFriends']);
             
 
-            Route::post('/logout', 'AuthController@logout');
-            Route::post('/refresh', 'AuthController@refresh');
+            Route::post('/logout', [AuthController::class, 'logout']);
+            Route::post('/refresh', [AuthController::class, 'refresh']);
         });
 
     });

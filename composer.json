@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "wanderworld/voyager",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Wander world panel administration.",
     "keywords": [
         "framework",
         "laravel"
@@ -68,10 +68,6 @@
         ]
     },
     "repositories": {
-        "hooks": {
-            "type": "composer",
-            "url": "https://larapack.io"
-        },
         "local": {
             "type": "path",
             "url": "./packages/*/*"
