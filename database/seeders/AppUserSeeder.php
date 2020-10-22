@@ -38,7 +38,7 @@ class AppUserSeeder extends Seeder
             'city_gplace_id' => "ChIJKcumLf2bP44RFDmjIFVjnSM",
             'password' => bcrypt('atOmicSa*12356'),
             'email_verified_at' => strNowTime(),
-            'status' => AppUser::FRIEND_STATUS_ACTIVE,
+            'status' => AppUser::STATUS_ACTIVE,
         ]);
         $friends = AppUser::factory()
                     ->count($nFriends)
@@ -46,7 +46,7 @@ class AppUserSeeder extends Seeder
                     ->map(function($friend){
                         return $friend->id;
                     });
-        $desarrollo->friends()->attach($friends);
+        $desarrollo->friends()->attach($friends, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
 
         AppUser::factory()
             ->times(10)
