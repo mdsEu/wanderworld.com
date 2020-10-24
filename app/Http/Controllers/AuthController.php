@@ -339,9 +339,9 @@ class AuthController extends Controller
     public function me()
     {
         try {
-            $user = JWTAuth::parseToken()->authenticate();
+            $user = auth($this->guard)->user();
             if (!$user) {
-                return sendResponse(null,__('auth.user_not_found'), false);
+                return sendResponse(request()->get('token'),__('auth.user_not_found'), false);
             }
         } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
             return sendResponse(null,__('auth.token_expired'), false);
@@ -350,7 +350,6 @@ class AuthController extends Controller
         } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
             return sendResponse(null,__('auth.token_absent'), false);
         }
-        //return response()->json(auth($this->guard)->user());
         return sendResponse($user);
     }
 
