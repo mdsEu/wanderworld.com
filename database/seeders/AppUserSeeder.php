@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\AppUser;
+use App\Models\AppUserMeta;
 
 class AppUserSeeder extends Seeder
 {
@@ -29,6 +30,7 @@ class AppUserSeeder extends Seeder
         DB::delete('delete from app_users where 1=1;');
 
         $desarrollo = AppUser::create([
+            'cid' => AppUser::getChatId(),
             'name' => "Desarrollo",
             'email' => 'desarrollo@mdsdigital.com',
             'nickname' => "desarrollo",
@@ -48,12 +50,27 @@ class AppUserSeeder extends Seeder
                     });
         $desarrollo->friends()->attach($friends, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
 
-        AppUser::factory()
+        AppUserMeta::create([
+            'user_id' => $desarrollo->id,
+            'meta_key' => 'chat_key',
+            'meta_value' => Str::random(50),
+        ]);
+
+        $users = AppUser::factory()
             ->times(10)
             ->hasAttached(
                 AppUser::factory()->count(10),
                 ['status' => AppUser::FRIEND_STATUS_ACTIVE]
             )
             ->create();
+
+        foreach ($users as $user) {
+            AppUserMeta::create([
+                'user_id' => $user->id,
+                'meta_key' => 'chat_key',
+                'meta_value' => Str::random(50),
+            ]);
+        }
+
     }
 }

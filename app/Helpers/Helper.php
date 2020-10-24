@@ -159,6 +159,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
 
         if (!$user) {
             $user = AppUser::create([
+                'cid' => AppUser::getChatId(),
                 'name' => $userFBInfo['name'],
                 'email' => $userFBInfo['email'],
                 'password' => $password,
@@ -221,13 +222,14 @@ if (!function_exists('getOrCreateUserFromApple')) {
         if (!$user) {
             $avatar = secure_url('/storage/users/default_avatar.png');
 
-            $user = AppUser::create(array(
+            $user = AppUser::create([
+                'cid' => AppUser::getChatId(),
                 'name' => $name,
                 'email' => $emailLogin,
                 'password' => $password,
                 'avatar' => $avatar,
                 'email_verified_at' => strNowTime(),
-            ));
+            ]);
         }
 
         $user->setRole(config('voyager.user.default_role'));

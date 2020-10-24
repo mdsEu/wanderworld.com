@@ -207,6 +207,7 @@ class AuthController extends Controller
             $defaultAvatar = secure_url('storage/users/default_avatar.png');
 
             $newAppUser = array(
+                'cid' => AppUser::getChatId(),
                 'name' => $params['full_name'],
                 'email' => $params['email'],
                 'nickname' => $params['nickname'],

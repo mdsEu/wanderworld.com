@@ -24,7 +24,9 @@ class AppUserFactory extends Factory
         
         $defaultAvatar = 'users/default_avatar.png';
 
+        $a_z = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return [
+            'cid' => $a_z[rand(0,51)].($this->faker->unique()->numberBetween(3,9999999999999)),
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'nickname' => $this->faker->unique()->safeEmail,
