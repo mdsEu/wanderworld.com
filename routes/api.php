@@ -38,8 +38,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
         Route::middleware(['auth:api'])->group(function () {
 
-            Route::put('/comments', [VariousController::class, 'addComment']);
-
+            Route::post('/comments', [VariousController::class, 'addComment']);
             
             
         });
@@ -54,7 +53,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/login', [AuthController::class, 'login'])->name('login');
         Route::post('/facebook-login', [AuthController::class, 'facebookLogin']);
         Route::post('/apple-login', [AuthController::class, 'appleLogin']);
-        Route::put('/sign-in', [AuthController::class, 'registration']);
+        Route::post('/sign-in', [AuthController::class, 'registration']);
 
         Route::post('/email-verification', [AuthController::class, 'verifyEmail']);
         //Route::post('/password', [AuthController::class, 'updatePassword']);

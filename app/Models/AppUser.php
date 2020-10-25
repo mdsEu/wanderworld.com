@@ -234,7 +234,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             }
             $arrayData = $response->json();
 
-
+            logActivity(var_export($arrayData,true));
+            
             $this->updateAppUserMeta('chat_user_id',$arrayData['uid']);
             $this->updateAppUserMeta('chat_user_token',$arrayData['token']);
             $this->updateAppUserMeta('chat_key',$newkey);
@@ -256,14 +257,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $meta = AppUserMeta::where('user_id',$this->id)
                     ->where('meta_key',$key)
                     ->first();
+        
         if(empty($meta)) {
-            AppUserMeta::create([
-                'user_id' => $this->id,
-                'meta_key' => $key,
-                'meta_value' => $value,
-            ]);
+            $meta = new AppUserMeta();
+            $meta->user_id = $this->id;
+            $meta->meta_key = $key;
         }
-        $meta->value = $value;
+
+        $meta->meta_value = $value;
         
         if(!$meta->save()) {
             throw new WanderException(__('xx:connection error updating user meta'));

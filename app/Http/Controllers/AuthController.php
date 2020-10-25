@@ -23,8 +23,7 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         //$this->middleware('auth:api', ['except' => ['login']]);
         $this->guard = 'api';
     }
@@ -34,8 +33,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
-    {
+    public function login() {
 
         try {
             $credentials = request(['email', 'password']);
@@ -361,14 +359,12 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
-    {
+    public function me() {
         try {
             $user = auth($this->guard)->user();
             if (!$user) {
-                return sendResponse(request()->get('token'),__('auth.user_not_found'), false);
+                return sendResponse(null,__('auth.user_not_found'), false);
             }
-
             return sendResponse($user);
         } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
             return sendResponse(null,__('auth.token_expired'), false, $e);
@@ -392,11 +388,25 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
-    {
-        auth($this->guard)->logout(true);
-
-        return sendResponse();
+    public function logout() {
+        try {
+            auth($this->guard)->logout(true);
+            return sendResponse();
+        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return sendResponse(null,__('auth.token_expired'), false, $e);
+        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return sendResponse(null,__('auth.token_invalid'), false, $e);
+        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return sendResponse(null,__('auth.token_absent'), false, $e);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.user_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), false, $e);
+        }
     }
 
     /**
@@ -404,8 +414,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
-    {
+    public function refresh() {
         return $this->respondWithToken(auth($this->guard)->refresh(true));
     }
 
@@ -432,8 +441,7 @@ class AuthController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function sendEmailRecoveryAccount(Request $request)
-    {
+    protected function sendEmailRecoveryAccount(Request $request) {
         try {
             $email = $request->get('email', null);
 
