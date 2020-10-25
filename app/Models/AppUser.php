@@ -206,7 +206,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             throw new WanderException(__('xx:connection error'));
         }
-        }
+    }
 
 
     public function refreshChatUserId() {
@@ -260,7 +260,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             AppUserMeta::create([
                 'user_id' => $this->id,
                 'meta_key' => $key,
-                'value' => $value,
+                'meta_value' => $value,
             ]);
         }
         $meta->value = $value;
