@@ -51,7 +51,7 @@ class VariousController extends Controller
                 $limitHoursSendComment = intval(setting('admin.limit_hours_send_comment', 1));
                 
                 if ($createdAt->diffInHours($now) < $limitHoursSendComment) {
-                    throw new \Exception(__('app.user_comment_earlier',['limit' => $limitHoursSendComment]));
+                    throw new WanderException(__('app.user_comment_earlier',['limit' => $limitHoursSendComment]));
                 }
             }
 
@@ -61,15 +61,19 @@ class VariousController extends Controller
             $comment->user_id = $user->id;
 
             if(!$comment->save()) {
-                throw new \Exception(__('app.user_comment_not_received'));
+                throw new WanderException(__('app.user_comment_not_received'));
             }
 
             return sendResponse();
             
         } catch (QueryException $qe) {
-            return sendResponse( null, __('app.database_query_exception'), false);
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('xx:Data not found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse( null, $e->getMessage(), false);
+            return sendResponse(null, $e->getMessage(), false, $e);
         }
     }
 }

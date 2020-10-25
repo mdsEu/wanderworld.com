@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Middleware\SwitchLanguageMiddleware;
+use Illuminate\Support\Facades\Http;
+use App\Exceptions\WanderException;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

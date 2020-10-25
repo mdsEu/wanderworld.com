@@ -7,6 +7,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -56,10 +57,14 @@ class AuthController extends Controller
             }
 
             return $this->respondWithToken($token);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
-            return sendResponse(null,__('auth.credentials_not_valid'), false);
+            return sendResponse(null, __('app.credentials_not_valid'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null,$e->getMessage(),false);
+            return sendResponse(null, $e->getMessage(), false, $e);
         }
     }
 
@@ -221,14 +226,20 @@ class AuthController extends Controller
             $user = AppUser::create($newAppUser);
 
             if(!($user && $user->id)) {
-                throw new \Exception("auth.user_not_created_try_again");
+                throw new WanderException("auth.user_not_created_try_again");
             }
 
             sendVerificationEmail($user);
 
             return sendResponse($user);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('xx:Data not found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null,$e->getMessage(),false);
+            return sendResponse(null, $e->getMessage(), false, $e);
         }
     }
 
@@ -251,12 +262,18 @@ class AuthController extends Controller
             $user->status = AppUser::STATUS_ACTIVE;
 
             if (!$user->save()) {
-                throw new \Exception(__('auth.something_wrong_updating_user_info'));
+                throw new WanderException(__('auth.something_wrong_updating_user_info'));
             }
 
             return sendResponse($user);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('xx:Data not found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null,$e->getMessage(),false);
+            return sendResponse(null, $e->getMessage(), false, $e);
         }
     }
 
@@ -273,14 +290,18 @@ class AuthController extends Controller
             $user->password = bcrypt($password);
 
             if (!$user->save()) {
-                throw new \Exception(__('auth.something_wrong_updating_user_info'));
+                throw new WanderException(__('auth.something_wrong_updating_user_info'));
             }
 
             return sendResponse($user);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
-            return sendResponse(null,__('auth.user_not_found'),false);
+            return sendResponse(null, __('app.user_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null,$e->getMessage(),false);
+            return sendResponse(null, $e->getMessage(), false, $e);
         }
     }
 
@@ -319,14 +340,18 @@ class AuthController extends Controller
             $user->password = bcrypt($password);
 
             if (!$user->save()) {
-                throw new \Exception(__('auth.something_wrong_updating_user_info'));
+                throw new WanderException(__('auth.something_wrong_updating_user_info'));
             }
 
             return sendResponse($user);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
-            return sendResponse(null,__('auth.user_not_found'),false);
+            return sendResponse(null, __('app.user_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null,$e->getMessage(),false);
+            return sendResponse(null, $e->getMessage(), false, $e);
         }
     }
 
@@ -343,14 +368,23 @@ class AuthController extends Controller
             if (!$user) {
                 return sendResponse(request()->get('token'),__('auth.user_not_found'), false);
             }
+
+            return sendResponse($user);
         } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return sendResponse(null,__('auth.token_expired'), false);
+            return sendResponse(null,__('auth.token_expired'), false, $e);
         } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return sendResponse(null,__('auth.token_invalid'), false);
+            return sendResponse(null,__('auth.token_invalid'), false, $e);
         } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return sendResponse(null,__('auth.token_absent'), false);
+            return sendResponse(null,__('auth.token_absent'), false, $e);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.user_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, $e->getMessage(), false, $e);
         }
-        return sendResponse($user);
     }
 
     /**
@@ -406,16 +440,20 @@ class AuthController extends Controller
             $user = AppUser::where('email',$email)->firstOrFail();
 
             if(!($user && $user->id)) {
-                throw new \Exception(__('auth.success_email_sent_recovery_account'));
+                throw new WanderException(__('auth.success_email_sent_recovery_account'));
             }
 
             sendRecoveryAccountEmail($user);
 
             return sendResponse(__('auth.success_email_sent_recovery_account'));
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.success_email_sent_recovery_account'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
-            return sendResponse(__('auth.success_email_sent_recovery_account'));
+            return sendResponse(null, __('app.success_email_sent_recovery_account'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, __('app.success_email_sent_recovery_account'), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(__('auth.success_email_sent_recovery_account'));
+            return sendResponse(null, __('app.success_email_sent_recovery_account'), false, $e);
         }
     }
 

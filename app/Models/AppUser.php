@@ -7,6 +7,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use App\Exceptions\WanderException;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -70,6 +73,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     ];
 
     protected $appends = [
+        'chat_user_id',
         'chat_key',
     ];
 
@@ -116,8 +120,22 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     public function getChatKeyAttribute() {
+        if(empty($this->chat_user_id)) {
+            throw new WanderException(__('xx::error chat user id'));
+        }
         $meta = $this->metas()->where('meta_key','chat_key')->first();
-        return $meta ? $meta->meta_value : null;
+        if(empty($meta)) {
+            return $this->refreshChatKey();
+        }
+        return $meta->meta_value;
+    }
+
+    public function getChatUserIdAttribute() {
+        $meta = $this->metas()->where('meta_key','chat_user_id')->first();
+        if(empty($meta)) {
+            return $this->refreshChatUserId();
+        }
+        return $meta->meta_value;
     }
 
     public static function generateChatId() {
@@ -151,5 +169,105 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $exists = DB::table($tblName)->where('cid',$cid)->exists();
         }
         return $cid;
+    }
+
+    public function getChatUserToken() {
+        $meta = $this->metas()->where('meta_key','chat_user_token')->first();
+        if(empty($meta)) {
+            throw new WanderException(__('xx:this user dont have a chat user token'));
+        }
+        return $meta->meta_value;
+    }
+
+    public function refreshChatKey() {
+        
+        try {
+
+            $newkey = Str::random(50);
+
+            $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
+            $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
+
+            $uid = "usr{$user->chat_user_id}";
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic $apiKeyMiddleware",
+            ])->put("$urlWanbox/api/chatusers/$uid", [
+                'user_login' => $user->cid,
+                'user_password' => $newkey,
+                'user_email' => $user->email,
+                'user_token' => $this->getChatUserToken(),
+            ]);
+
+            if(!$response->successful()) {
+                throw new WanderException(__('xx:error updating chat key'));
+            }
+            return $newkey;
+        } catch (\Illuminate\Http\Client\ConnectionException $th) {
+            throw new WanderException(__('xx:connection error'));
+        }
+        }
+
+
+    public function refreshChatUserId() {
+
+        try {
+
+            DB::transaction();
+
+
+            $newkey = Str::random(50);
+
+            $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
+            $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic $apiKeyMiddleware",
+            ])->post("$urlWanbox/api/chatusers", [
+                'user_login' => $user->cid,
+                'user_password' => $newkey,
+                'user_email' => $user->email,
+            ]);
+    
+            if(!$response->successful()) {
+                throw new WanderException(__('xx:error creating chat account'));
+            }
+            $arrayData = $response->json();
+
+
+            $this->updateAppUserMeta('chat_user_id',$arrayData['uid']);
+            $this->updateAppUserMeta('chat_user_token',$arrayData['token']);
+            $this->updateAppUserMeta('chat_key',$newkey);
+            
+            DB::commit();
+
+            return $arrayData['uid'];
+        } catch (\Illuminate\Http\Client\ConnectionException $th) {
+            DB::rollback();
+            throw new WanderException(__('xx:connection error'));
+        }
+    }
+
+    public function updateMetaChatKey($value) {
+        return $this->updateAppUserMeta('chat_key', $value);
+    }
+
+    public function updateAppUserMeta($key, $value) {
+        $meta = AppUserMeta::where('user_id',$this->id)
+                    ->where('meta_key',$key)
+                    ->first();
+        if(empty($meta)) {
+            AppUserMeta::create([
+                'user_id' => $this->id,
+                'meta_key' => $key,
+                'value' => $value,
+            ]);
+        }
+        $meta->value = $value;
+        
+        if(!$meta->save()) {
+            throw new WanderException(__('xx:connection error updating user meta'));
+        }
+        return true;
     }
 }

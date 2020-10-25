@@ -9,7 +9,7 @@ use App\Mail\GenericMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use App\Exceptions\WanderException;
 
 
 if (!function_exists('logActivity')) {
@@ -131,13 +131,13 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
     function getOrCreateUserFromFacebook($accessToken)
     {
         if (!fbValidAccessToken($accessToken)) {
-            throw new \Exception(__('auth.invalid_fb_access_token'));
+            throw new WanderException(__('auth.invalid_fb_access_token'));
         }
 
         $response = Http::get("https://graph.facebook.com/v8.0/me?fields=name,first_name,last_name,email,picture.type(large)&access_token=$accessToken");
 
         if (!$response->ok()) {
-            throw new \Exception(__('auth.something_was_wrong_login_process'));
+            throw new WanderException(__('auth.something_was_wrong_login_process'));
         }
 
         $userFBInfo = $response->json();
@@ -174,7 +174,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
         $user->password = $password;
 
         if (!$user->save()) {
-            throw new \Exception(__('auth.something_was_wrong_login_process'));
+            throw new WanderException(__('auth.something_was_wrong_login_process'));
         }
 
         return $user;
@@ -201,7 +201,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
         $isValid = $userAppleId && $appleSignInPayload->verifyUser($userAppleId);
 
         if (!$isValid) {
-            throw new \Exception(__('app.apple_auth_failed'));
+            throw new WanderException(__('app.apple_auth_failed'));
         }
 
         $credentials = array(
@@ -212,7 +212,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
         $emailLogin = empty($email) ? $hideEmail : $email;
 
         if (!filter_var($emailLogin, FILTER_VALIDATE_EMAIL)) {
-            throw new \Exception(__('app.no_detected_email'));
+            throw new WanderException(__('app.no_detected_email'));
         }
 
         $password = bcrypt(Str::random(40));
@@ -235,7 +235,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
         $user->setRole(config('voyager.user.default_role'));
         $user->password = $password;
         if (!$user->save()) {
-            throw new \Exception(__('auth.something_was_wrong_login_process'));
+            throw new WanderException(__('auth.something_was_wrong_login_process'));
         }
 
         return $user;
@@ -362,7 +362,7 @@ if (!function_exists('checkRecoveryToken')) {
         $user = AppUser::where('email',$email)->first();
 
         if (!$rowToken || !$user) {
-            throw new \Exception(__('auth.recovery_token_not_valid'));
+            throw new WanderException(__('auth.recovery_token_not_valid'));
         }
 
         $createdAt = Carbon::createFromFormat('Y-m-d H:i:s', $rowToken->created_at);
@@ -370,7 +370,7 @@ if (!function_exists('checkRecoveryToken')) {
 
         $limitHoursRecoveryToken = $hoursLimit <= 0 ? intval(env('LIMIT_HOURS_RECOVERY_TOKEN', 2)) : intval($hoursLimit);
         if ($createdAt->diffInHours($now) > $limitHoursRecoveryToken) {
-            throw new \Exception(__('auth.recovery_token_expired'));
+            throw new WanderException(__('auth.recovery_token_expired'));
         }
 
         return true;
