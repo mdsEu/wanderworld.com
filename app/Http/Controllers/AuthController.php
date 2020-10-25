@@ -211,7 +211,7 @@ class AuthController extends Controller
 
             $newAppUser = array(
                 'cid' => AppUser::getChatId(),
-                'name' => $params['full_name'],
+                'name' => $params['fullname'],
                 'email' => $params['email'],
                 'nickname' => $params['nickname'],
                 'avatar' => $defaultAvatar,
