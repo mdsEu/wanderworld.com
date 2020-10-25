@@ -188,14 +188,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
             $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
 
-            $uid = "usr{$user->chat_user_id}";
+            $uid = "usr{$this->chat_user_id}";
 
             $response = Http::withHeaders([
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->put("$urlWanbox/api/chatusers/$uid", [
-                'user_login' => $user->cid,
+                'user_login' => $this->cid,
                 'user_password' => $newkey,
-                'user_email' => $user->email,
+                'user_email' => $this->email,
                 'user_token' => $this->getChatUserToken(),
             ]);
 
@@ -224,9 +224,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $response = Http::withHeaders([
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->post("$urlWanbox/api/chatusers", [
-                'user_login' => $user->cid,
+                'user_login' => $this->cid,
                 'user_password' => $newkey,
-                'user_email' => $user->email,
+                'user_email' => $this->email,
             ]);
     
             if(!$response->successful()) {
