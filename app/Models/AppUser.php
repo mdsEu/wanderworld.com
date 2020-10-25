@@ -213,7 +213,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
         try {
 
-            DB::transaction();
+            DB::beginTransaction();
 
 
             $newkey = Str::random(50);
