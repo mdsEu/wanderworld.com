@@ -294,7 +294,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             $googleKey = setting('admin.google_maps_key', env('GOOGLE_KEY', ''));
 
-            $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=$googleKey}&language=$lang");
+            $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=$googleKey&language=$lang");
     
             if(!$response->successful()) {
                 throw new WanderException(__('xx:error updating city name'));
