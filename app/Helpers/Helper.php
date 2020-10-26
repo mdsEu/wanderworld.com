@@ -407,21 +407,21 @@ if (!function_exists('getGeoPlaceName')) {
             case 'city':
                 
                 $addressCompPlace = arrayFind($address_components,function($adrComp) {
-                    return !(array_search($adrComp['types'], 'locality') === false);
+                    return !(array_search('locality', $adrComp['types']) === false);
                 });
                 if ($addressCompPlace) {
                     return $addressCompPlace;
                 }
                 
                 $addressCompPlace = arrayFind($address_components,function($adrComp) {
-                    return !(array_search($adrComp['types'], 'administrative_area_level_2') === false);
+                    return !(array_search('administrative_area_level_2', $adrComp['types']) === false);
                 });
                 if ($addressCompPlace) {
                     return $addressCompPlace;
                 }
                 
                 $addressCompPlace = arrayFind($address_components,function($adrComp) {
-                    return !(array_search($adrComp['types'], 'administrative_area_level_1') === false);
+                    return !(array_search('administrative_area_level_1', $adrComp['types']) === false);
                 });
                 if (!$addressCompPlace) {
                     return null;
@@ -429,7 +429,7 @@ if (!function_exists('getGeoPlaceName')) {
                 return $addressCompPlace;
             case 'country':
                 $addressCompPlace = arrayFind($address_components,function($adrComp) {
-                    return !(array_search($adrComp['types'], 'country') === false);
+                    return !(array_search('country', $adrComp['types']) === false);
                 });
                 if (!$addressCompPlace) {
                     return null;
