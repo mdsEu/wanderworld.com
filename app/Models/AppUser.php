@@ -316,7 +316,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             }
             
             $this->updateAppUserMeta('city_name',$city['long_name']);
-            $this->updateAppUserMeta('city_gplace_id',$placeI);
+            $this->updateAppUserMeta('city_gplace_id',$placeId);
             
             DB::commit();
 
