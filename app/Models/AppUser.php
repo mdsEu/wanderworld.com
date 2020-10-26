@@ -75,6 +75,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     protected $appends = [
         'chat_user_id',
         'chat_key',
+        'city_name',
     ];
 
     /**
@@ -134,6 +135,15 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $meta = $this->metas()->where('meta_key','chat_user_id')->first();
         if(empty($meta)) {
             return $this->refreshChatUserId();
+        }
+        return $meta->meta_value;
+    }
+
+    public function getCityNameAttribute() {
+        $meta = $this->metas()->where('meta_key','city_name')->first();
+        $metaCityGId = $this->metas()->where('meta_key','city_gplace_id')->first();
+        if(empty($meta) || empty($metaCityGId) || $metaCityGId !== $this->city_gplace_id) {
+            return $this->refreshCityName();
         }
         return $meta->meta_value;
     }
@@ -270,5 +280,48 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             throw new WanderException(__('xx:connection error updating user meta'));
         }
         return true;
+    }
+
+    public function refreshCityName() {
+
+
+        try {
+
+            DB::beginTransaction();
+
+            $placeId = $this->city_gplace_id;
+            $lang = app()->getLocale();
+
+            $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=${config.GOOGLE_KEY}&language=$lang");
+    
+            if(!$response->successful()) {
+                throw new WanderException(__('xx:error updating city name'));
+            }
+            $arrayData = $response->json();
+
+            if($arrayData['status'] !== 'OK') {
+                throw new WanderException(__('xx:error updating city name'));
+            }
+
+            $place = reset($arrayData['results']);
+
+            $address_components = $place['address_components'];
+
+            $city = getGeoPlaceName($address_components,'city');
+
+            if(!$city) {
+                throw new WanderException(__('xx:error updating city name'));
+            }
+            
+            $this->updateAppUserMeta('city_name',$city['long_name']);
+            $this->updateAppUserMeta('city_gplace_id',$placeI);
+            
+            DB::commit();
+
+            return $city['long_name'];
+        } catch (\Illuminate\Http\Client\ConnectionException $th) {
+            DB::rollback();
+            throw new WanderException(__('xx:connection error'));
+        }
     }
 }

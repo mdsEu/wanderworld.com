@@ -377,6 +377,71 @@ if (!function_exists('checkRecoveryToken')) {
     }
 }
 
+if (!function_exists('arrayFind')) {
+    /**
+     * @param array $list
+     * @param callable $centinela
+     * @return mixed
+     */
+    function arrayFind(array $list,callable $centinela) {
+        foreach($list as $item) {
+            if( call_user_func($centinela, $item) ) {
+                return $item;
+            }
+        }
+        return null;
+    }
+}
+
+
+if (!function_exists('getGeoPlaceName')) {
+    /**
+     * @param String $address_components
+     * @param String $key
+     * @return array
+     */
+    function getGeoPlaceName($address_components, $key) {
+
+        $addressCompPlace = null;
+        switch ($key) {
+            case 'city':
+                
+                $addressCompPlace = arrayFind($address_components,function($adrComp) {
+                    return !(strpos($adrComp['types']) === false);
+                });
+                if ($addressCompPlace) {
+                    return $addressCompPlace;
+                }
+                
+                $addressCompPlace = arrayFind($address_components,function($adrComp) {
+                    return !(strpos($adrComp['administrative_area_level_2']) === false);
+                });
+                if ($addressCompPlace) {
+                    return $addressCompPlace;
+                }
+                
+                $addressCompPlace = arrayFind($address_components,function($adrComp) {
+                    return !(strpos($adrComp['administrative_area_level_1']) === false);
+                });
+                if (!$addressCompPlace) {
+                    return null;
+                }
+                return $addressCompPlace;
+            case 'country':
+                $addressCompPlace = arrayFind($address_components,function($adrComp) {
+                    return !(strpos($adrComp['country']) === false);
+                });
+                if (!$addressCompPlace) {
+                    return null;
+                }
+                return $addressCompPlace;
+
+            default:
+                return null;
+        }
+    }
+}
+
 
 
 
