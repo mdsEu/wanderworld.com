@@ -14,11 +14,14 @@ use App\Exceptions\WanderException;
 
 if (!function_exists('logActivity')) {
     /**
-     * @param string $message
+     * @param mixed $message
      * @return Boolean
      */
     function logActivity($message)
     {
+        if(is_string($message)) {
+            $message = var_export($message, true);
+        }
         Log::info($message);
         /**
          * To DO

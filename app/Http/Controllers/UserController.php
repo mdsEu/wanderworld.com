@@ -40,7 +40,7 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, $e->getMessage(), false, $e);
+            return sendResponse(null, __('xx:somethin was wrong'), false, $e);
         }
     }
 
@@ -68,4 +68,23 @@ class UserController extends Controller
     }
 
 
+    public function changeFriendRelationshipStatus(Request $request, $action) {
+        try {
+
+            $user = JWTAuth::parseToken()->authenticate();
+            $friends_ids = $request->get('friends', []);
+            
+            $user->updateFriendRelationship($action, $friends_ids);
+
+            return sendResponse();
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.friend_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('xx:somethin was wrong'), false, $e);
+        }
+    }
 }

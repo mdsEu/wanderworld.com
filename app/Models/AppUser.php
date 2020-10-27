@@ -256,6 +256,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
             throw new WanderException(__('xx:connection error'));
+        } catch (WanderException $we) {
+            DB::rollback();
+            throw new WanderException($we->getMessage());
+        } catch (\Exception $e) {
+            DB::rollback();
+            logActivity($e->getMessage());
+            throw new WanderException(__('xx:something was wrong'));
         }
     }
 
@@ -324,6 +331,77 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
             throw new WanderException(__('xx:connection error'));
+        } catch (WanderException $we) {
+            DB::rollback();
+            throw new WanderException($we->getMessage());
+        } catch (\Exception $e) {
+            DB::rollback();
+            logActivity($e->getMessage());
+            throw new WanderException(__('xx:something was wrong'));
+        }
+    }
+
+    public function updateFriendRelationship($action,$friends_ids) {
+         
+
+        try {
+
+            DB::beginTransaction();
+
+            $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
+            $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
+
+            $friends = $user->friends();
+
+            $paramsRequestChat = [
+                'action' => $action,
+                'friend_ids' => $friends_ids->whereIn('id',$friends_ids)->plunk('chat_user_id'),
+                'user_login' => $this->cid,
+                'user_password' => $this->chat_key,
+                'user_email' => $this->email,
+            ];
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic $apiKeyMiddleware",
+            ])->put("$urlWanbox/api/chattopics", $paramsRequestChat);
+    
+            if(!$response->successful()) {
+                logActivity($paramsRequestChat);
+                throw new WanderException(__('xx:error updating city name'));
+            }
+
+            switch ($action) {
+                case 'mute':
+                    $friends->updateExistingPivot($friends_ids, ['status' => AppUser::FRIEND_STATUS_MUTED]);
+                    break;
+                case 'block':
+                    $friends->updateExistingPivot($friends_ids, ['status' => AppUser::FRIEND_STATUS_BLOCKED]);
+                    break;
+                case 'unmute':
+                case 'unblock':
+                    $friends->updateExistingPivot($friends_ids, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
+                    break;
+                case 'delete':
+                    $friends->detach($friends_ids);
+                    break;
+                
+                default:
+                    break;
+            }
+            
+            DB::commit();
+
+            return true;
+        } catch (\Illuminate\Http\Client\ConnectionException $th) {
+            DB::rollback();
+            throw new WanderException(__('xx:connection error'));
+        } catch (WanderException $we) {
+            DB::rollback();
+            throw new WanderException($we->getMessage());
+        } catch (\Exception $e) {
+            DB::rollback();
+            logActivity($e->getMessage());
+            throw new WanderException(__('xx:something was wrong'));
         }
     }
 }
