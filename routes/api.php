@@ -40,7 +40,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
             Route::post('/comments', [VariousController::class, 'addComment']);
             
-            Route::pust('/change-status-friends/{action}', [UserController::class, 'changeFriendRelationshipStatus'])>where('action', 'unmute|mute|unblock|block|delete');
+            Route::put('/change-status-friends/{action}', [UserController::class, 'changeFriendRelationshipStatus'])>where('action', 'unmute|mute|unblock|block|delete');
         });
     });
 });
