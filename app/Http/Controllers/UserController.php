@@ -72,9 +72,11 @@ class UserController extends Controller
         try {
 
             $user = JWTAuth::parseToken()->authenticate();
-            $friends_ids = $request->get('friends', []);
+            $friend_id = $request->get('friend', null);
+
+            $friend = AppUser::findOrFail($friend_id);
             
-            $user->updateFriendRelationship($action, $friends_ids);
+            $user->updateFriendRelationship($action, $friend->id);
 
             return sendResponse();
         } catch (QueryException $qe) {

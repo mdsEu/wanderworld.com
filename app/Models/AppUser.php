@@ -107,11 +107,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     public function friends() {
+        return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id');
+    }
+
+    public function activeFriends() {
         return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id')
                         //->withPivot('status')
                         ->wherePivotIn('status', [
                             self::FRIEND_STATUS_ACTIVE,
-                            self::FRIEND_STATUS_BLOCKED,
                             self::FRIEND_STATUS_MUTED
                         ]);
     }
@@ -246,13 +249,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             logActivity(var_export($arrayData,true));
             
-            $this->updateAppUserMeta('chat_user_id',$arrayData['uid']);
-            $this->updateAppUserMeta('chat_user_token',$arrayData['token']);
+            $this->updateAppUserMeta('chat_user_id',$arrayData['data']['uid']);
+            $this->updateAppUserMeta('chat_user_token',$arrayData['data']['token']);
             $this->updateAppUserMeta('chat_key',$newkey);
             
             DB::commit();
 
-            return $arrayData['uid'];
+            return $arrayData['data']['uid'];
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
             throw new WanderException(__('xx:connection error'));
@@ -341,7 +344,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
     }
 
-    public function updateFriendRelationship($action,$friends_ids) {
+    public function updateFriendRelationship($action,$friend_id) {
          
 
         try {
@@ -351,38 +354,51 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
             $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
 
-            $friends = $user->friends();
+            $friends = $this->friends();
+
+            $myFriend = $friends->find($friend_id);
+
+            if(empty($myFriend)) {
+                throw new WanderException(__('xx:no friends selected'));
+            }
+
+            $chat_user_id = $myFriend->chat_user_id;
 
             $paramsRequestChat = [
                 'action' => $action,
-                'friend_ids' => $friends_ids->whereIn('id',$friends_ids)->plunk('chat_user_id'),
+                'friend_id' => $chat_user_id,
                 'user_login' => $this->cid,
                 'user_password' => $this->chat_key,
                 'user_email' => $this->email,
             ];
+
+            logActivity($paramsRequestChat);
 
             $response = Http::withHeaders([
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->put("$urlWanbox/api/chattopics", $paramsRequestChat);
     
             if(!$response->successful()) {
-                logActivity($paramsRequestChat);
-                throw new WanderException(__('xx:error updating city name'));
+
+                if( $response->status() == 404 ) {
+                    throw new WanderException(__('xx:its not posible to do this action in this moment. Maybe you dont have initiated a conversation with this friend'));
+                }
+                throw new WanderException(__('xx:error updating status in tinode'));
             }
 
             switch ($action) {
                 case 'mute':
-                    $friends->updateExistingPivot($friends_ids, ['status' => AppUser::FRIEND_STATUS_MUTED]);
+                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_MUTED]);
                     break;
                 case 'block':
-                    $friends->updateExistingPivot($friends_ids, ['status' => AppUser::FRIEND_STATUS_BLOCKED]);
+                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_BLOCKED]);
                     break;
                 case 'unmute':
                 case 'unblock':
-                    $friends->updateExistingPivot($friends_ids, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
+                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
                     break;
                 case 'delete':
-                    $friends->detach($friends_ids);
+                    $friends->detach($myFriend->id);
                     break;
                 
                 default:
@@ -394,7 +410,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return true;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
-            throw new WanderException(__('xx:connection error'));
+            throw new WanderException(__('xx:connection error '.$th->getMessage()));
         } catch (WanderException $we) {
             DB::rollback();
             throw new WanderException($we->getMessage());

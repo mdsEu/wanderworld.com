@@ -57,9 +57,9 @@ class AppUserSeeder extends Seeder
         ]);
 
         $users = AppUser::factory()
-            ->times(10)
+            ->times(5)
             ->hasAttached(
-                AppUser::factory()->count(10),
+                AppUser::factory()->count(2),
                 ['status' => AppUser::FRIEND_STATUS_ACTIVE]
             )
             ->create();
