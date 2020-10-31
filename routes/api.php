@@ -41,6 +41,9 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::post('/comments', [VariousController::class, 'addComment']);
             
             Route::put('/change-status-friends/{action}', [UserController::class, 'changeFriendRelationshipStatus'])->where('action', 'unmute|mute|unblock|block|delete');
+
+            Route::post('/invitations', [UserController::class, 'sendInvitation']);
+            Route::put('/invitations/answer', [UserController::class, 'acceptOrRejectInvitation']);
         });
     });
 });

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\Request;
 use App\Models\AppUser;
+use App\Models\Invitation;
 
 use JWTAuth;
 
@@ -40,7 +41,7 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, __('xx:somethin was wrong'), false, $e);
+            return sendResponse(null, __('xx:something was wrong'), false, $e);
         }
     }
 
@@ -86,7 +87,145 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, __('xx:somethin was wrong'), false, $e);
+            return sendResponse(null, __('xx:something was wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Function to send Invitation
+     */
+    public function sendInvitation(Request $request) {
+        
+
+        try {
+
+            $user = JWTAuth::parseToken()->authenticate();
+
+            $invitedEmail = $request->get('email', null);
+            $invitedPhone = $request->get('phone', null);
+            
+            //Validate if already send an invitation to the same user
+            $invited = AppUser::findUserByEmailOrPhone($invitedEmail, $invitedPhone);
+
+            $invited_id = null;
+            $invitation = null;
+
+            //Validate if user already registered
+            if($invited) {
+                
+                //Validate if user rejected me before or pending
+                $result = $invited->invitations()
+                        ->where('user_id', $user->id)
+                        ->whereIn('status', [Invitation::STATUS_PENDING,Invitation::STATUS_REJECTED])
+                        ->get();
+
+                if($result->count() > 0) {
+                    throw new WanderException(__('xx:you already sent a invitation for this person.'));
+                }
+
+                $invited_id = $invited->id;
+
+                $invitation = $invited->invitations()
+                        ->where('user_id', $user->id)
+                        ->where('status', Invitation::STATUS_CREATED)
+                        ->first();
+            
+            } else {
+
+                $invitation = Invitation::findPendingByEmailOrPhone($user->id, $invitedEmail, $invitedPhone);
+                if($invitation) {
+                    throw new WanderException(__('xx:you already sent a invitation for this person ;).'));
+                }
+
+            }
+            
+            if(!$invitation) {
+                $invitation = Invitation::create([
+                    'user_id' => $user->id,
+                    'invited_id' => $invited_id,
+                    'invited_email' => $invitedEmail,
+                    'invited_phone' => $invitedPhone,
+                    'invited_info' => json_encode($request->get('info',(new \stdclass))),
+                    'status' => Invitation::STATUS_CREATED,
+                ]);
+            }
+            
+            
+            if(!$invitation) {
+                throw new WanderException(__('xx:It was not posible to create the invitation. Try again.'));
+            }
+
+            $typeNoti = $request->get('type_notification', 'sms');
+            $sent = $invitation->sendNotification($typeNoti);
+
+            if(!$sent) {
+                throw new WanderException(__('xx:something was wrong sending the invitation. Try again later.'));
+            }
+
+            $invitation->status = Invitation::STATUS_PENDING;
+
+            if(!$invitation->save()) {
+                throw new WanderException(__('xx:something was wrong updating invitation. Try again.'));
+            }
+
+            return sendResponse();
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.friend_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('xx:something was wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Function to send Accept or Reject an Friend relationship invitation
+     */
+    public function acceptOrRejectInvitation(Request $request) {
+        
+        try {
+
+            $user = JWTAuth::parseToken()->authenticate();
+
+            $answer = $request->get('answer', null);
+
+            $invitation_id = $request->get('invitation', null);
+            
+            $invitation = Invitation::findOrFail($invitation_id);
+
+            switch ($answer) {
+                case 'accept':
+                    $invitation->status = Invitation::STATUS_ACCEPTED;
+                    if(!$invitation->save()) {
+                        throw new WanderException(__('xx:connection error'));
+                    }
+                    $invitation->createFriendRelationship();
+                    break;
+                case 'reject':
+                    $invitation->status = Invitation::STATUS_REJECTED;
+                    if(!$invitation->save()) {
+                        throw new WanderException(__('xx:connection error'));
+                    }
+                    break;
+                default:
+                    throw new WanderException(__('xx:Action not valid'));
+            }
+
+            $invitation->notifyUsersStatus();
+
+            return sendResponse();
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('xx:invitation not found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('xx:something was wrong'), false, $e);
         }
     }
 }

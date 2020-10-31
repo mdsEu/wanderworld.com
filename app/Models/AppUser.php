@@ -106,6 +106,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $this->hasMany(AppUserMeta::class,'user_id');
     }
 
+    public function myInvitations() {
+        return $this->hasMany(Invitation::class,'user_id');
+    }
+    public function invitations() {
+        return $this->hasMany(Invitation::class,'invited_id');
+    }
+
     public function friends() {
         return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id');
     }
@@ -127,29 +134,42 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         if(empty($this->chat_user_id)) {
             throw new WanderException(__('xx::error chat user id'));
         }
-        $meta = $this->metas()->where('meta_key','chat_key')->first();
-        if(empty($meta)) {
+        $metaValue = $this->getMetaValue('chat_key');
+        if(empty($metaValue)) {
             return $this->refreshChatKey();
         }
-        return $meta->meta_value;
+        return $metaValue;
     }
 
     public function getChatUserIdAttribute() {
-        $meta = $this->metas()->where('meta_key','chat_user_id')->first();
-        if(empty($meta)) {
+        $metaValue = $this->getMetaValue('chat_user_id');
+        if(empty($metaValue)) {
             return $this->refreshChatUserId();
         }
-        return $meta->meta_value;
+        return $metaValue;
     }
 
     public function getCityNameAttribute() {
-        $meta = $this->metas()->where('meta_key','city_name')->first();
-        $metaCityGId = $this->metas()->where('meta_key','city_gplace_id')->first();
-        if(empty($meta) || empty($metaCityGId) || $metaCityGId !== $this->city_gplace_id) {
+        $metaValue = $this->getMetaValue('city_name');
+        $metaCityGId = $this->getMetaValue('city_gplace_id');
+        if(empty($metaValue) || empty($metaCityGId) || $metaCityGId !== $this->city_gplace_id) {
             return $this->refreshCityName();
+        }
+        return $metaValue;
+    }
+
+    public function getPublicName() {
+        return $this->nickname;
+    }
+
+    public function getMetaValue($key, $defaultVal = null) {
+        $meta = $this->metas()->where('meta_key',$key)->first();
+        if(!$meta) {
+            return $defaultVal;
         }
         return $meta->meta_value;
     }
+    
 
     public static function generateChatId() {
         $a_z = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -419,5 +439,39 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             logActivity($e->getMessage());
             throw new WanderException(__('xx:something was wrong'));
         }
+    }
+
+    public static function findUserByEmailOrPhone($invitedEmail, $invitedPhone) {
+
+        $invitedEmail = getStrFakeVal($invitedEmail);
+        $invited = self::where('email', $invitedEmail)->first();
+
+        if(!$invited) {
+            $list = AppUserMeta::where('meta_key','phone')
+                    ->where('meta_value',$invitedPhone)
+                    ->get();
+
+            if($list->count() !== 1) {
+                return null;
+            }
+
+            $invited = self::find($list->first());
+        }
+
+        return $invited;
+    }
+
+    public function syncInvitations() {
+        $user = $this;
+        
+        $pendingInvitations = Invitation::whereNull('invited_id')
+                    ->where('status', Invitation::STATUS_PENDING)
+                    ->where(function($query) use ($user) {
+                        $query->where('invited_email', $user->email)
+                                ->orWhere('invited_phone', getStrFakeVal($user->getMetaValue('phone')));
+                    })->get();
+
+        $user->invitations()->saveMany($pendingInvitations);
+
     }
 }

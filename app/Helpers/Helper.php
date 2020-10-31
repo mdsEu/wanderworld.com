@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Log;
 use App\Exceptions\WanderException;
 
 
+if (!function_exists('getStrFakeVal')) {
+    /**
+     * @param mixed $val
+     * @return String
+     */
+    function getStrFakeVal($val) {
+        return empty($val) ? Str::random(80) : $val;
+    }
+}
+
 if (!function_exists('logActivity')) {
     /**
      * @param mixed $message
@@ -39,11 +49,17 @@ if (!function_exists('sendMail')) {
      */
     function sendMail($mailable)
     {
-        $sysalert = array_filter(explode(',', env('MAIL_ALERT_TO','')));
+        try {
+            $sysalert = array_filter(explode(',', env('MAIL_ALERT_TO','')));
 
-        $mailable->bcc($sysalert);
+            $mailable->bcc($sysalert);
 
-        return Mail::send($mailable);
+            Mail::send($mailable);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
 
@@ -167,6 +183,12 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
                 'email' => $userFBInfo['email'],
                 'password' => $password,
                 'avatar' => $avatar,
+                /*
+                'nickname' => $params['nickname'],
+                'continent_code' => $foundCountry['continent_code'],
+                'country_code' => $foundCountry['country_code'],
+                'city_gplace_id' => $params['city']['place_id'],
+                */
                 'email_verified_at' => strNowTime(),
             ]);
             /**
@@ -231,6 +253,12 @@ if (!function_exists('getOrCreateUserFromApple')) {
                 'email' => $emailLogin,
                 'password' => $password,
                 'avatar' => $avatar,
+                /*
+                'nickname' => $params['nickname'],
+                'continent_code' => $foundCountry['continent_code'],
+                'country_code' => $foundCountry['country_code'],
+                'city_gplace_id' => $params['city']['place_id'],
+                */
                 'email_verified_at' => strNowTime(),
             ]);
         }
