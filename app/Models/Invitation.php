@@ -30,6 +30,11 @@ class Invitation extends Model
         return $this->belongsTo(AppUser::class,'invited_id');
     }
 
+    public function toArray() {
+        $myAppend = [];
+        return array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppend);
+    }
+
     public function getPhone() {
         $invited = $this->invited;
         if($invited) {

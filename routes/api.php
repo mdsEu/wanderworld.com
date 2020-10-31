@@ -69,8 +69,9 @@ Route::group(['prefix' => 'auth'], function () {
 
             Route::get('/me/friends', [UserController::class, 'meFriends']);
             Route::get('/me/friends/{id}', [UserController::class, 'meFriend']);
+            Route::get('/me/friends-requests', [UserController::class, 'meFriendsRequests']);
             
-
+            
             Route::post('/logout', [AuthController::class, 'logout']);
             Route::post('/refresh', [AuthController::class, 'refresh']);
         });

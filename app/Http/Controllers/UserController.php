@@ -68,6 +68,32 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * 
+     */
+    public function meFriendsRequests(Request $request) {
+        try {
+
+            $user = JWTAuth::parseToken()->authenticate();
+
+            $friendsLimit = intval(setting('admin.friends_list_limit', 20));
+
+            return sendResponse($user->invitations()->with([
+                'user' => function($user) {
+                    //$user->with('comun');
+                    //file_put_contents(dirname(__FILE__).'/'.basename(__FILE__,'.php').'-debug.txt',var_export( get_class($user) ,true)."\n\n",FILE_APPEND);
+                }
+            ])->paginate($friendsLimit));
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.friend_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('xx:something was wrong'), false, $e);
+        }
+    }
 
     public function changeFriendRelationshipStatus(Request $request, $action) {
         try {

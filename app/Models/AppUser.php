@@ -113,6 +113,15 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $this->hasMany(Invitation::class,'invited_id');
     }
 
+    /*public function comun() {
+        return 10;
+    }*/
+
+    /*public function toArray()
+    {
+        return array_merge($this->attributesToArray(), $this->relationsToArray(), ['comun' => 10]);
+    }*/
+
     public function friends() {
         return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id');
     }
