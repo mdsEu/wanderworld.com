@@ -20,7 +20,7 @@ return [
     'recovery_token_not_valid' => 'Token de contraseña inválido.',
     'recovery_token_expired' => 'Token de contraseña ha expirado.',
     'something_wrong_updating_user_info' => 'Algo salió mal actualizando la información.',
-    '¡continue_to_app' => 'Continuar',
+    'continue_to_app' => 'Continuar',
     'recovery_password_subject_email' => 'Verificación Correo - Wander World',
     'recovery_password_title_email' => 'Verificación Correo',
     'recovery_password_description_email' => 'Presione el siguiente botón para verificar su correo electrónico y terminar el proceso de registro. Gracias.',
