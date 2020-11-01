@@ -78,7 +78,7 @@ class UserController extends Controller
 
             $friendsLimit = intval(setting('admin.friends_list_limit', 20));
 
-            return sendResponse($user->invitations()->with('user')->paginate($friendsLimit));
+            return sendResponse($user->pendingInvitations()->with('user')->paginate($friendsLimit));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
@@ -152,6 +152,10 @@ class UserController extends Controller
             //Validate if user already registered
             if($invited) {
                 
+                //is it me?
+                if($user->id === $invited->id) {
+                    throw new WanderException(__('xx:this person is it you?.'));
+                }
                 //Validate if user rejected me before or pending
                 $result = $invited->invitations()
                         ->where('user_id', $user->id)
