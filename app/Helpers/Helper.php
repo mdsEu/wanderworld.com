@@ -317,7 +317,7 @@ function generateVerificationToken($user) {
 
 if (!function_exists('sendVerificationEmail')) {
     /**
-     * @param App\Models\AppUser $user
+     * @param \App\Models\AppUser $user
      * @return bool
      */
     function sendVerificationEmail($user) {
@@ -347,7 +347,7 @@ if (!function_exists('sendVerificationEmail')) {
 
 if (!function_exists('sendRecoveryAccountEmail')) {
     /**
-     * @param App\Models\AppUser $user
+     * @param \App\Models\AppUser $user
      * @return bool
      */
     function sendRecoveryAccountEmail($user) {
@@ -474,6 +474,96 @@ if (!function_exists('getGeoPlaceName')) {
 }
 
 
+if (!function_exists('areFriends')) {
+    /**
+     * @param \App\Models\AppUser $user1
+     * @param \App\Models\AppUser $user2
+     * @return bool
+     */
+    function areFriends(AppUser $user1, AppUser $user2) {
+        if($user1->id === $user2->id) {
+            return false;
+        }
+        $userFound = $user1->activeFriends()->find($user2->id);
+        return ((bool)$userFound);
+    }
+}
+
+if (!function_exists('isJsonString')) {
+    /**
+     * @param String $strJson
+     * @return bool
+     */
+    function isJsonString($strJson) {
+        if( empty($strJson) || !is_string($strJson) ) {
+            return false;
+        }
+        try {
+            parseJsonToArray( $strJson );
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('parseJsonToArray')) {
+    /**
+     * @param String $strJson
+     * @return bool
+     */
+    function parseJsonToArray($strJson, $defaultVal = []) {
+        $arr = \json_decode($strJson, true);
+        switch( \json_last_error() ) {
+            case JSON_ERROR_NONE:
+                return $arr;
+            break;
+            case JSON_ERROR_DEPTH:
+            case JSON_ERROR_STATE_MISMATCH:
+            case JSON_ERROR_CTRL_CHAR:
+            case JSON_ERROR_SYNTAX:
+            case JSON_ERROR_UTF8:
+            default:
+                return $defaultVal;
+        }
+    }
+}
+
+if (!function_exists('parseStrToJson')) {
+    /**
+     * @param String $strJson
+     * @return bool
+     */
+    function parseStrToJson($strJson, $defaultVal = null) {
+        $result = \json_decode($strJson, false);
+        switch( \json_last_error() ) {
+            case JSON_ERROR_NONE:
+                return $result;
+            break;
+            case JSON_ERROR_DEPTH:
+            case JSON_ERROR_STATE_MISMATCH:
+            case JSON_ERROR_CTRL_CHAR:
+            case JSON_ERROR_SYNTAX:
+            case JSON_ERROR_UTF8:
+            default:
+                return $defaultVal;
+        }
+    }
+}
+
+if (!function_exists('getAtrValue')) {
+    /**
+     * @param Object $element
+     * @param String $key
+     * @return mixed
+     */
+    function getAtrValue($element, $key, $defaultVal = null) {
+        if(!is_object($element)) {
+            return $defaultVal;
+        }
+        return ((!isset($element->$key)) || empty($element->$key)) ? $defaultVal : $element->$key;
+    }
+}
 
 
 /**

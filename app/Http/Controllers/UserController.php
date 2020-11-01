@@ -78,12 +78,7 @@ class UserController extends Controller
 
             $friendsLimit = intval(setting('admin.friends_list_limit', 20));
 
-            return sendResponse($user->invitations()->with([
-                'user' => function($user) {
-                    //$user->with('comun');
-                    //file_put_contents(dirname(__FILE__).'/'.basename(__FILE__,'.php').'-debug.txt',var_export( get_class($user) ,true)."\n\n",FILE_APPEND);
-                }
-            ])->paginate($friendsLimit));
+            return sendResponse($user->invitations()->with('user')->paginate($friendsLimit));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
@@ -128,8 +123,25 @@ class UserController extends Controller
 
             $user = JWTAuth::parseToken()->authenticate();
 
+            $typeNoti = $request->get('type_notification', 'sms');
+
             $invitedEmail = $request->get('email', null);
             $invitedPhone = $request->get('phone', null);
+
+            switch ($typeNoti) {
+                case 'sms':
+                    if(!$invitedPhone) {
+                        throw new WanderException(__('xx:The information of the contact is not enough to do this action.'));
+                    }
+                    break;
+                case 'email':
+                    if(!$invitedPhone) {
+                        throw new WanderException(__('xx:The information of the contact is not enough to do this action.'));
+                    }
+                break;
+                default:
+                    throw new WanderException(__('xx:Action denied.'));
+            }
             
             //Validate if already send an invitation to the same user
             $invited = AppUser::findUserByEmailOrPhone($invitedEmail, $invitedPhone);
@@ -167,12 +179,14 @@ class UserController extends Controller
             }
             
             if(!$invitation) {
+                $infoInvi = new \stdClass();
+                $infoInvi->numberContacts = 0;
                 $invitation = Invitation::create([
                     'user_id' => $user->id,
                     'invited_id' => $invited_id,
                     'invited_email' => $invitedEmail,
                     'invited_phone' => $invitedPhone,
-                    'invited_info' => json_encode($request->get('info',(new \stdclass))),
+                    'invited_info' => json_encode($request->get('info',$infoInvi)),
                     'status' => Invitation::STATUS_CREATED,
                 ]);
             }
@@ -182,7 +196,6 @@ class UserController extends Controller
                 throw new WanderException(__('xx:It was not posible to create the invitation. Try again.'));
             }
 
-            $typeNoti = $request->get('type_notification', 'sms');
             $sent = $invitation->sendNotification($typeNoti);
 
             if(!$sent) {
@@ -229,6 +242,7 @@ class UserController extends Controller
                     if(!$invitation->save()) {
                         throw new WanderException(__('xx:connection error'));
                     }
+                    $user->refreshInvitationsContactsForAdding($invitation->user);
                     $invitation->createFriendRelationship();
                     break;
                 case 'reject':

@@ -109,8 +109,20 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function myInvitations() {
         return $this->hasMany(Invitation::class,'user_id');
     }
+
+    public function myPendingInvitations() {
+        return $this->hasMany(Invitation::class,'user_id')->whereIn('status', [
+            Invitation::STATUS_PENDING,
+        ]);
+    }
+
     public function invitations() {
         return $this->hasMany(Invitation::class,'invited_id');
+    }
+    public function pendingInvitations() {
+        return $this->hasMany(Invitation::class,'invited_id')->whereIn('status', [
+            Invitation::STATUS_PENDING,
+        ]);
     }
 
     /*public function comun() {
@@ -427,6 +439,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                     $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
                     break;
                 case 'delete':
+                    $this->refreshInvitationsContactsForDeleting($myFriend);
                     $friends->detach($myFriend->id);
                     break;
                 
@@ -482,5 +495,48 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
         $user->invitations()->saveMany($pendingInvitations);
 
+    }
+
+
+    /**
+     * Update the number of contacts of the user pending friend relationship invitations
+     * when a new friend relationship is created
+     * @param AppUser $myNewFriend
+     */
+    public function refreshInvitationsContactsForAdding($myNewFriend) {
+        $myPendingInvitations = $this->pendingInvitations()->get();
+
+        foreach($myPendingInvitations as $invitation) {
+            if( areFriends($invitation->user,$myNewFriend) ) {
+                $info = parseStrToJson($invitation->invited_info, (new \stdClass));
+                $n = getAtrValue($info, 'numberContacts', 0);
+                $info->numberContacts = $n + 1;
+                $invitation->invited_info = json_encode($info);
+                if(!$invitation->save()) {
+                    throw new WanderException(__('xx:connection error saving invitation number contacts'));
+                }
+            }
+        }
+    }
+
+    /**
+     * Update the number of contacts of the user pending friend relationship invitations
+     * when a new friend relationship is delete
+     * @param AppUser $myNewFriend
+     */
+    public function refreshInvitationsContactsForDeleting($oldFriend) {
+        $myPendingInvitations = $this->myPendingInvitations()->get();
+
+        foreach($myPendingInvitations as $invitation) {
+            if( areFriends($invitation->invited,$oldFriend) ) {
+                $info = parseStrToJson($invitation->invited_info, (new \stdClass));
+                $n = getAtrValue($info, 'numberContacts', 0);
+                $info->numberContacts = $n - 1;
+                $invitation->invited_info = json_encode($info);
+                if(!$invitation->save()) {
+                    throw new WanderException(__('xx:connection error saving invitation number contacts'));
+                }
+            }
+        }
     }
 }

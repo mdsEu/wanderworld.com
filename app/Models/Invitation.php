@@ -107,6 +107,8 @@ class Invitation extends Model
         $this->user->friends()->syncWithoutDetaching($this->invited, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
         $this->invited->friends()->syncWithoutDetaching($this->user, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
 
+
+
         return true;
     }
 
