@@ -573,9 +573,12 @@ if (!function_exists('brokeFriendRelationship')) {
      */
     function brokeFriendRelationship(AppUser $user1, AppUser $user2) {
         $user1->refreshInvitationsContactsForDeleting($user2);
-        $user1->detach($user2->id);
-        $user2->detach($user1->id);
-        //event(new FriendRelationshipDeleted($user1,$user2));
+        
+        $user1->friends()->detach($user2->id);
+        $user2->friends()->detach($user1->id);
+        
+        event(new FriendRelationshipDeleted($user1,$user2));
+
         return true;
     }
 }
