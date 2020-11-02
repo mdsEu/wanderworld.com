@@ -78,6 +78,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         'city_name',
     ];
 
+    public $numberOfFriendsRequests;
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -98,46 +100,83 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return [];
     }
 
+    /**
+     * Return all user's comments
+     * @return hasMany
+     */
     public function comments() {
         return $this->hasMany(Comment::class,'user_id');
     }
 
+    /**
+     * Return all user's meta values
+     * @return hasMany
+     */
     public function metas() {
         return $this->hasMany(AppUserMeta::class,'user_id');
     }
 
+
+    /**
+     * Return all user's request invitations
+     * @return hasMany
+     */
     public function myInvitations() {
         return $this->hasMany(Invitation::class,'user_id');
     }
 
+
+    /**
+     * Return user's pending request invitations
+     * @return hasMany
+     */
     public function myPendingInvitations() {
         return $this->hasMany(Invitation::class,'user_id')->whereIn('status', [
             Invitation::STATUS_PENDING,
         ]);
     }
 
+    /**
+     * Return all user's invitations
+     * @return hasMany
+     */
     public function invitations() {
         return $this->hasMany(Invitation::class,'invited_id');
     }
+
+    /**
+     * Return user's pending invitations
+     * @return hasMany
+     */
     public function pendingInvitations() {
         return $this->hasMany(Invitation::class,'invited_id')->whereIn('status', [
             Invitation::STATUS_PENDING,
         ]);
     }
 
-    /*public function comun() {
-        return 10;
-    }*/
+    public function toArray() {
+        $request = request();
+        $myAppends = [
+            //'path' => $request->path(),
+        ];
+        if( $request->is('api/auth/me') ) {
+            $myAppends['numberOfFriendRequests'] = $this->getNumberOfFriendRelationshipInvitations();
+        }
+        return array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
+    }
 
-    /*public function toArray()
-    {
-        return array_merge($this->attributesToArray(), $this->relationsToArray(), ['comun' => 10]);
-    }*/
-
+    /**
+     * Return all user's friends
+     * @return belongsToMany
+     */
     public function friends() {
         return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id');
     }
 
+    /**
+     * Return user's active friends
+     * @return belongsToMany
+     */
     public function activeFriends() {
         return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id')
                         //->withPivot('status')
@@ -147,10 +186,18 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                         ]);
     }
 
+    /**
+     * Function created for voyager conflict or something related
+     */
     public function appUsers() {
         return $this->friends();
     }
 
+    /**
+     * Attribute function
+     * Get chat_key
+     * @return String
+     */
     public function getChatKeyAttribute() {
         if(empty($this->chat_user_id)) {
             throw new WanderException(__('xx::error chat user id'));
@@ -162,6 +209,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $metaValue;
     }
 
+    /**
+     * Attribute function
+     * Get chat_user_id
+     * @return String
+     */
     public function getChatUserIdAttribute() {
         $metaValue = $this->getMetaValue('chat_user_id');
         if(empty($metaValue)) {
@@ -170,6 +222,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $metaValue;
     }
 
+    /**
+     * Get user's city name
+     * @return String
+     */
     public function getCityNameAttribute() {
         $metaValue = $this->getMetaValue('city_name');
         $metaCityGId = $this->getMetaValue('city_gplace_id');
@@ -179,10 +235,18 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $metaValue;
     }
 
+    /**
+     * Get user's public name
+     * @return String
+     */
     public function getPublicName() {
         return $this->nickname;
     }
 
+    /**
+     * Get user meta value
+     * @return String
+     */
     public function getMetaValue($key, $defaultVal = null) {
         $meta = $this->metas()->where('meta_key',$key)->first();
         if(!$meta) {
@@ -192,6 +256,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
     
 
+    /**
+     * Generate a valid string to be use as a login user name for tinode backend
+     * @return String
+     */
     public static function generateChatId() {
         $a_z = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         $login_policy = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
@@ -210,6 +278,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $firstLetter.$part2Login;
     }
 
+    /**
+     * Generate a valid cid attribute to be use for any user 
+     */
     public static function getChatId() {
 
         $model = new AppUser();
@@ -225,6 +296,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $cid;
     }
 
+    /**
+     * Get chat_user_token meta
+     * @return String
+     */
     public function getChatUserToken() {
         $meta = $this->metas()->where('meta_key','chat_user_token')->first();
         if(empty($meta)) {
@@ -233,6 +308,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $meta->meta_value;
     }
 
+
+    /**
+     * Update the user's chat_key (password chat)
+     */
     public function refreshChatKey() {
         
         try {
@@ -263,6 +342,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
 
+    /**
+     * Update the user's chat_user_id key of the database. Also it's updated the chat_key (password chat) 
+     * and other important data to perform the login in tinode backend
+     */
     public function refreshChatUserId() {
 
         try {
@@ -311,10 +394,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
     }
 
-    public function updateMetaChatKey($value) {
-        return $this->updateAppUserMeta('chat_key', $value);
-    }
-
+    
+    /**
+     * Update user meta value
+     */
     public function updateAppUserMeta($key, $value) {
         $meta = AppUserMeta::where('user_id',$this->id)
                     ->where('meta_key',$key)
@@ -334,6 +417,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return true;
     }
 
+
+    /**
+     * Update the value of user's city name
+     */
     public function refreshCityName() {
 
 
@@ -386,6 +473,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
     }
 
+    /**
+     * Update friend relationship in the database and the tinode backend
+     */
     public function updateFriendRelationship($action,$friend_id) {
          
 
@@ -440,8 +530,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                     $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
                     break;
                 case 'delete':
-                    $this->refreshInvitationsContactsForDeleting($myFriend);
-                    $friends->detach($myFriend->id);
+                    brokeFriendRelationship($this,$myFriend);
                     break;
                 
                 default:
@@ -464,6 +553,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
     }
 
+    /**
+     * Find User by email or phone
+     */
     public static function findUserByEmailOrPhone($invitedEmail, $invitedPhone) {
 
         $invitedEmail = getStrFakeVal($invitedEmail);
@@ -484,6 +576,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $invited;
     }
 
+    /**
+     * Check if exists any invitation with the user information
+     */
     public function syncInvitations() {
         $user = $this;
         
@@ -539,5 +634,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 }
             }
         }
+    }
+
+    /**
+     * Get number of user's friend relationship invitations
+     * @return int
+     */
+    public function getNumberOfFriendRelationshipInvitations() {
+        return $this->pendingInvitations()->get()->count();
     }
 }

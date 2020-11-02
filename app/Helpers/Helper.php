@@ -565,6 +565,20 @@ if (!function_exists('getAtrValue')) {
     }
 }
 
+if (!function_exists('brokeFriendRelationship')) {
+    /**
+     * @param \App\Models\AppUser $user1
+     * @param \App\Models\AppUser $user2
+     * @return bool
+     */
+    function brokeFriendRelationship(AppUser $user1, AppUser $user2) {
+        $user1->refreshInvitationsContactsForDeleting($user2);
+        $user1->detach($user2->id);
+        $user2->detach($user1->id);
+        //event(new FriendRelationshipDeleted($user1,$user2));
+        return true;
+    }
+}
 
 /**
  * @return Array
