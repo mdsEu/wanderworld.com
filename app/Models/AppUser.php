@@ -279,6 +279,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->post("$urlWanbox/api/chatusers", [
                 'user_login' => $this->cid,
+                'user_name' => $this->getPublicName(),
                 'user_password' => $newkey,
                 'user_email' => $this->email,
             ]);
