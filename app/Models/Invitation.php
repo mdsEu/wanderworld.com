@@ -104,10 +104,7 @@ class Invitation extends Model
             throw new WanderException( __('xx:The requirementes to create a friend relationship are not accomplished.') );
         }
 
-        $this->user->friends()->syncWithoutDetaching($this->invited, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
-        $this->invited->friends()->syncWithoutDetaching($this->user, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
-
-        event(new \App\Events\FriendRelationshipCreated($this->user,$this->invited));
+        makeFriendRelationship($this->user,$this->invited);
         
         return true;
     }

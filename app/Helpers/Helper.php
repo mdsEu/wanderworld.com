@@ -577,7 +577,25 @@ if (!function_exists('brokeFriendRelationship')) {
         $user1->friends()->detach($user2->id);
         $user2->friends()->detach($user1->id);
         
-        event(new FriendRelationshipDeleted($user1,$user2));
+        event(new \App\Events\FriendRelationshipDeleted($user1,$user2));
+
+        return true;
+    }
+}
+
+
+if (!function_exists('makeFriendRelationship')) {
+    /**
+     * @param \App\Models\AppUser $user1
+     * @param \App\Models\AppUser $user2
+     * @return bool
+     */
+    function makeFriendRelationship(AppUser $user1, AppUser $user2) {
+
+        $user1->friends()->syncWithoutDetaching($user2, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
+        $user2->friends()->syncWithoutDetaching($user1, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
+
+        event(new \App\Events\FriendRelationshipCreated($user1,$user2));
 
         return true;
     }

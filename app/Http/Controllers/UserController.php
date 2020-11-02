@@ -127,6 +127,8 @@ class UserController extends Controller
 
             $invitedEmail = $request->get('email', null);
             $invitedPhone = $request->get('phone', null);
+            $invitedFacebookId = $request->get('facebook_id', null);
+            
 
             switch ($typeNoti) {
                 case 'sms':
@@ -138,7 +140,12 @@ class UserController extends Controller
                     if(!$invitedPhone) {
                         throw new WanderException(__('xx:The information of the contact is not enough to do this action.'));
                     }
-                break;
+                    break;
+                case 'facebook':
+                    if(!$invitedFacebookId) {
+                        throw new WanderException(__('xx:The information of the contact is not enough to do this action.'));
+                    }
+                    break;
                 default:
                     throw new WanderException(__('xx:Action denied.'));
             }
@@ -190,6 +197,7 @@ class UserController extends Controller
                     'invited_id' => $invited_id,
                     'invited_email' => $invitedEmail,
                     'invited_phone' => $invitedPhone,
+                    //'invited_fbid' => $invitedFacebookId,
                     'invited_info' => json_encode($request->get('info',$infoInvi)),
                     'status' => Invitation::STATUS_CREATED,
                 ]);

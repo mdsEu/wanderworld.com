@@ -76,6 +76,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         'chat_user_id',
         'chat_key',
         'city_name',
+        'country_name',
     ];
 
     public $numberOfFriendsRequests;
@@ -233,6 +234,20 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return $this->refreshCityName();
         }
         return $metaValue;
+    }
+
+    /**
+     * Get user's country name
+     * @return String
+     */
+    public function getCountryNameAttribute() {
+        $coutries = readJsonCountries();
+        $idxFound = findInArray($this->country_code,$coutries,'country_code');
+
+        if( $idxFound === false ) {
+            return null;
+        }
+        return $coutries[$idxFound]['name'];
     }
 
     /**
