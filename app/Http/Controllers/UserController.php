@@ -41,7 +41,7 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, __('xx:something was wrong'), false, $e);
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
 
@@ -86,7 +86,7 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, __('xx:something was wrong'), false, $e);
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
 
@@ -108,7 +108,7 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, __('xx:something was wrong'), false, $e);
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
 
@@ -133,21 +133,21 @@ class UserController extends Controller
             switch ($typeNoti) {
                 case 'sms':
                     if(!$invitedPhone) {
-                        throw new WanderException(__('xx:The information of the contact is not enough to do this action.'));
+                        throw new WanderException(__('app.contact_info_enough'));
                     }
                     break;
                 case 'email':
                     if(!$invitedPhone) {
-                        throw new WanderException(__('xx:The information of the contact is not enough to do this action.'));
+                        throw new WanderException(__('app.contact_info_enough'));
                     }
                     break;
                 case 'facebook':
                     if(!$invitedFacebookId) {
-                        throw new WanderException(__('xx:The information of the contact is not enough to do this action.'));
+                        throw new WanderException(__('app.contact_info_enough'));
                     }
                     break;
                 default:
-                    throw new WanderException(__('xx:Action denied.'));
+                    throw new WanderException(__('app.action_denied'));
             }
             
             //Validate if already send an invitation to the same user
@@ -161,7 +161,7 @@ class UserController extends Controller
                 
                 //is it me?
                 if($user->id === $invited->id) {
-                    throw new WanderException(__('xx:this person is it you?.'));
+                    throw new WanderException(__('app.is_it_you'));
                 }
                 //Validate if user rejected me before or pending
                 $result = $invited->invitations()
@@ -170,7 +170,7 @@ class UserController extends Controller
                         ->get();
 
                 if($result->count() > 0) {
-                    throw new WanderException(__('xx:you already sent a invitation for this person.'));
+                    throw new WanderException(__('app.already_send_invitation'));
                 }
 
                 $invited_id = $invited->id;
@@ -184,7 +184,7 @@ class UserController extends Controller
 
                 $invitation = Invitation::findPendingByEmailOrPhone($user->id, $invitedEmail, $invitedPhone);
                 if($invitation) {
-                    throw new WanderException(__('xx:you already sent a invitation for this person ;).'));
+                    throw new WanderException(__('app.already_send_invitation'));
                 }
 
             }
@@ -205,19 +205,19 @@ class UserController extends Controller
             
             
             if(!$invitation) {
-                throw new WanderException(__('xx:It was not posible to create the invitation. Try again.'));
+                throw new WanderException(__('app.no_posible_send_invitation'));
             }
 
             $sent = $invitation->sendNotification($typeNoti);
 
             if(!$sent) {
-                throw new WanderException(__('xx:something was wrong sending the invitation. Try again later.'));
+                throw new WanderException(__('app.no_posible_send_invitation'));
             }
 
             $invitation->status = Invitation::STATUS_PENDING;
 
             if(!$invitation->save()) {
-                throw new WanderException(__('xx:something was wrong updating invitation. Try again.'));
+                throw new WanderException(__('app.no_posible_send_invitation'));
             }
 
             return sendResponse();
@@ -228,7 +228,7 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, __('xx:something was wrong'), false, $e);
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
 
@@ -252,7 +252,7 @@ class UserController extends Controller
                 case 'accept':
                     $invitation->status = Invitation::STATUS_ACCEPTED;
                     if(!$invitation->save()) {
-                        throw new WanderException(__('xx:connection error'));
+                        throw new WanderException(__('app.connection_error'));
                     }
                     $user->refreshInvitationsContactsForAdding($invitation->user);
                     $invitation->createFriendRelationship();
@@ -260,11 +260,11 @@ class UserController extends Controller
                 case 'reject':
                     $invitation->status = Invitation::STATUS_REJECTED;
                     if(!$invitation->save()) {
-                        throw new WanderException(__('xx:connection error'));
+                        throw new WanderException(__('app.connection_error'));
                     }
                     break;
                 default:
-                    throw new WanderException(__('xx:Action not valid'));
+                    throw new WanderException(__('app.action_not_valid'));
             }
 
             $invitation->notifyUsersStatus();
@@ -273,11 +273,11 @@ class UserController extends Controller
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
-            return sendResponse(null, __('xx:invitation not found'), false, $notFoundE);
+            return sendResponse(null, __('app.invitation_not_found'), false, $notFoundE);
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
-            return sendResponse(null, __('xx:something was wrong'), false, $e);
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
 }

@@ -69,7 +69,7 @@ class VariousController extends Controller
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
-            return sendResponse(null, __('xx:Data not found'), false, $notFoundE);
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {

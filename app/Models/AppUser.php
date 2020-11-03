@@ -201,7 +201,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getChatKeyAttribute() {
         if(empty($this->chat_user_id)) {
-            throw new WanderException(__('xx::error chat user id'));
+            throw new WanderException(__('app.chat_connection_error'));
         }
         $metaValue = $this->getMetaValue('chat_key');
         if(empty($metaValue)) {
@@ -318,7 +318,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getChatUserToken() {
         $meta = $this->metas()->where('meta_key','chat_user_token')->first();
         if(empty($meta)) {
-            throw new WanderException(__('xx:this user dont have a chat user token'));
+            throw new WanderException(__('app.chat_connection_error'));
         }
         return $meta->meta_value;
     }
@@ -348,11 +348,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
 
             if(!$response->successful()) {
-                throw new WanderException(__('xx:error updating chat key'));
+                throw new WanderException(__('app.chat_connection_error'));
             }
             return $newkey;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
-            throw new WanderException(__('xx:connection error'));
+            throw new WanderException(__('app.connection_error'));
         }
     }
 
@@ -383,7 +383,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
     
             if(!$response->successful()) {
-                throw new WanderException(__('xx:error creating chat account'));
+                throw new WanderException(__('app.chat_connection_error'));
             }
             $arrayData = $response->json();
 
@@ -398,14 +398,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return $arrayData['data']['uid'];
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
-            throw new WanderException(__('xx:connection error'));
+            throw new WanderException(__('app.connection_error'));
         } catch (WanderException $we) {
             DB::rollback();
             throw new WanderException($we->getMessage());
         } catch (\Exception $e) {
             DB::rollback();
             logActivity($e->getMessage());
-            throw new WanderException(__('xx:something was wrong'));
+            throw new WanderException(__('app.something_was_wrong'));
         }
     }
 
@@ -427,7 +427,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $meta->meta_value = $value;
         
         if(!$meta->save()) {
-            throw new WanderException(__('xx:connection error updating user meta'));
+            throw new WanderException(__('app.connection_error'));
         }
         return true;
     }
@@ -451,12 +451,12 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=$googleKey&language=$lang");
     
             if(!$response->successful()) {
-                throw new WanderException(__('xx:error updating city name'));
+                throw new WanderException(__('app.connection_error'));
             }
             $arrayData = $response->json();
 
             if($arrayData['status'] !== 'OK') {
-                throw new WanderException(__('xx:error updating city name'));
+                throw new WanderException(__('app.connection_error'));
             }
 
             $place = reset($arrayData['results']);
@@ -466,7 +466,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $city = getGeoPlaceName($address_components,'city');
 
             if(!$city) {
-                throw new WanderException(__('xx:error updating city name'));
+                throw new WanderException(__('app.connection_error'));
             }
             
             $this->updateAppUserMeta('city_name',$city['long_name']);
@@ -477,14 +477,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return $city['long_name'];
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
-            throw new WanderException(__('xx:connection error'));
+            throw new WanderException(__('app.connection_error'));
         } catch (WanderException $we) {
             DB::rollback();
             throw new WanderException($we->getMessage());
         } catch (\Exception $e) {
             DB::rollback();
             logActivity($e->getMessage());
-            throw new WanderException(__('xx:something was wrong'));
+            throw new WanderException(__('app.something_was_wrong'));
         }
     }
 
@@ -506,7 +506,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $myFriend = $friends->find($friend_id);
 
             if(empty($myFriend)) {
-                throw new WanderException(__('xx:no friends selected'));
+                throw new WanderException(__('app.no_friend_selected'));
             }
 
             $chat_user_id = $myFriend->chat_user_id;
@@ -528,9 +528,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             if(!$response->successful()) {
 
                 if( $response->status() == 404 ) {
-                    throw new WanderException(__('xx:its not posible to do this action in this moment. Maybe you dont have initiated a conversation with this friend'));
+                    throw new WanderException(__('app.no_action_no_ini_conversation'));
                 }
-                throw new WanderException(__('xx:error updating status in tinode'));
+                throw new WanderException(__('app.chat_connection_error'));
             }
 
             switch ($action) {
@@ -557,14 +557,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return true;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
-            throw new WanderException(__('xx:connection error '.$th->getMessage()));
+            throw new WanderException(__('app.connection_error'));
         } catch (WanderException $we) {
             DB::rollback();
             throw new WanderException($we->getMessage());
         } catch (\Exception $e) {
             DB::rollback();
             logActivity($e->getMessage());
-            throw new WanderException(__('xx:something was wrong'));
+            throw new WanderException(__('app.something_was_wrong'));
         }
     }
 
@@ -624,7 +624,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 $info->numberContacts = $n + 1;
                 $invitation->invited_info = json_encode($info);
                 if(!$invitation->save()) {
-                    throw new WanderException(__('xx:connection error saving invitation number contacts'));
+                    throw new WanderException(__('app.connection_error'));
                 }
             }
         }
@@ -645,7 +645,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 $info->numberContacts = $n - 1;
                 $invitation->invited_info = json_encode($info);
                 if(!$invitation->save()) {
-                    throw new WanderException(__('xx:connection error saving invitation number contacts'));
+                    throw new WanderException(__('app.connection_error'));
                 }
             }
         }

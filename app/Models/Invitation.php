@@ -68,10 +68,10 @@ class Invitation extends Model
                 );
                 $userPName = $this->user->getPublicName();
                 return sendMail((new GenericMail(
-                    __('xx:Invitation'),
-                    __('xx::user has invited you to be friends in Wander World', ['user' => $userPName]),
+                    __('notification.title_invitation'),
+                    __('notification.user_has_invited', ['user' => $userPName]),
                      $button
-                ))->subject(__('xx::user has invited you', ['user' => $userPName]))
+                ))->subject(__('notification.subject_user_has_invited', ['user' => $userPName]))
                     ->to($email));
                 break;
             
@@ -101,7 +101,7 @@ class Invitation extends Model
      */
     public function createFriendRelationship() {
         if(is_null($this->user) || is_null($this->invited)) {
-            throw new WanderException( __('xx:The requirementes to create a friend relationship are not accomplished.') );
+            throw new WanderException( __('app.no_able_be_friends') );
         }
 
         makeFriendRelationship($this->user,$this->invited);
@@ -114,7 +114,7 @@ class Invitation extends Model
      */
     public function notifyUsersStatus() {
         if(is_null($this->user) || is_null($this->invited)) {
-            throw new WanderException( __('xx:No users to notify.') );
+            throw new WanderException( __('app.no_able_be_friends') );
         }
         /**
          * To DO
@@ -126,7 +126,7 @@ class Invitation extends Model
             case self::STATUS_REJECTED:
                 break;
             default:
-                throw new WanderException(__('xx:Action not valid'));
+                throw new WanderException(__('app.action_not_valid'));
         }
     }
 
