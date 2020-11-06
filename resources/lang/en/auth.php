@@ -31,4 +31,5 @@ return [
     'recovery_account_title_email' => 'Recovery Account',
     'recovery_account_subject_email' => 'Recovery Account - Wander World',
     'recovery_account_description_email' => 'Click below button to continue with the recovery account process:',
+    'something_was_wrong_login_process' => 'Something was wrong during login process.',
 ];

@@ -389,9 +389,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             logActivity(var_export($arrayData,true));
             
-            $this->updateAppUserMeta('chat_user_id',$arrayData['data']['uid']);
-            $this->updateAppUserMeta('chat_user_token',$arrayData['data']['token']);
-            $this->updateAppUserMeta('chat_key',$newkey);
+            $this->updateMetaValue('chat_user_id',$arrayData['data']['uid']);
+            $this->updateMetaValue('chat_user_token',$arrayData['data']['token']);
+            $this->updateMetaValue('chat_key',$newkey);
             
             DB::commit();
 
@@ -413,7 +413,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     /**
      * Update user meta value
      */
-    public function updateAppUserMeta($key, $value) {
+    public function updateMetaValue($key, $value) {
         $meta = AppUserMeta::where('user_id',$this->id)
                     ->where('meta_key',$key)
                     ->first();
@@ -469,8 +469,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 throw new WanderException(__('app.connection_error'));
             }
             
-            $this->updateAppUserMeta('city_name',$city['long_name']);
-            $this->updateAppUserMeta('city_gplace_id',$placeId);
+            $this->updateMetaValue('city_name',$city['long_name']);
+            $this->updateMetaValue('city_gplace_id',$placeId);
             
             DB::commit();
 
@@ -569,14 +569,29 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
-     * Find User by email or phone
+     * Find User by email or phone or facebook id
      */
-    public static function findUserByEmailOrPhone($invitedEmail, $invitedPhone) {
+    public static function findPendingByEmailOrPhoneOrFbid($invitedEmail, $invitedPhone, $invitedFbid = null) {
 
         $invitedEmail = getStrFakeVal($invitedEmail);
         $invited = self::where('email', $invitedEmail)->first();
 
         if(!$invited) {
+
+            if($invitedFbid) {
+
+                $list = AppUserMeta::where('meta_key','facebook_user_id')
+                    ->where('meta_value',$invitedFbid)
+                    ->get();
+
+                if($list->count() === 1) {
+                    return self::find($list->first());
+                }
+
+            }
+
+
+
             $list = AppUserMeta::where('meta_key','phone')
                     ->where('meta_value',$invitedPhone)
                     ->get();
@@ -657,5 +672,38 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getNumberOfFriendRelationshipInvitations() {
         return $this->pendingInvitations()->get()->count();
+    }
+
+    /**
+     * Get profile data
+     */
+    public function getProfileInfo() {
+        $bundle = new \stdClass;
+        
+        $bundle->aboutme = $user->getMetaValue('about_me', '');
+        $bundle->is_aboutme_private = $user->getMetaValue('is_aboutme_private', 'no');
+
+        $bundle->interests = $user->getMetaValue('my_interests', []);
+        $bundle->is_interests_private = $user->getMetaValue('is_interests_private', 'no');
+
+        $bundle->languages = $user->getMetaValue('my_languages', []);
+        $bundle->is_languages_private = $user->getMetaValue('is_languages_private', 'no');
+
+        $bundle->birthday = $user->getMetaValue('birthday', null);
+        $bundle->is_birthday_private = $user->getMetaValue('is_birthday_private', 'no');
+
+        $bundle->country_code = $user->country_code;
+        $bundle->city_name = $user->city_name;
+
+        $bundle->gender = $user->getMetaValue('gender', null);
+        $bundle->is_gender_private = $user->getMetaValue('is_gender_private', 'no');
+
+        $bundle->personal_status = $user->getMetaValue('personal_status', null);
+        $bundle->is_gender_private = $user->getMetaValue('is_gender_private', 'no');
+
+        $bundle->phone = $user->getMetaValue('phone', null);
+        $bundle->is_phone_private = $user->getMetaValue('is_phone_private', 'no');
+        
+        return $bundle;
     }
 }

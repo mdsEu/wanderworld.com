@@ -202,6 +202,8 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
             throw new WanderException(__('auth.something_was_wrong_login_process'));
         }
 
+        $user->updateMetaValue('facebook_user_id',$userFBInfo['id']);
+
         return $user;
     }
 }

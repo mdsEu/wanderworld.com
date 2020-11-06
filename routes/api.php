@@ -70,6 +70,8 @@ Route::group(['prefix' => 'auth'], function () {
             Route::get('/me/friends', [UserController::class, 'meFriends']);
             Route::get('/me/friends/{id}', [UserController::class, 'meFriend']);
             Route::get('/me/friends-requests', [UserController::class, 'meFriendsRequests']);
+            Route::get('/me/profile', [UserController::class, 'meGetProfileInfo']);
+            Route::put('/me/profile', [UserController::class, 'meUpdateProfileInfo']);
             
             
             Route::post('/logout', [AuthController::class, 'logout']);

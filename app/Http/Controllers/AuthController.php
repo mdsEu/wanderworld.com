@@ -227,6 +227,11 @@ class AuthController extends Controller
                 throw new WanderException("auth.user_not_created_try_again");
             }
 
+            $user->updateMetaValue('birthday', $params['birthday']);
+            
+            $phone = '+'.preg_replace("/[^0-9]/i","", $params['cellphone']['dial'].$params['cellphone']['number']);
+            $user->updateMetaValue('phone', $phone);
+
             sendVerificationEmail($user);
 
             return sendResponse($user);

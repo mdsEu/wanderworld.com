@@ -31,4 +31,5 @@ return [
     'recovery_account_title_email' => 'Recuperación de Cuenta',
     'recovery_account_subject_email' => 'Recuperación de Cuenta - Wander World',
     'recovery_account_description_email' => 'Presione el siguiente botón para continuar con el proceso de recuperación de cuenta:',
+    'something_was_wrong_login_process' => 'Algo salió mal durante el proceso de ingreso.',
 ];
