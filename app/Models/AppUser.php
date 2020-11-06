@@ -162,6 +162,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         ];
         if( $request->is('api/auth/me') ) {
             $myAppends['numberOfFriendRequests'] = $this->getNumberOfFriendRelationshipInvitations();
+            $myAppends['completed_profile'] = $this->getMetaValue('info_public_saved') === 'yes' && $this->getMetaValue('info_private_saved') === 'yes' ? 'yes' : 'no';
         }
         return array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
     }
@@ -680,30 +681,30 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getProfileInfo() {
         $bundle = new \stdClass;
         
-        $bundle->aboutme = $user->getMetaValue('about_me', '');
-        $bundle->is_aboutme_private = $user->getMetaValue('is_aboutme_private', 'no');
+        $bundle->aboutme = $this->getMetaValue('about_me', '');
+        $bundle->is_aboutme_private = $this->getMetaValue('is_aboutme_private', 'no');
 
-        $bundle->interests = $user->getMetaValue('my_interests', []);
-        $bundle->is_interests_private = $user->getMetaValue('is_interests_private', 'no');
+        $bundle->interests = $this->getMetaValue('my_interests', []);
+        $bundle->is_interests_private = $this->getMetaValue('is_interests_private', 'no');
 
-        $bundle->languages = $user->getMetaValue('my_languages', []);
-        $bundle->is_languages_private = $user->getMetaValue('is_languages_private', 'no');
+        $bundle->languages = $this->getMetaValue('my_languages', []);
+        $bundle->is_languages_private = $this->getMetaValue('is_languages_private', 'no');
 
-        $bundle->birthday = $user->getMetaValue('birthday', null);
-        $bundle->is_birthday_private = $user->getMetaValue('is_birthday_private', 'no');
+        $bundle->birthday = $this->getMetaValue('birthday', null);
+        $bundle->is_birthday_private = $this->getMetaValue('is_birthday_private', 'no');
 
-        $bundle->country_code = $user->country_code;
-        $bundle->city_name = $user->city_name;
+        $bundle->country_code = $this->country_code;
+        $bundle->city_name = $this->city_name;
 
-        $bundle->gender = $user->getMetaValue('gender', null);
-        $bundle->is_gender_private = $user->getMetaValue('is_gender_private', 'no');
+        $bundle->gender = $this->getMetaValue('gender', null);
+        $bundle->is_gender_private = $this->getMetaValue('is_gender_private', 'no');
 
-        $bundle->personal_status = $user->getMetaValue('personal_status', null);
-        $bundle->is_gender_private = $user->getMetaValue('is_gender_private', 'no');
+        $bundle->personal_status = $this->getMetaValue('personal_status', null);
+        $bundle->is_gender_private = $this->getMetaValue('is_gender_private', 'no');
 
-        $bundle->phone = $user->getMetaValue('phone', null);
-        $bundle->is_phone_private = $user->getMetaValue('is_phone_private', 'no');
-        
+        $bundle->phone = $this->getMetaValue('phone', null);
+        $bundle->is_phone_private = $this->getMetaValue('is_phone_private', 'no');
+
         return $bundle;
     }
 }

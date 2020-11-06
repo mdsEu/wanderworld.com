@@ -368,6 +368,9 @@ class UserController extends Controller
 
                 $user->updateMetaValue('my_languages', $params['languages']);
                 $user->updateMetaValue('is_languages_private', (!!$request->get('is_languages_private', false)) ? 'yes' : 'no');
+
+                $user->updateMetaValue('info_public_saved', 'yes');
+                
                 if (!$user->save()) {
                     throw new WanderException(__('app.connection_error'));
                 }
@@ -396,6 +399,8 @@ class UserController extends Controller
                 $user->updateMetaValue('is_gender_private', (!!$request->get('is_gender_private', false)) ? 'yes' : 'no');
                 $user->updateMetaValue('personal_status', $params['personal_status']);
                 $user->updateMetaValue('is_personal_status_private', (!!$request->get('is_personal_status_private', false)) ? 'yes' : 'no');
+
+                $user->updateMetaValue('info_private_saved', 'yes');
 
                 if (!$user->save()) {
                     throw new WanderException(__('app.connection_error'));
