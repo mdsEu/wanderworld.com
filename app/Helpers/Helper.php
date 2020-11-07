@@ -29,7 +29,7 @@ if (!function_exists('logActivity')) {
      */
     function logActivity($message)
     {
-        if(is_string($message)) {
+        if(!is_string($message)) {
             $message = var_export($message, true);
         }
         Log::info($message);

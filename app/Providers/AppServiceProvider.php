@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         DB::listen(function ($query) {
-            logActivity($query->sql);
+            //logActivity($query->sql);
             // $query->bindings
             // $query->time
         });

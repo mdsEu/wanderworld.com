@@ -265,7 +265,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getMetaValue($key, $defaultVal = null) {
         $meta = $this->metas()->where('meta_key',$key)->first();
-        if(!$meta) {
+        if(!$meta || is_null($meta->meta_value)) {
             return $defaultVal;
         }
         return $meta->meta_value;
@@ -425,7 +425,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $meta->meta_key = $key;
         }
 
-        $meta->meta_value = $value;
+        $meta->meta_value = is_array($value) || is_object($value) ? json_encode($value) : $value;
         
         if(!$meta->save()) {
             throw new WanderException(__('app.connection_error'));
@@ -445,6 +445,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             DB::beginTransaction();
 
             $placeId = $this->city_gplace_id;
+
+            if(empty($placeId)) {
+                return null;
+            }
             $lang = app()->getLocale();
 
             $googleKey = setting('admin.google_maps_key', env('GOOGLE_KEY', ''));
@@ -681,13 +685,26 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getProfileInfo() {
         $bundle = new \stdClass;
         
+        $bundle->name = $this->name;
+        
+        $bundle->email = $this->email;
+        $bundle->is_email_private = $this->getMetaValue('is_email_private', 'no');
+
+        $bundle->image = $this->avatar;
+
         $bundle->aboutme = $this->getMetaValue('about_me', '');
         $bundle->is_aboutme_private = $this->getMetaValue('is_aboutme_private', 'no');
 
         $bundle->interests = $this->getMetaValue('my_interests', []);
+        if(\isJsonString($bundle->interests)) {
+            $bundle->interests = \parseStrToJson($bundle->interests);
+        }
         $bundle->is_interests_private = $this->getMetaValue('is_interests_private', 'no');
 
         $bundle->languages = $this->getMetaValue('my_languages', []);
+        if(\isJsonString($bundle->languages)) {
+            $bundle->languages = \parseStrToJson($bundle->languages);
+        }
         $bundle->is_languages_private = $this->getMetaValue('is_languages_private', 'no');
 
         $bundle->birthday = $this->getMetaValue('birthday', null);
@@ -700,9 +717,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $bundle->is_gender_private = $this->getMetaValue('is_gender_private', 'no');
 
         $bundle->personal_status = $this->getMetaValue('personal_status', null);
-        $bundle->is_gender_private = $this->getMetaValue('is_gender_private', 'no');
+        $bundle->is_personal_status_private = $this->getMetaValue('is_personal_status_private', 'no');
 
         $bundle->phone = $this->getMetaValue('phone', null);
+        $bundle->phone_dial = $this->getMetaValue('phone_dial', null);
+        $bundle->phone_number = $this->getMetaValue('phone_number', null);
         $bundle->is_phone_private = $this->getMetaValue('is_phone_private', 'no');
 
         return $bundle;

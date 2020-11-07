@@ -231,6 +231,8 @@ class AuthController extends Controller
             
             $phone = '+'.preg_replace("/[^0-9]/i","", $params['cellphone']['dial'].$params['cellphone']['number']);
             $user->updateMetaValue('phone', $phone);
+            $user->updateMetaValue('phone_dial', $params['cellphone']['dial']);
+            $user->updateMetaValue('phone_number', $params['cellphone']['number']);
 
             sendVerificationEmail($user);
 

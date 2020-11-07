@@ -7,6 +7,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\AppUser;
 use App\Models\Invitation;
@@ -291,9 +293,11 @@ class UserController extends Controller
 
 
             $isPublic = $request->get('public', 'public') === 'public';
+
+            \logActivity($request->all());
             
             $params = $request->only($isPublic ? [
-                'fullname',
+                'name',
                 'image',
                 'aboutme',
                 'interests',
@@ -306,12 +310,11 @@ class UserController extends Controller
             ]);
 
             $rules = $isPublic ? [
-                'fullname' => 'required|max:20',
+                'name' => 'required|max:20',
                 'aboutme' => 'required|max:300',
-                'interests' => 'required|max:15',
-                'languages' => 'required|max:6',
+                'interests' => 'required|array|max:15',
+                'languages' => 'required|array|max:6',
             ] : [
-                'fullname' => 'required|max:20',
                 'birthday' => [
                     function ($attribute, $value, $fail) {
                         $minAge = intval(env('MIN_AGE_REGISTRATION', 18));
@@ -331,6 +334,10 @@ class UserController extends Controller
                 'gender' => [
                     'required',
                     Rule::in(['male','female','other']),
+                ],
+                'personal_status' => [
+                    'required',
+                    Rule::in(['single','married','inrelation']),
                 ],
                 'city.name' => 'required',
                 'city.place_id' => 'required',
@@ -355,19 +362,19 @@ class UserController extends Controller
 
             if($isPublic) {
 
-                $defaultAvatar = secure_url('storage/users/default_avatar.png');
-                $pathAvatar = $request->file('image') ? $request->file('image')->store('avatars') : $defaultAvatar;
-
-                $user->name = $params['fullname'];
-                $user->avatar = $pathAvatar;
+                $user->name = $params['name'];
+                if($request->file('image')) {
+                    $user->avatar = $request->file('image')->store('avatars', ['disk' => 'public']);
+                }
+                
                 $user->updateMetaValue('about_me', $params['aboutme']);
-                $user->updateMetaValue('is_aboutme_private', (!!$request->get('is_aboutme_private', false)) ? 'yes' : 'no');
+                $user->updateMetaValue('is_aboutme_private', $request->get('is_aboutme_private', 'no'));
 
                 $user->updateMetaValue('my_interests', $params['interests']);
-                $user->updateMetaValue('is_interests_private', (!!$request->get('is_interests_private', false)) ? 'yes' : 'no');
+                $user->updateMetaValue('is_interests_private', $request->get('is_interests_private', 'no'));
 
                 $user->updateMetaValue('my_languages', $params['languages']);
-                $user->updateMetaValue('is_languages_private', (!!$request->get('is_languages_private', false)) ? 'yes' : 'no');
+                $user->updateMetaValue('is_languages_private', $request->get('is_languages_private', 'no'));
 
                 $user->updateMetaValue('info_public_saved', 'yes');
                 
@@ -390,15 +397,19 @@ class UserController extends Controller
                 $user->country_code = $foundCountry['country_code'];
                 $user->city_gplace_id = $params['city']['place_id'];
                 $user->refreshCityName();
-                $user->updateMetaValue('is_city_private', (!!$request->get('is_city_private', false)) ? 'yes' : 'no');
+                $user->updateMetaValue('is_city_private', $request->get('is_city_private', 'no'));
 
                 $phone = '+'.preg_replace("/[^0-9]/i","", $params['cellphone']['dial'].$params['cellphone']['number']);
                 $user->updateMetaValue('phone', $phone);
-                $user->updateMetaValue('is_phone_private', (!!$request->get('is_phone_private', false)) ? 'yes' : 'no');
+                $user->updateMetaValue('phone_dial', $params['cellphone']['dial']);
+                $user->updateMetaValue('phone_number', $params['cellphone']['number']);
+                $user->updateMetaValue('is_phone_private', $request->get('is_phone_private', 'no'));
                 $user->updateMetaValue('gender', $params['gender']);
-                $user->updateMetaValue('is_gender_private', (!!$request->get('is_gender_private', false)) ? 'yes' : 'no');
+                $user->updateMetaValue('is_gender_private', $request->get('is_gender_private', 'no'));
                 $user->updateMetaValue('personal_status', $params['personal_status']);
-                $user->updateMetaValue('is_personal_status_private', (!!$request->get('is_personal_status_private', false)) ? 'yes' : 'no');
+                $user->updateMetaValue('is_personal_status_private', $request->get('is_personal_status_private', 'no'));
+
+                $user->updateMetaValue('is_email_private', $request->get('is_email_private', 'no'));
 
                 $user->updateMetaValue('info_private_saved', 'yes');
 
