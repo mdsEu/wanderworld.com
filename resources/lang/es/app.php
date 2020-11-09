@@ -12,8 +12,6 @@ return [
     'user_comment_earlier' => 'Debe esperar :limit hora(s) para enviar otro comentario. Gracias por su retroalimentación.',
     'user_comment_not_received' => 'Su comentario no fue recibido. Intente nuevamente.',
 
-
-
     'data_not_found' => 'Datos no encontrados.',
     'something_was_wrong' => 'Algo salió mal.',
     'contact_info_enough' => 'La información del contacto no es suficiente para realizar esta acción.',

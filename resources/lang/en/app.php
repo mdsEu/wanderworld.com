@@ -12,8 +12,6 @@ return [
     'user_comment_earlier' => 'You need to wait :limit hour(s) to send another comment. Thanks for your feedback.',
     'user_comment_not_received' => 'You comment was not received. Try again.',
     
-
-
     'data_not_found' => 'Data not found.',
     'something_was_wrong' => 'Something was wrong.',
     'contact_info_enough' => 'The contact\'s information is not enough to do this action.',

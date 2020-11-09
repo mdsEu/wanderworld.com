@@ -55,8 +55,32 @@ class Invitation extends Model
 
         switch ($action) {
             case 'sms':
+                $keyNRSGateway = setting('admin.nrs_gateway_apikey', env('NRS_GATEWAY_APIKEY', ""));
+
+                $tplMessage = setting('admin.sms_msg_invitation_be_friends', "");
+
+                if(empty($tplMessage)) {
+                    return false;
+                }
+
+                $tplMessage = \str_replace('{USER_NAME}', $this->user->getPublicName(), $tplMessage);
+
+                $urlRestNrsGatewaySendMessage = setting('admin.endpoint_sendmessage_nrsgateway', "https://gateway.plusmms.net/rest/message");
+
+                $response = Http::withHeaders([
+                    'Authorization' => "Basic $keyNRSGateway",
+                    'Content-Type' => "application/json",
+                ])->post($urlRestNrsGatewaySendMessage, [
+                    'to' => [$this->getPhone()],
+                    'text' => $tplMessage,
+                    //'from' => "",
+                ]);
+
+                if(!$response->successful()) {
+                    return false;
+                }
                 
-                return false;
+                return true;
             case 'email':
                 $email = $this->getEmail();
                 if(empty($email)) {

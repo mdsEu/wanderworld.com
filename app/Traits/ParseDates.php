@@ -18,13 +18,13 @@ trait ParseDates
         return $timeAt->format('Y-m-d H:i:s');
     }
 
-    public function getCreatedAtAttribute($value) {
+    /*public function getCreatedAtAttribute($value) {
         return self::parseDate($value);
     }
 
     public function getUpdatedAtAttribute($value) {
         return self::parseDate($value);
-    }
+    }*/
 
     /*public function getDeletedAtAttribute($value) {
         return self::parseDate($value);
