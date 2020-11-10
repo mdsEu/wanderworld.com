@@ -603,6 +603,24 @@ if (!function_exists('makeFriendRelationship')) {
     }
 }
 
+if (!function_exists('sanitizePhone')) {
+    /**
+     * @param String $phone
+     * @return String|null
+     */
+    function sanitizePhone($phone) {
+        if(is_null($phone) || (!is_string($phone))) {
+            return null;
+        }
+        $symbol = '+';
+        if(strpos($phone, '+') === false) {
+            $symbol = '';
+        }
+        return $symbol.preg_replace("/[^0-9]/i", "", $phone);
+    }
+}
+
+
 /**
  * @return Array
  */

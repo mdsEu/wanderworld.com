@@ -129,7 +129,7 @@ class UserController extends Controller
             $typeNoti = $request->get('type_notification', 'sms');
 
             $invitedEmail = $request->get('email', null);
-            $invitedPhone = $request->get('phone', null);
+            $invitedPhone = sanitizePhone($request->get('phone', null));
             $invitedFacebookId = $request->get('facebook_id', null);
             
 
@@ -399,7 +399,7 @@ class UserController extends Controller
                 $user->refreshCityName();
                 $user->updateMetaValue('is_city_private', $request->get('is_city_private', 'no'));
 
-                $phone = '+'.preg_replace("/[^0-9]/i","", $params['cellphone']['dial'].$params['cellphone']['number']);
+                $phone = sanitizePhone($params['cellphone']['dial'].$params['cellphone']['number']);
                 $user->updateMetaValue('phone', $phone);
                 $user->updateMetaValue('phone_dial', $params['cellphone']['dial']);
                 $user->updateMetaValue('phone_number', $params['cellphone']['number']);

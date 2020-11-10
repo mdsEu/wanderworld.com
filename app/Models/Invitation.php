@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\Response;
+use GuzzleHttp\Client;
 use App\Exceptions\WanderException;
 use App\Mail\GenericMail;
 
@@ -38,9 +40,9 @@ class Invitation extends Model
     public function getPhone() {
         $invited = $this->invited;
         if($invited) {
-            return $invited->getMetaValue('phone', $this->invited_email);
+            return $invited->getMetaValue('phone', $this->invited_phone);
         }
-        return $this->invited_email;
+        return $this->invited_phone;
     }
 
     public function getEmail() {
@@ -67,16 +69,22 @@ class Invitation extends Model
 
                 $urlRestNrsGatewaySendMessage = setting('admin.endpoint_sendmessage_nrsgateway', "https://gateway.plusmms.net/rest/message");
 
-                $response = Http::withHeaders([
-                    'Authorization' => "Basic $keyNRSGateway",
-                    'Content-Type' => "application/json",
-                ])->post($urlRestNrsGatewaySendMessage, [
-                    'to' => [$this->getPhone()],
-                    'text' => $tplMessage,
-                    //'from' => "",
+                $client = new Client();
+                $guzzleRes = $client->post($urlRestNrsGatewaySendMessage, [
+                    'headers' => [
+                        'Authorization' => "Basic $keyNRSGateway",
+                        'Content-Type' => "application/json",
+                    ], 
+                    'json' => [
+                        'to' => [$this->getPhone()],
+                        'text' => $tplMessage,
+                        'from' => "WanderWorld",
+                    ],
                 ]);
 
-                if(!$response->successful()) {
+                $code = $guzzleRes->getStatusCode();
+
+                if(!($code >= Response::HTTP_OK && $code < Response::HTTP_MULTIPLE_CHOICES)) {
                     return false;
                 }
                 

@@ -229,7 +229,7 @@ class AuthController extends Controller
 
             $user->updateMetaValue('birthday', $params['birthday']);
             
-            $phone = '+'.preg_replace("/[^0-9]/i","", $params['cellphone']['dial'].$params['cellphone']['number']);
+            $phone = sanitizePhone($params['cellphone']['dial'].$params['cellphone']['number']);
             $user->updateMetaValue('phone', $phone);
             $user->updateMetaValue('phone_dial', $params['cellphone']['dial']);
             $user->updateMetaValue('phone_number', $params['cellphone']['number']);
