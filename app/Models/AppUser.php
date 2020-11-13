@@ -23,10 +23,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     const STATUS_ACTIVE     = '2';
     const STATUS_INACTIVE   = '3';
 
-    const FRIEND_STATUS_PENDING    = '1';
-    const FRIEND_STATUS_ACTIVE     = '2';
-    const FRIEND_STATUS_BLOCKED    = '3';
-    const FRIEND_STATUS_MUTED      = '4';
+    const FRIEND_STATUS_PENDING          = '1';
+    const FRIEND_STATUS_ACTIVE           = '2';
+    const FRIEND_STATUS_BLOCKED          = '3';
+    const FRIEND_STATUS_MUTED            = '4';
+    const FRIEND_STATUS_BLOCKED_REQUESTS = '5';
     
 
     /**
@@ -164,6 +165,19 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $myAppends['numberOfFriendRequests'] = $this->getNumberOfFriendRelationshipInvitations();
             $myAppends['completed_profile'] = $this->getMetaValue('info_public_saved') === 'yes' && $this->getMetaValue('info_private_saved') === 'yes' ? 'yes' : 'no';
         }
+        
+        if( $request->is('api/auth/me/common-friends/*') ) {
+            $temp = array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
+            $re = [];
+            foreach($temp as $key=>$item) {
+                if(!in_array($key,['id','name','city_name','country_code'])) {
+                    continue;
+                }
+                $re[$key] = $item;
+            }
+            return $re;
+        }
+        
         return array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
     }
 
@@ -184,7 +198,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                         //->withPivot('status')
                         ->wherePivotIn('status', [
                             self::FRIEND_STATUS_ACTIVE,
-                            self::FRIEND_STATUS_MUTED
+                            self::FRIEND_STATUS_MUTED,
+                            self::FRIEND_STATUS_BLOCKED_REQUESTS,
                         ]);
     }
 
@@ -246,7 +261,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $idxFound = findInArray($this->country_code,$coutries,'country_code');
 
         if( $idxFound === false ) {
-            return null;
+            return $this->country_code;
         }
         return $coutries[$idxFound]['name'];
     }
@@ -256,7 +271,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return String
      */
     public function getPublicName() {
-        return $this->nickname;
+        return $this->name;
     }
 
     /**

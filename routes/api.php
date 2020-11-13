@@ -72,6 +72,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::get('/me/friends-requests', [UserController::class, 'meFriendsRequests']);
             Route::get('/me/profile', [UserController::class, 'meGetProfileInfo']);
             Route::post('/me/profile', [UserController::class, 'meUpdateProfileInfo']);
+            Route::get('/me/common-friends/{contact_id}', [UserController::class, 'getCommonFriends']);
             
             
             Route::post('/logout', [AuthController::class, 'logout']);

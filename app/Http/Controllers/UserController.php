@@ -6,6 +6,7 @@ use App\Exceptions\WanderException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -18,6 +19,9 @@ use JWTAuth;
 
 class UserController extends Controller
 {
+
+    public $guard;
+
     public function __construct()
     {
         //$this->middleware('auth:api', ['except' => ['login']]);
@@ -29,6 +33,10 @@ class UserController extends Controller
         return null;
     }
 
+    /**
+     * Return user logged friends
+     * (Paginated)
+     */
     public function meFriends(Request $request) {
         try {
 
@@ -48,6 +56,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Return single user logged friend
+     */
     public function meFriend(Request $request, $friend_id) {
         try {
 
@@ -72,7 +83,8 @@ class UserController extends Controller
     }
 
     /**
-     * 
+     * Return user logged pending invitations to be friends.
+     * (Paginated)
      */
     public function meFriendsRequests(Request $request) {
         try {
@@ -93,6 +105,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Change a friend relationship status
+     */
     public function changeFriendRelationshipStatus(Request $request, $action) {
         try {
 
@@ -437,12 +452,37 @@ class UserController extends Controller
     }
 
     /**
-     * Funcion to get the profile information
+     * Function to get the profile information
      */
     public function meGetProfileInfo(Request $request) {
         try {
             $user = auth($this->guard)->user();
             return sendResponse($user->getProfileInfo());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Return common friend of the user logged with other user
+     */
+    public function getCommonFriends(Request $request, $contact_id) {
+        try {
+            $user = auth($this->guard)->user();
+
+            $contactUser = AppUser::findOrFail($contact_id);
+
+            $myFriendsIds = $user->activeFriends()->pluck('friend_id');
+            $commons = $contactUser->activeFriends()->whereIn('friend_id',$myFriendsIds)->get();
+
+            return sendResponse($commons);
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
