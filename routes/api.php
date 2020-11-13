@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\VariousController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TravelController;
 use App\Http\Controllers\MultiPage;
 
 
@@ -44,6 +45,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
             Route::post('/invitations', [UserController::class, 'sendInvitation']);
             Route::put('/invitations/answer', [UserController::class, 'acceptOrRejectInvitation']);
+            Route::post('/travels', [TravelController::class, 'sendHostRequestTravel']);
         });
     });
 });

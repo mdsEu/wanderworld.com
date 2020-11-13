@@ -26,9 +26,9 @@ class TravelController extends Controller
 
 
     /**
-     * Return common friend of the user logged with other user
+     * Create a travel
      */
-    public function sendHostRequest(Request $request) {
+    public function sendHostRequestTravel(Request $request) {
         try {
 
 
@@ -102,7 +102,7 @@ class TravelController extends Controller
             ]);
 
             if(!$travel) {
-                throw new WanderException(__('xx:It was not posible to process the request. Try again'));
+                throw new WanderException(__('xx:It was not posible to process the request. Try again.'));
             }
 
             $contacts = $request->get('contacts', []);
@@ -144,7 +144,7 @@ class TravelController extends Controller
                 .
             )
              */
-            
+
             return sendResponse();
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
