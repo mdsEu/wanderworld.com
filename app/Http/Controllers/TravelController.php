@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\AppUser;
 use App\Models\Invitation;
+use App\Models\Travel;
 
 class TravelController extends Controller
 {
@@ -69,7 +70,7 @@ class TravelController extends Controller
 
             $host_id = $request->get('host_id', null);
 
-            $host = $user->activeFriends()->find($friend_id);
+            $host = $user->activeFriends()->find($host_id);
 
             if(!$host) {
                 throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests'));

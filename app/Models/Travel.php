@@ -22,6 +22,8 @@ class Travel extends Model
     const TRAVEL_STATUS_FINISHED    = '5';
 
     protected $guarded = [];
+    
+    protected $table = 'travels';
 
     protected $dates = [
         'start_at',
