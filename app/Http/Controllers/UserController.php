@@ -44,7 +44,7 @@ class UserController extends Controller
 
             $friendsLimit = intval(setting('admin.friends_list_limit', 20));
 
-            return sendResponse($user->friends()->paginate($friendsLimit));
+            return sendResponse($user->activeFriends()->paginate($friendsLimit));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
