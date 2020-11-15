@@ -23,4 +23,5 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **admin.limit_hours_send_comment**
 - **admin.google_maps_key**
 - **admin.laravel_time_zone**
+- **admin.limit_change_city** (Exists this same param por each user)
 

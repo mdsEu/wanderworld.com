@@ -19,7 +19,7 @@ class TravelContact extends Model
     }
 
     public function contact() {
-        return $this->belongsTo(AppUser::class,'contact_id')->withTrashed();
+        return $this->belongsTo(AppUser::class,'contact_id');
     }
 
     public function getNameAttribute($value) {

@@ -35,10 +35,10 @@ class Travel extends Model
     }
 
     public function host() {
-        return $this->belongsTo(AppUser::class,'host_id')->withTrashed();
+        return $this->belongsTo(AppUser::class,'host_id');
     }
 
     public function contacts() {
-        return $this->hasMany(TravelContact::class,'travel_id')->withTrashed();
+        return $this->hasMany(TravelContact::class,'travel_id');
     }
 }

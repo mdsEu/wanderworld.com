@@ -37,19 +37,18 @@ class TravelController extends Controller
                 'host_id',
                 'start',
                 'end',
-                'resquest_type',
+                'request_type',
             ]);
 
-            $validaYMDDate = function ($attribute, $value, $fail) {
-                if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
-                    $fail(__('xx:Date format not valid'));
-                    return;
-                }
-            };
-
             $rules = [
-                'start' => [$validaYMDDate],
-                'end' => [$validaYMDDate],
+                'end' => [
+                    function ($attribute, $value, $fail) {
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
+                            $fail(__('xx:The dates for your travel are not valid.'));
+                            return;
+                        }
+                    }
+                ],
                 'request_type' => [
                     'required',
                     Rule::in([
@@ -70,14 +69,21 @@ class TravelController extends Controller
 
             $host_id = $request->get('host_id', null);
 
-            $host = $user->activeFriends()->find($host_id);
+            $host = $user->activeFriendsLevel( 2 )->find($host_id);
 
             if(!$host) {
-                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests'));
+                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests 1'));
+            }
+            
+            $isMyFriend = $user->isMyFriend($host);
+            if($isMyFriend && $host->pivot->status === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {
+                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests 2'));
             }
 
-            if($host->pivot->status === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {
-                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests'));
+            if(!$isMyFriend) {
+                /**
+                 * To DO
+                 */
             }
 
             $startDate = Carbon::createFromFormat('Y-m-d',$params['start']);
@@ -115,7 +121,7 @@ class TravelController extends Controller
                     $cUser->id = null;
                     $cUser->name = $contact['name'];
                     $cUser->place_name = $contact['place_name'];
-                    if($appUser = App::find($contact['id'])) {
+                    if($appUser = AppUser::find($contact['id'])) {
                         $cUser->id = $appUser->id;
                         $cUser->name = $appUser->getPublicName();
                         $cUser->place_name = "{$appUser->city_name} / {$appUser->country_name}";

@@ -9,6 +9,7 @@ use App\Mail\GenericMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 use App\Exceptions\WanderException;
 
 
@@ -617,6 +618,33 @@ if (!function_exists('sanitizePhone')) {
             $symbol = '';
         }
         return $symbol.preg_replace("/[^0-9]/i", "", $phone);
+    }
+}
+
+
+if (!function_exists('getPaginate')) {
+    /**
+     * @param \Illuminate\Support\Collection $items
+     * @param int $perPage
+     * @param int|null $page
+     * @return String|null
+     */
+    function getPaginate($items, $perPage, $page = null) {
+        if(!$page || !is_numeric($page)) {
+            $page = request()->get('page', 1);
+            $page = is_numeric($page) ? intval($page) : 1;
+        }
+
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+
+        $startIdx = ($page * $perPage) - $perPage;
+
+        $total = $items->count();
+
+        $sliceItems = collect($items->slice($startIdx, $perPage)->values());
+
+        $pagination = new \Illuminate\Pagination\LengthAwarePaginator($sliceItems, $total, $perPage, $page);
+        return $pagination;
     }
 }
 

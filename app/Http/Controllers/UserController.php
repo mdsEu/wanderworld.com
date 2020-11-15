@@ -318,6 +318,7 @@ class UserController extends Controller
                 'interests',
                 'languages',
             ] : [
+                'birthday',
                 'city',
                 'cellphone',
                 'gender',
@@ -410,9 +411,25 @@ class UserController extends Controller
 
                 $user->continent_code = $foundCountry['continent_code'];
                 $user->country_code = $foundCountry['country_code'];
-                $user->city_gplace_id = $params['city']['place_id'];
+
+                $new_gplace_id = trim($params['city']['place_id']);
+                $timesChangeCity = $user->getTimesChangeCity();
+                $limitChangeCity = intval( $user->getMetaValue('limit_change_city', setting('admin.limit_change_city', 2)) );
+                if ($user->city_gplace_id !== $new_gplace_id && $timesChangeCity >= $limitChangeCity) {
+                    DB::rollback();
+                    return sendResponse(null,['city' => 'xx:You have reached the limit for changing the city'],false);
+                }
+
+                if ($user->city_gplace_id !== $new_gplace_id) {
+                    $user->updateMetaValue(Carbon::now('UTC')->format('YYYY').'_times_change_city', $timesChangeCity + 1);
+                    $user->city_gplace_id = $new_gplace_id;
+                }
+
                 $user->refreshCityName();
                 $user->updateMetaValue('is_city_private', $request->get('is_city_private', 'no'));
+
+                $user->updateMetaValue('birthday', $params['birthday']);
+                $user->updateMetaValue('is_birthday_private', $request->get('is_birthday_private', 'no'));
 
                 $phone = sanitizePhone($params['cellphone']['dial'].$params['cellphone']['number']);
                 $user->updateMetaValue('phone', $phone);

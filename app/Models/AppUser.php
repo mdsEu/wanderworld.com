@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 use App\Exceptions\WanderException;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -162,8 +163,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             //'path' => $request->path(),
         ];
         if( $request->is('api/auth/me') ) {
-            $myAppends['numberOfFriendRequests'] = $this->getNumberOfFriendRelationshipInvitations();
+            $myAppends['number_of_friend_requests'] = $this->getNumberOfFriendRelationshipInvitations();
             $myAppends['completed_profile'] = $this->getMetaValue('info_public_saved') === 'yes' && $this->getMetaValue('info_private_saved') === 'yes' ? 'yes' : 'no';
+            $myAppends['times_change_city'] = $this->getTimesChangeCity();
         }
         
         if( $request->is('api/auth/me/common-friends/*') ) {
@@ -201,6 +203,42 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                             self::FRIEND_STATUS_MUTED,
                             self::FRIEND_STATUS_BLOCKED_REQUESTS,
                         ]);
+    }
+
+    /**
+     * Return user's active friends by level relation
+     * @return Collection
+     */
+    public function activeFriendsLevel($level = 1) {
+        if($level === 1) {
+            return $this->activeFriends()->get();
+        }
+        $list = collect([]);
+        $this->reActiveFriendsLevel($level, 0, $this, $list);
+        return $list;
+    }
+
+    /**
+     * Return user's active friends by level relation (recursive)
+     * @return belongsToMany
+     */
+    public function reActiveFriendsLevel($levelReached, $level, $user, &$list) {
+        if($level === $levelReached) {
+            return;
+        }
+        $meId = $this->id;
+
+        $userFriends = $user->activeFriends()->get();
+        foreach($userFriends as $friend) {
+
+            $found = $list->search(function ($f, $key) use ($friend, $meId) {
+                return $f->id === $friend->id;
+            });
+            if($found === false && $meId !== $friend->id) {
+                $list->push($friend);
+            }
+            $this->reActiveFriendsLevel($levelReached, $level + 1, $friend, $list);
+        }
     }
 
     /**
@@ -740,5 +778,21 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $bundle->is_phone_private = $this->getMetaValue('is_phone_private', 'no');
 
         return $bundle;
+    }
+
+    /**
+     * Return number of times which it was changed the city
+     * @return int
+     */
+    public function getTimesChangeCity() {
+        return intval($this->getMetaValue(Carbon::now('UTC')->format('YYYY').'_times_change_city', 0));
+    }
+
+    /**
+     * Return if host is my friend
+     * @return bool
+     */
+    public function isMyFriend($user) {
+        return !!($this->activeFriends()->find($user));
     }
 }
