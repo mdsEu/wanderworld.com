@@ -327,6 +327,7 @@ class UserController extends Controller
 
             $rules = $isPublic ? [
                 'name' => 'required|max:20',
+                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
                 'aboutme' => 'required|max:300',
                 'interests' => 'required|array|max:15',
                 'languages' => 'required|array|max:6',
@@ -380,7 +381,10 @@ class UserController extends Controller
 
                 $user->name = $params['name'];
                 if($request->file('image')) {
-                    $user->avatar = $request->file('image')->store('avatars', ['disk' => 'public']);
+                    $user->avatar = $request->file('image')->store('avatars', [
+                        'disk' => config('voyager.storage.disk'),
+                        'visibility' => 'public',
+                    ]);
                 }
                 
                 $user->updateMetaValue('about_me', $params['aboutme']);

@@ -157,6 +157,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         ]);
     }
 
+    /**
+     * Return user's reported photos
+     * @return belongsToMany
+     */
+    public function myReportedPhotos() {
+        return $this->belongsToMany(Photo::class, 'photo_report', 'user_id', 'photo_id');
+    }
+
     public function toArray() {
         $request = request();
         $myAppends = [
@@ -246,6 +254,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function appUsers() {
         return $this->friends();
+    }
+
+    /**
+     * Return user's active travels
+     * @return hasMany
+     */
+    public function travels() {
+        return $this->hasMany(Travel::class,'user_id');
     }
 
     /**

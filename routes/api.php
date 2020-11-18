@@ -12,6 +12,7 @@ use App\Http\Controllers\VariousController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TravelController;
 use App\Http\Controllers\MultiPage;
+use App\Http\Controllers\PhotoController;
 
 
 /*
@@ -26,6 +27,8 @@ use App\Http\Controllers\MultiPage;
 */
 
 Route::group(['prefix' => 'services/v1/'], function () {
+    
+    Route::get('/photos/{photo}', [PhotoController::class, 'show']);
 
     Route::middleware([SwitchLanguageMiddleware::class,ModelActiveMiddleware::class])->group(function () {
 
@@ -46,6 +49,11 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::post('/invitations', [UserController::class, 'sendInvitation']);
             Route::put('/invitations/answer', [UserController::class, 'acceptOrRejectInvitation']);
             Route::post('/travels', [TravelController::class, 'sendHostRequestTravel']);
+            Route::post('/travels/{travel_id}/albums', [TravelController::class, 'createAlbum']);
+            Route::put('/travels/{travel_id}/albums/{album_id}', [TravelController::class, 'updateAlbum']);
+            Route::delete('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'deleteAlbumPhotos']);
+            
+            Route::get('/photos/{photo}', [PhotoController::class, 'show']);
         });
     });
 });

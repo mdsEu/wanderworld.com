@@ -143,7 +143,9 @@ return [
         'terms' => [
             'accepted' => 'Debe aceptar nuestros término y condiciones.',
         ],
-
+        'photos.*' => [
+            'mimes' => 'Some images are not of type: :values',
+        ],
     ],
 
 

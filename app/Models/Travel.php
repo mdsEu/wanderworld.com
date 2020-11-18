@@ -41,4 +41,15 @@ class Travel extends Model
     public function contacts() {
         return $this->hasMany(TravelContact::class,'travel_id');
     }
+
+    public function albums() {
+        return $this->hasMany(Album::class,'travel_id');
+    }
+
+    public function activeAlbums() {
+        return $this->hasMany(Album::class,'travel_id')->whereIn([
+            Album::STATUS_ACCEPTED,
+            Album::STATUS_REPORTED,
+        ]);
+    }
 }
