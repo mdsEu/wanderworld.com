@@ -109,7 +109,7 @@ class TravelController extends Controller
                 'start_at' => $startDate->format('Y-m-d'),
                 'end_at' => $endDate->format('Y-m-d'),
                 'request_type' => $params['request_type'],
-                'status' => Travel::TRAVEL_STATUS_PENDING,
+                'status' => Travel::STATUS_PENDING,
             ]);
 
             if(!$travel) {
@@ -157,6 +157,26 @@ class TravelController extends Controller
              */
 
             return sendResponse();
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Get user's travels
+     */
+    public function getUserTravels(Request $request) {
+        try {
+
+            $user = auth($this->guard)->user();
+            return sendResponse($user->finishedTravels()->get());
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {

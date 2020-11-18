@@ -49,6 +49,8 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::post('/invitations', [UserController::class, 'sendInvitation']);
             Route::put('/invitations/answer', [UserController::class, 'acceptOrRejectInvitation']);
             Route::post('/travels', [TravelController::class, 'sendHostRequestTravel']);
+            Route::get('/travels', [TravelController::class, 'getUserTravels']);
+            
             Route::post('/travels/{travel_id}/albums', [TravelController::class, 'createAlbum']);
             Route::put('/travels/{travel_id}/albums/{album_id}', [TravelController::class, 'updateAlbum']);
             Route::delete('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'deleteAlbumPhotos']);

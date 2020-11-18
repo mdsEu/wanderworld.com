@@ -165,6 +165,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return $this->belongsToMany(Photo::class, 'photo_report', 'user_id', 'photo_id');
     }
 
+    /**
+     * ToArray function
+     */
     public function toArray() {
         $request = request();
         $myAppends = [
@@ -257,11 +260,23 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
-     * Return user's active travels
+     * Return user's travels
      * @return hasMany
      */
     public function travels() {
         return $this->hasMany(Travel::class,'user_id');
+    }
+
+    /**
+     * Return user's finished travels
+     * @return hasMany
+     */
+    public function finishedTravels() {
+        return $this->hasMany(Travel::class,'user_id')
+                        ->wherePivotIn('status', [
+                            Travel::STATUS_ACCEPTED,
+                            Travel::STATUS_FINISHED,
+                        ]);
     }
 
     /**

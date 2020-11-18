@@ -15,11 +15,11 @@ class Travel extends Model
     const RTYPE_HOST_GUIDER = 'HG';
     const RTYPE_GUIDER      = 'G';
 
-    const TRAVEL_STATUS_PENDING     = '1';
-    const TRAVEL_STATUS_ACCEPTED    = '2';
-    const TRAVEL_STATUS_REJECTED    = '3';
-    const TRAVEL_STATUS_CANCELLED   = '4';
-    const TRAVEL_STATUS_FINISHED    = '5';
+    const STATUS_PENDING     = '1';
+    const STATUS_ACCEPTED    = '2';
+    const STATUS_REJECTED    = '3';
+    const STATUS_CANCELLED   = '4';
+    const STATUS_FINISHED    = '5';
 
     protected $guarded = [];
     
