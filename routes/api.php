@@ -52,10 +52,11 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::get('/travels', [TravelController::class, 'getUserTravels']);
             
             Route::post('/travels/{travel_id}/albums', [TravelController::class, 'createAlbum']);
-            Route::put('/travels/{travel_id}/albums/{album_id}', [TravelController::class, 'updateAlbum']);
+            Route::post('/travels/{travel_id}/albums/{album_id}', [TravelController::class, 'updateAlbum']);
             Route::delete('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'deleteAlbumPhotos']);
+            Route::get('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'getAlbumPhotos']);
             
-            Route::get('/photos/{photo}', [PhotoController::class, 'show']);
+            
         });
     });
 });

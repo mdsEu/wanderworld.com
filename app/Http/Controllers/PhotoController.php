@@ -6,6 +6,7 @@ use App\Exceptions\WanderException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+use Symfony\Component\HttpFoundation\Response;
 use TCG\Voyager\Facades\Voyager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +34,21 @@ class PhotoController extends Controller
     /**
      * 
      */
-    public function show(Photo $photo) {
-        return $photo->show();
+    public function show(Request $request, Photo $photo) {
+        try {
+            $token = $request->get('token', null);
+
+            if(!$token) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+            $user = auth($this->guard)->setToken($token)->user();
+
+            if(!$user) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+            return $photo->show();
+        } catch (\Exception $e) {
+            return \abort(Response::HTTP_UNAUTHORIZED);
+        }
     }
 }

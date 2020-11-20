@@ -15,6 +15,10 @@ class Album extends Model
     const STATUS_BLOCKED     = '3';
 
     protected $guarded = [];
+    protected $appends = [
+        'number_of_photos',
+        'four_photos',
+    ];
     
     protected $table = 'albums';
 
@@ -24,6 +28,14 @@ class Album extends Model
 
     public function photos() {
         return $this->hasMany(Photo::class,'album_id');
+    }
+
+    public function getNumberOfPhotosAttribute() {
+        return $this->activePhotos()->count();
+    }
+
+    public function getFourPhotosAttribute() {
+        return $this->activePhotos()->get()->slice(0, 4);
     }
 
     public function activePhotos() {

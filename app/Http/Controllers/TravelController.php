@@ -174,9 +174,17 @@ class TravelController extends Controller
      */
     public function getUserTravels(Request $request) {
         try {
-
             $user = auth($this->guard)->user();
-            return sendResponse($user->finishedTravels()->get());
+            /*$modelUser = AppUser::with(['finishedTravels' => function($travel){
+                $travel->with(['albums' => function($album){
+                    $album->whereIn('status', [
+                        Album::STATUS_ACCEPTED,
+                        Album::STATUS_REPORTED,
+                    ]);
+                }]);
+            }])->find($user->id);*/
+            $modelUser = AppUser::with('finishedTravels.activeAlbums')->find($user->id);
+            return sendResponse($modelUser->finishedTravels);
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
@@ -203,7 +211,7 @@ class TravelController extends Controller
             ]);
 
             $rules = [
-                'name' => 'required|max:20',
+                'name' => 'required|max:40',
                 'photos' => 'required',
                 'photos.*' => 'image|mimes:jpeg,png,jpg|max:'.setting('admin.file_size_limit', 2048),
             ] ;
@@ -220,7 +228,8 @@ class TravelController extends Controller
             $travel = $user->travels()->find($travel_id);
 
             if (!$travel) {
-                throw new WanderException( __('xx:Travel not found') );
+                DB::rollback();
+                return sendResponse(null,['travel' => __('xx:Travel not selected')],false);
             }
 
             $listPhotos = $request->file('photos');
@@ -244,8 +253,8 @@ class TravelController extends Controller
             }
             
             DB::commit();
-
-            return sendResponse($album->photos()->get());
+            $reAlbum = Album::with('activePhotos')->find($album->id);
+            return sendResponse($reAlbum);
         } catch (QueryException $qe) {
             DB::rollback();
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
@@ -275,7 +284,7 @@ class TravelController extends Controller
             ]);
 
             $rules = [
-                'name' => 'max:20',
+                'name' => 'max:40',
                 'photos.*' => 'image|mimes:jpeg,png,jpg|max:'.setting('admin.file_size_limit', 2048),
             ] ;
 
@@ -293,16 +302,23 @@ class TravelController extends Controller
 
 
             if (!$travel) {
-                throw new WanderException( __('xx:Travel not found') );
+                DB::rollback();
+                return sendResponse(null,['travel' => __('xx:Travel not selected')],false);
             }
 
-            $album = $user->albums()->find($album_id);
+            $album = $travel->albums()->find($album_id);
 
             if (!$album) {
                 throw new WanderException( __('xx:Album not found') );
             }
 
-            $album->name = trim($params['name']);
+            if (!empty($params['name'])) {
+                $album->name = trim($params['name']);
+
+                if(!$album->save()) {
+                    throw new WanderException(__('xx:Somethin was wrong saving the album name'));
+                }
+            }
 
             if( !empty($listPhotos) ) {
                 $disk = config('voyager.storage.disk');
@@ -321,7 +337,8 @@ class TravelController extends Controller
             
             DB::commit();
 
-            return sendResponse($album->photos()->get());
+            $reAlbum = Album::with('activePhotos')->find($album->id);
+            return sendResponse($reAlbum);
         } catch (QueryException $qe) {
             DB::rollback();
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
@@ -382,7 +399,39 @@ class TravelController extends Controller
                 }
             }
 
-            return sendResponse($album->photos()->get());
+            return sendResponse($album->activePhotos()->get());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Get album's photos
+     */
+    public function getAlbumPhotos(Request $request, $travel_id, $album_id) {
+        try {
+
+            $user = auth($this->guard)->user();
+            $travel = $user->travels()->find($travel_id);
+
+
+            if (!$travel) {
+                throw new WanderException( __('xx:Travel not found') );
+            }
+
+            $album = $travel->albums()->find($album_id);
+
+            if (!$album) {
+                throw new WanderException( __('xx:Album not found') );
+            }
+
+            return sendResponse($album->activePhotos()->get());
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {

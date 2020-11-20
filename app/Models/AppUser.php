@@ -273,7 +273,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function finishedTravels() {
         return $this->hasMany(Travel::class,'user_id')
-                        ->wherePivotIn('status', [
+                        ->whereIn('status', [
                             Travel::STATUS_ACCEPTED,
                             Travel::STATUS_FINISHED,
                         ]);

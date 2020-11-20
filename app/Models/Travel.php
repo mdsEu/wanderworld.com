@@ -47,7 +47,7 @@ class Travel extends Model
     }
 
     public function activeAlbums() {
-        return $this->hasMany(Album::class,'travel_id')->whereIn([
+        return $this->hasMany(Album::class,'travel_id')->whereIn('status', [
             Album::STATUS_ACCEPTED,
             Album::STATUS_REPORTED,
         ]);
