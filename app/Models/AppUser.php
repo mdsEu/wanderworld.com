@@ -274,9 +274,54 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function finishedTravels() {
         return $this->hasMany(Travel::class,'user_id')
                         ->whereIn('status', [
-                            Travel::STATUS_ACCEPTED,
+                            //Travel::STATUS_ACCEPTED,
                             Travel::STATUS_FINISHED,
                         ]);
+    }
+
+    /**
+     * Return user's schedule travels
+     * @return hasMany
+     */
+    public function scheduleTravels() {
+        return $this->hasMany(Travel::class,'user_id')
+                        ->whereIn('status', [
+                            Travel::STATUS_ACCEPTED,
+                            Travel::STATUS_PENDING,
+                            Travel::STATUS_CANCELLED,
+                        ]);
+    }
+
+    /**
+     * Return user's pending travels
+     * @return hasMany
+     */
+    public function pendingTravels() {
+        return $this->hasMany(Travel::class,'user_id')
+                        ->whereIn('status', [
+                            Travel::STATUS_PENDING,
+                        ]);
+    }
+
+    /**
+     * Return user's request travels
+     * @return hasMany
+     */
+    public function requestsTravels() {
+        return $this->hasMany(Travel::class,'host_id')->where('status', Travel::STATUS_PENDING);
+    }
+
+    /**
+     * Return user's schedule travels with additional relationship information
+     * @return hasMany
+     */
+    public function scheduleTravelsWithExtra() {
+        $modelUser = AppUser::with(['scheduleTravels' => function($relationTravel){
+            $relationTravel->with('activeAlbums');
+            $relationTravel->with('host');
+            $relationTravel->with('contacts');
+        }])->find($this->id);
+        return $modelUser->scheduleTravels;
     }
 
     /**

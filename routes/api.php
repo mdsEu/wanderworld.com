@@ -49,13 +49,21 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::post('/invitations', [UserController::class, 'sendInvitation']);
             Route::put('/invitations/answer', [UserController::class, 'acceptOrRejectInvitation']);
             Route::post('/travels', [TravelController::class, 'sendHostRequestTravel']);
+
             Route::get('/travels', [TravelController::class, 'getUserTravels']);
+            Route::get('/schedule-travels', [TravelController::class, 'getUserScheduleTravels']);
+            Route::get('/requests-travels', [TravelController::class, 'getUserRequestsTravels']);
+            
+            
             
             Route::post('/travels/{travel_id}/albums', [TravelController::class, 'createAlbum']);
             Route::post('/travels/{travel_id}/albums/{album_id}', [TravelController::class, 'updateAlbum']);
             Route::delete('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'deleteAlbumPhotos']);
             Route::get('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'getAlbumPhotos']);
-            
+            Route::get('/notifications-counters', [TravelController::class, 'countersNotifications']);
+
+            Route::post('/travels/{travel_id}/change-status', [TravelController::class, 'changeTravelStatus']);
+            Route::put('/travels/{travel_id}/change-dates', [TravelController::class, 'changeTravelDates']);
             
         });
     });

@@ -20,15 +20,11 @@ class Travel extends Model
     const STATUS_REJECTED    = '3';
     const STATUS_CANCELLED   = '4';
     const STATUS_FINISHED    = '5';
+    const STATUS_REMOVED     = '6';
 
     protected $guarded = [];
     
     protected $table = 'travels';
-
-    protected $dates = [
-        'start_at',
-        'end_at',
-    ];
 
     public function user() {
         return $this->belongsTo(AppUser::class,'user_id');

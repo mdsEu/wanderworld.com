@@ -45,6 +45,14 @@ class TravelController extends Controller
             ]);
 
             $rules = [
+                'start' => [
+                    function ($attribute, $value, $fail) {
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
+                            $fail(__('xx:The dates for your travel are not valid.'));
+                            return;
+                        }
+                    }
+                ],
                 'end' => [
                     function ($attribute, $value, $fail) {
                         if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
@@ -95,11 +103,11 @@ class TravelController extends Controller
 
             $now = Carbon::now('UTC');
 
-            if($now->diffInDays($startDate) <= 0) {
-                throw new WanderException(__('xx:Dates range selecction not valid'));
+            if($now->diffInDays($startDate, false) <= 0) {
+                throw new WanderException(__('xx:Dates range selection not valid'));
             }
-            if($startDate->diffInDays($endDate) <= 0) {
-                throw new WanderException(__('xx:Dates range selecction not valid'));
+            if($startDate->diffInDays($endDate, false) <= 0) {
+                throw new WanderException(__('xx:Dates range selection not valid'));
             }
 
 
@@ -175,15 +183,11 @@ class TravelController extends Controller
     public function getUserTravels(Request $request) {
         try {
             $user = auth($this->guard)->user();
-            /*$modelUser = AppUser::with(['finishedTravels' => function($travel){
-                $travel->with(['albums' => function($album){
-                    $album->whereIn('status', [
-                        Album::STATUS_ACCEPTED,
-                        Album::STATUS_REPORTED,
-                    ]);
-                }]);
-            }])->find($user->id);*/
-            $modelUser = AppUser::with('finishedTravels.activeAlbums')->find($user->id);
+            $modelUser = AppUser::with(['finishedTravels' => function($relationTravel){
+                $relationTravel->with('activeAlbums');
+                $relationTravel->with('host');
+                $relationTravel->with('contacts');
+            }])->find($user->id);
             return sendResponse($modelUser->finishedTravels);
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
@@ -195,6 +199,49 @@ class TravelController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+    /**
+     * Get user's travels
+     */
+    public function getUserScheduleTravels(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            
+            return sendResponse($user->scheduleTravelsWithExtra());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Get user's requests travels
+     */
+    public function getUserRequestsTravels(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            $modelUser = AppUser::with(['requestsTravels' => function($relationTravel){
+                $relationTravel->with('activeAlbums');
+                $relationTravel->with('user');
+                $relationTravel->with('contacts');
+            }])->find($user->id);
+            return sendResponse($modelUser->requestsTravels);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+    
 
 
     /**
@@ -316,7 +363,7 @@ class TravelController extends Controller
                 $album->name = trim($params['name']);
 
                 if(!$album->save()) {
-                    throw new WanderException(__('xx:Somethin was wrong saving the album name'));
+                    throw new WanderException(__('xx:Something was wrong saving the album name'));
                 }
             }
 
@@ -432,6 +479,162 @@ class TravelController extends Controller
             }
 
             return sendResponse($album->activePhotos()->get());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Return counters for notifications section
+     */
+    public function countersNotifications(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+
+            return sendResponse(array(
+                'finished_travels' => $user->finishedTravels()->count(),
+                'schedule_travels' => $user->scheduleTravels()->count(),
+                'requests_travels' => $user->requestsTravels()->count(),
+                'recomendations' => 0,
+            ));
+
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Change the travel's status
+     */
+    public function changeTravelStatus(Request $request, $travel_id) {
+        try {
+
+            $params = $request->only([
+                'travel_status',
+            ]);
+
+            $rules = [
+                'travel_status' => [
+                    'required',
+                    Rule::in([
+                        Travel::STATUS_ACCEPTED,
+                        Travel::STATUS_CANCELLED,
+                        Travel::STATUS_PENDING,
+                        Travel::STATUS_REJECTED,
+                        Travel::STATUS_REMOVED,
+                        Travel::STATUS_FINISHED,
+                    ]),
+                ],
+            ] ;
+
+            $validator = Validator::make($params, $rules);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+            $user = auth($this->guard)->user();
+
+            $travel = $user->scheduleTravels()->find($travel_id);
+
+            if(!$travel) {
+                throw new WanderException( __('xx:Travel not found') );
+            }
+
+            $travel->status = $params['travel_status'];
+
+            if(!$travel->save()) {
+                throw new WanderException(__('xx:Something was wrong changing the travel status'));
+            }
+
+            return sendResponse($user->scheduleTravelsWithExtra());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Change the travel's range dates
+     */
+    public function changeTravelDates(Request $request, $travel_id) {
+        try {
+
+            $params = $request->only([
+                'start',
+                'end',
+            ]);
+
+            $rules = [
+                'start' => [
+                    function ($attribute, $value, $fail) {
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
+                            $fail(__('xx:The dates for your travel are not valid.'));
+                            return;
+                        }
+                    }
+                ],
+                'end' => [
+                    function ($attribute, $value, $fail) {
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
+                            $fail(__('xx:The dates for your travel are not valid.'));
+                            return;
+                        }
+                    }
+                ],
+            ] ;
+
+            $validator = Validator::make($params, $rules);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            $startDate = Carbon::createFromFormat('Y-m-d',$params['start']);
+            $endDate = Carbon::createFromFormat('Y-m-d',$params['end']);
+
+            $now = Carbon::now('UTC');
+
+            if($now->diffInDays($startDate, false) <= 0) {
+                throw new WanderException(__('xx:Dates range selection not valid'));
+            }
+            if($startDate->diffInDays($endDate, false) <= 0) {
+                throw new WanderException(__('xx:Dates range selection not valid'));
+            }
+            
+            $user = auth($this->guard)->user();
+
+            $travel = $user->scheduleTravels()->find($travel_id);
+
+            if(!$travel) {
+                throw new WanderException( __('xx:Travel not found') );
+            }
+
+            $travel->start_at = $startDate->format('Y-m-d');
+            $travel->end_at = $endDate->format('Y-m-d');
+
+            if(!$travel->save()) {
+                throw new WanderException(__('xx:Something was wrong changing the travel dates'));
+            }
+
+            return sendResponse($user->scheduleTravelsWithExtra());
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
