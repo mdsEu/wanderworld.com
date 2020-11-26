@@ -225,12 +225,7 @@ class TravelController extends Controller
     public function getUserRequestsTravels(Request $request) {
         try {
             $user = auth($this->guard)->user();
-            $modelUser = AppUser::with(['requestsTravels' => function($relationTravel){
-                $relationTravel->with('activeAlbums');
-                $relationTravel->with('user');
-                $relationTravel->with('contacts');
-            }])->find($user->id);
-            return sendResponse($modelUser->requestsTravels);
+            return sendResponse($user->requestsTravelsWithExtra());
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
@@ -297,6 +292,12 @@ class TravelController extends Controller
                     'path' => $path,
                     'disk' => $disk,
                 ]);
+            }
+
+            $travel->status = Travel::STATUS_FINISHED;
+
+            if(!$travel->save()) {
+                throw new WanderException(__('xx:Something was wrong saving the album'));
             }
             
             DB::commit();
@@ -501,7 +502,7 @@ class TravelController extends Controller
                 'finished_travels' => $user->finishedTravels()->count(),
                 'schedule_travels' => $user->scheduleTravels()->count(),
                 'requests_travels' => $user->requestsTravels()->count(),
-                'recomendations' => 0,
+                'recomendations' => $user->visitRecomendations()->count(),
             ));
 
         } catch (QueryException $qe) {
@@ -524,8 +525,9 @@ class TravelController extends Controller
 
             $params = $request->only([
                 'travel_status',
+                'func_travels',
             ]);
-
+            
             $rules = [
                 'travel_status' => [
                     'required',
@@ -538,6 +540,13 @@ class TravelController extends Controller
                         Travel::STATUS_FINISHED,
                     ]),
                 ],
+                'func_travels' => [
+                    'required',
+                    Rule::in([
+                        'scheduleTravelsWithExtra',
+                        'requestsTravelsWithExtra',
+                    ]),
+                ],
             ] ;
 
             $validator = Validator::make($params, $rules);
@@ -547,19 +556,38 @@ class TravelController extends Controller
             }
             $user = auth($this->guard)->user();
 
-            $travel = $user->scheduleTravels()->find($travel_id);
+            $travel = $user->travels()->find($travel_id);
+
+            $newStatus = $params['travel_status'];
 
             if(!$travel) {
-                throw new WanderException( __('xx:Travel not found') );
+                
+                $travel = $user->hostTravels()->find($travel_id);
+                if($travel) {
+                    switch ($newStatus) {
+                        case Travel::STATUS_ACCEPTED:
+                            $travel->notifyAcceptHostRequest();
+                            break;
+                        case Travel::STATUS_REJECTED:
+                            $travel->notifyRejectHostRequest();
+                            break;
+                        
+                        default:
+                            throw new WanderException( __('xx:Travel not found') );
+                            break;
+                    }
+                } else {
+                    throw new WanderException( __('xx:Travel not found') );
+                }
             }
 
-            $travel->status = $params['travel_status'];
+            $travel->status = $newStatus;
 
             if(!$travel->save()) {
                 throw new WanderException(__('xx:Something was wrong changing the travel status'));
             }
-
-            return sendResponse($user->scheduleTravelsWithExtra());
+            
+            return sendResponse(call_user_func(array($user, $params['func_travels'])));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {

@@ -15,12 +15,12 @@ class Travel extends Model
     const RTYPE_HOST_GUIDER = 'HG';
     const RTYPE_GUIDER      = 'G';
 
-    const STATUS_PENDING     = '1';
-    const STATUS_ACCEPTED    = '2';
-    const STATUS_REJECTED    = '3';
-    const STATUS_CANCELLED   = '4';
-    const STATUS_FINISHED    = '5';
-    const STATUS_REMOVED     = '6';
+    const STATUS_PENDING        = '1';
+    const STATUS_ACCEPTED       = '2';
+    const STATUS_REJECTED       = '3';
+    const STATUS_CANCELLED      = '4';
+    const STATUS_FINISHED       = '5';
+    const STATUS_REMOVED        = '6';
 
     protected $guarded = [];
     
@@ -47,5 +47,17 @@ class Travel extends Model
             Album::STATUS_ACCEPTED,
             Album::STATUS_REPORTED,
         ]);
+    }
+
+    public function notifyAcceptHostRequest() {
+        /**
+         * To DO
+         */
+    }
+
+    public function notifyRejectHostRequest() {
+        /**
+         * To DO
+         */
     }
 }

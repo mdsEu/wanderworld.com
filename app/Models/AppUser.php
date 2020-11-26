@@ -268,6 +268,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
+     * Return user's travels
+     * @return hasMany
+     */
+    public function hostTravels() {
+        return $this->hasMany(Travel::class,'host_id');
+    }
+
+    /**
      * Return user's finished travels
      * @return hasMany
      */
@@ -308,7 +316,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return hasMany
      */
     public function requestsTravels() {
-        return $this->hasMany(Travel::class,'host_id')->where('status', Travel::STATUS_PENDING);
+        return $this->hasMany(Travel::class,'host_id')
+                        ->whereIn('status', [
+                            Travel::STATUS_ACCEPTED,
+                            Travel::STATUS_PENDING,
+                        ]);
     }
 
     /**
@@ -322,6 +334,37 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $relationTravel->with('contacts');
         }])->find($this->id);
         return $modelUser->scheduleTravels;
+    }
+
+    /**
+     * Return user's requests travels with additional relationship information
+     * @return hasMany
+     */
+    public function requestsTravelsWithExtra() {
+        $modelUser = AppUser::with(['requestsTravels' => function($relationTravel){
+            $relationTravel->with('activeAlbums');
+            $relationTravel->with('user');
+            $relationTravel->with('host');
+            $relationTravel->with('contacts');
+        }])->find($this->id);
+        return $modelUser->requestsTravels;
+    }
+
+
+    /**
+     * Return user's recomendations
+     * @return hasMany
+     */
+    public function myRecomendations() {
+        return $this->hasMany(Recomendation::class,'user_id');
+    }
+
+    /**
+     * Return user's recomendations
+     * @return hasMany
+     */
+    public function visitRecomendations() {
+        return $this->hasMany(Recomendation::class,'invited_id');
     }
 
     /**

@@ -8,7 +8,6 @@ use App\Traits\ParseDates;
 
 class Comment extends Model
 {
-    use ParseDates;
     
     protected $guarded = [];
 

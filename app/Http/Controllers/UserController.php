@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\AppUser;
 use App\Models\Invitation;
+use App\Models\Recomendation;
 
 use JWTAuth;
 
@@ -504,6 +505,31 @@ class UserController extends Controller
             $commons = $contactUser->activeFriends()->whereIn('friend_id',$myFriendsIds)->get();
 
             return sendResponse($commons);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Return user visits recommended travels
+     */
+    public function getVisitRecomendations(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            $recomendationsLimit = intval(setting('admin.recomendations_list_limit', 20));
+
+            $modelUser = AppUser::with(['visitRecomendations' => function($relationTravel){
+                $relationTravel->with('user');
+                $relationTravel->with('invited');
+            }])->find($user->id);
+
+            return sendResponse(getPaginate($modelUser->visitRecomendations, $recomendationsLimit));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
