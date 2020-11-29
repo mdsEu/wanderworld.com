@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Recomendation extends Model
+class Recommendation extends Model
 {
     use HasFactory;
 
     
     protected $guarded = [];
     
-    protected $table = 'recomendations';
+    protected $table = 'recommendations';
 
     public function user() {
         return $this->belongsTo(AppUser::class,'user_id');
@@ -20,6 +20,10 @@ class Recomendation extends Model
 
     public function invited() {
         return $this->belongsTo(AppUser::class,'invited_id');
+    }
+
+    public function travel() {
+        return $this->belongsTo(Travel::class,'travel_id');
     }
 
 }

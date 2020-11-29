@@ -50,12 +50,13 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::put('/invitations/answer', [UserController::class, 'acceptOrRejectInvitation']);
             Route::post('/travels', [TravelController::class, 'sendHostRequestTravel']);
 
-            Route::get('/travels', [TravelController::class, 'getUserTravels']);
+            Route::get('/finished-travels', [TravelController::class, 'getUserFinishedTravels']);
             Route::get('/schedule-travels', [TravelController::class, 'getUserScheduleTravels']);
             Route::get('/requests-travels', [TravelController::class, 'getUserRequestsTravels']);
             
             
             
+            Route::get('/travels/{travel_id}', [TravelController::class, 'getUserTravel']);
             Route::post('/travels/{travel_id}/albums', [TravelController::class, 'createAlbum']);
             Route::post('/travels/{travel_id}/albums/{album_id}', [TravelController::class, 'updateAlbum']);
             Route::delete('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'deleteAlbumPhotos']);
@@ -64,6 +65,9 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
             Route::post('/travels/{travel_id}/change-status', [TravelController::class, 'changeTravelStatus']);
             Route::put('/travels/{travel_id}/change-dates', [TravelController::class, 'changeTravelDates']);
+
+            Route::post('/travels/{travel_id}/recommendations', [TravelController::class, 'createRecommendation']);
+
             
         });
     });
@@ -94,7 +98,10 @@ Route::group(['prefix' => 'auth'], function () {
             Route::get('/me/profile', [UserController::class, 'meGetProfileInfo']);
             Route::post('/me/profile', [UserController::class, 'meUpdateProfileInfo']);
             Route::get('/me/common-friends/{contact_id}', [UserController::class, 'getCommonFriends']);
-            Route::get('/me/visit-recomendations', [UserController::class, 'getVisitRecomendations']);
+            Route::get('/me/visit-recommendations', [UserController::class, 'getVisitRecommendations']);
+
+            Route::get('/me/friends-level2', [UserController::class, 'getFriendsUntilLevel2']);
+            Route::get('/me/friends-level2/reduced', [UserController::class, 'getFriendsUntilLevel2']);
             
             
             Route::post('/logout', [AuthController::class, 'logout']);

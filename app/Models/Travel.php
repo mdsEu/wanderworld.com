@@ -49,6 +49,10 @@ class Travel extends Model
         ]);
     }
 
+    public function recommendations() {
+        return $this->hasMany(Recommendation::class,'travel_id');
+    }
+
     public function notifyAcceptHostRequest() {
         /**
          * To DO

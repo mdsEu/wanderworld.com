@@ -633,6 +633,9 @@ if (!function_exists('getPaginate')) {
         if(!$page || !is_numeric($page)) {
             $page = request()->get('page', 1);
             $page = is_numeric($page) ? intval($page) : 1;
+            if($page == -1) {
+                return $items;
+            }
         }
 
         $items = $items instanceof Collection ? $items : Collection::make($items);

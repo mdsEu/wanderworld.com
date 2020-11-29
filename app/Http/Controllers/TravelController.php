@@ -18,6 +18,7 @@ use App\Models\Invitation;
 use App\Models\Travel;
 use App\Models\Photo;
 use App\Models\Album;
+use App\Models\Recommendation;
 
 class TravelController extends Controller
 {
@@ -176,11 +177,34 @@ class TravelController extends Controller
         }
     }
 
+    /**
+     * Get user's travel
+     */
+    public function getUserTravel(Request $request, $travel_id) {
+        try {
+            $user = auth($this->guard)->user();
+            $modelUser = AppUser::with(['travels' => function($relationTravel){
+                $relationTravel->with('activeAlbums.activePhotos');
+                $relationTravel->with('host');
+                $relationTravel->with('contacts');
+            }])->find($user->id);
+            return sendResponse($modelUser->travels->where('id',$travel_id)->first());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
 
     /**
      * Get user's travels
      */
-    public function getUserTravels(Request $request) {
+    public function getUserFinishedTravels(Request $request) {
         try {
             $user = auth($this->guard)->user();
             $modelUser = AppUser::with(['finishedTravels' => function($relationTravel){
@@ -502,7 +526,7 @@ class TravelController extends Controller
                 'finished_travels' => $user->finishedTravels()->count(),
                 'schedule_travels' => $user->scheduleTravels()->count(),
                 'requests_travels' => $user->requestsTravels()->count(),
-                'recomendations' => $user->visitRecomendations()->count(),
+                'recommendations' => $user->visitRecommendations()->count(),
             ));
 
         } catch (QueryException $qe) {
@@ -673,4 +697,54 @@ class TravelController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+
+    /**
+     * Create a the travel recommendation
+     */
+    public function createRecommendation(Request $request, $travel_id) {
+        try {
+
+            $user = auth($this->guard)->user();
+
+            $travel = $user->travels()->find($travel_id);
+
+            if(!$travel) {
+                throw new WanderException( __('xx:Travel not found') );
+            }
+
+            $recommendationsArr = [];
+
+            $friendsIds = $request->get('friends_ids', []);
+            $foundR  = null;
+            if( is_array($friendsIds) ) {
+                foreach($friendsIds as $friend_id) {
+                    $foundR = Recommendation::where('user_id', $user->id)
+                                    ->where('invited_id', $friend_id)
+                                    ->where('travel_id', $travel->id)
+                                    ->get()->first();
+                    
+                    if(!$foundR) {
+                        $recommendationsArr[] = [
+                            'user_id' => $user->id,
+                            'invited_id' => $friend_id,
+                        ];
+                    }
+                }
+            }
+
+            $recommendations = $travel->recommendations()->createMany($recommendationsArr);
+
+            return sendResponse();
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+    
 }

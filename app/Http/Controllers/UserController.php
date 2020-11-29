@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\AppUser;
 use App\Models\Invitation;
-use App\Models\Recomendation;
+use App\Models\Recommendation;
 
 use JWTAuth;
 
@@ -519,17 +519,18 @@ class UserController extends Controller
     /**
      * Return user visits recommended travels
      */
-    public function getVisitRecomendations(Request $request) {
+    public function getVisitRecommendations(Request $request) {
         try {
             $user = auth($this->guard)->user();
-            $recomendationsLimit = intval(setting('admin.recomendations_list_limit', 20));
+            $recommendationsLimit = intval(setting('admin.recommendations_list_limit', 20));
 
-            $modelUser = AppUser::with(['visitRecomendations' => function($relationTravel){
+            $modelUser = AppUser::with(['visitRecommendations' => function($relationTravel){
                 $relationTravel->with('user');
                 $relationTravel->with('invited');
+                $relationTravel->with('travel.host');
             }])->find($user->id);
 
-            return sendResponse(getPaginate($modelUser->visitRecomendations, $recomendationsLimit));
+            return sendResponse(getPaginate($modelUser->visitRecommendations, $recommendationsLimit));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
@@ -540,4 +541,29 @@ class UserController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+
+    /**
+     * Return user's friends nesting friends of my friends
+     */
+    public function getFriendsUntilLevel2(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            
+            $friendsLimit = intval(setting('admin.friends_list_limit', 20));
+
+            $friends = $user->activeFriendsLevel( 2 );
+
+            return sendResponse(getPaginate($friends, $friendsLimit));
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
 }

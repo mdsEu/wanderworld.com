@@ -79,6 +79,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         'chat_key',
         'city_name',
         'country_name',
+        //'level',
     ];
 
     public $numberOfFriendsRequests;
@@ -179,11 +180,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $myAppends['times_change_city'] = $this->getTimesChangeCity();
         }
         
-        if( $request->is('api/auth/me/common-friends/*') ) {
+        if( 
+            $request->is('api/auth/me/common-friends/*') ||
+            $request->is('api/auth/me/friends-level2/reduced')
+        ) {
             $temp = array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
             $re = [];
             foreach($temp as $key=>$item) {
-                if(!in_array($key,['id','name','avatar','city_name','country_code'])) {
+                if(!in_array($key,['id','name','avatar','city_name','country_code','country_name','level'])) {
                     continue;
                 }
                 $re[$key] = $item;
@@ -241,13 +245,16 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
         $userFriends = $user->activeFriends()->get();
         foreach($userFriends as $friend) {
-
             $found = $list->search(function ($f, $key) use ($friend, $meId) {
                 return $f->id === $friend->id;
             });
             if($found === false && $meId !== $friend->id) {
+                $friend->level = $level + 1;
                 $list->push($friend);
             }
+        }
+
+        foreach($userFriends as $friend) {
             $this->reActiveFriendsLevel($levelReached, $level + 1, $friend, $list);
         }
     }
@@ -352,19 +359,19 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
 
     /**
-     * Return user's recomendations
+     * Return user's recommendations
      * @return hasMany
      */
-    public function myRecomendations() {
-        return $this->hasMany(Recomendation::class,'user_id');
+    public function myRecommendations() {
+        return $this->hasMany(Recommendation::class,'user_id');
     }
 
     /**
-     * Return user's recomendations
+     * Return user's recommendations
      * @return hasMany
      */
-    public function visitRecomendations() {
-        return $this->hasMany(Recomendation::class,'invited_id');
+    public function visitRecommendations() {
+        return $this->hasMany(Recommendation::class,'invited_id');
     }
 
     /**
@@ -430,6 +437,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getPublicName() {
         return $this->name;
     }
+
+    /**
+     * Get user's level
+     * @return Integer
+     */
+    /*public function getLevelAttribute() {
+        return 1;
+    }*/
 
     /**
      * Get user meta value
