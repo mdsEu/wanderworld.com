@@ -872,6 +872,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getProfileInfo() {
         $bundle = new \stdClass;
         
+        $bundle->id = $this->id;
+        $bundle->times_host = 1;
+        $bundle->times_guider = 5;
+        $bundle->number_travels = 0;
+
         $bundle->name = $this->name;
         
         $bundle->email = $this->email;

@@ -68,6 +68,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
             Route::post('/travels/{travel_id}/recommendations', [TravelController::class, 'createRecommendation']);
 
+            Route::get('/friends/{friend_id}/profile', [UserController::class, 'getFriendProfileInfo']);
             
         });
     });

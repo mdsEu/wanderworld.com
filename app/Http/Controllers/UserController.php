@@ -491,6 +491,25 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Function to get the friend profile information
+     */
+    public function getFriendProfileInfo(Request $request, $friend_id) {
+        try {
+            $user = auth($this->guard)->user();
+            $friend = AppUser::findOrFail($friend_id);
+            return sendResponse($friend->getProfileInfo());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
 
     /**
      * Return common friend of the user logged with other user
