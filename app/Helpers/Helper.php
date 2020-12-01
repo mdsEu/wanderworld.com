@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use App\Models\AppUser;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use AppleSignIn\ASDecoder;
 use App\Mail\GenericMail;
 use Illuminate\Support\Facades\Mail;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 use App\Exceptions\WanderException;
+
 
 
 if (!function_exists('getStrFakeVal')) {
@@ -339,7 +341,8 @@ if (!function_exists('sendVerificationEmail')) {
             return sendMail((new GenericMail(
                 __('auth.recovery_password_title_email'),
                 __('auth.recovery_password_description_email'),
-                 $button
+                $button,
+                Storage::disk(config('voyager.storage.disk'))->url('mails/recovery-mailings.png')
             ))->subject(__('auth.recovery_password_subject_email'))
                 ->to($user->email));
         } catch (\Exception $e) {
@@ -369,7 +372,8 @@ if (!function_exists('sendRecoveryAccountEmail')) {
             return sendMail((new GenericMail(
                 __('auth.recovery_account_title_email'),
                 __('auth.recovery_account_description_email'),
-                 $button
+                 $button,
+                 Storage::disk(config('voyager.storage.disk'))->url('mails/recovery-mailings.png')
             ))->subject(__('auth.recovery_account_subject_email'))
                 ->to($user->email));
         } catch (\Exception $e) {
@@ -653,6 +657,7 @@ if (!function_exists('getPaginate')) {
 
 
 /**
+ * Read countries json
  * @return Array
  */
 function readJsonCountries() {

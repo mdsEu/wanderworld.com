@@ -12,7 +12,8 @@
 		"name": "Aruba",
 		"timezones": [
 			"America/Aruba"
-		]
+		],
+		"place_id": "ChIJ23da4s84hY4RL4yBiT6KavE"
 	},
 	{
 		"capital": "Kabul",
@@ -27,7 +28,8 @@
 		"name": "Afghanistan",
 		"timezones": [
 			"Asia/Kabul"
-		]
+		],
+		"place_id": "ChIJbQL_-LZu0TgReNqWvg1GtfM"
 	},
 	{
 		"capital": "Luanda",
@@ -42,7 +44,8 @@
 		"name": "Angola",
 		"timezones": [
 			"Africa/Luanda"
-		]
+		],
+		"place_id": "ChIJJ4utyk7yURoRPU5KDZ0oClk"
 	},
 	{
 		"capital": "The Valley",
@@ -57,7 +60,8 @@
 		"name": "Anguilla",
 		"timezones": [
 			"America/Anguilla"
-		]
+		],
+		"place_id": "ChIJ5QHvjnRjDowRgdTghNNqnTs"
 	},
 	{
 		"capital": "Mariehamn",
@@ -72,7 +76,8 @@
 		"name": "Åland Islands",
 		"timezones": [
 			"Europe/Mariehamn"
-		]
+		],
+		"place_id": "ChIJGevhxGjkikYR7Y5Cc4P2Q80"
 	},
 	{
 		"capital": "Tirana",
@@ -87,7 +92,8 @@
 		"name": "Albania",
 		"timezones": [
 			"Europe/Tirane"
-		]
+		],
+		"place_id": "ChIJLUwnvfM7RRMR7juY1onlfAc"
 	},
 	{
 		"capital": "Andorra la Vella",
@@ -102,7 +108,8 @@
 		"name": "Andorra",
 		"timezones": [
 			"Europe/Andorra"
-		]
+		],
+		"place_id": "ChIJlfCemC71pRIRkn_qeNc-yQc"
 	},
 	{
 		"capital": "Abu Dhabi",
@@ -117,7 +124,8 @@
 		"name": "United Arab Emirates",
 		"timezones": [
 			"Asia/Dubai"
-		]
+		],
+		"place_id": "ChIJvRKrsd9IXj4RpwoIwFYv0zM"
 	},
 	{
 		"capital": "Buenos Aires",
@@ -143,7 +151,8 @@
 			"America/Argentina/San_Luis",
 			"America/Argentina/Rio_Gallegos",
 			"America/Argentina/Ushuaia"
-		]
+		],
+		"place_id": "ChIJZ8b99fXKvJURqA_wKpl3Lz0"
 	},
 	{
 		"capital": "Yerevan",
@@ -158,7 +167,8 @@
 		"name": "Armenia",
 		"timezones": [
 			"Asia/Yerevan"
-		]
+		],
+		"place_id": "ChIJx7pz54RWFUARIy2C63p1tNA"
 	},
 	{
 		"capital": "Pago Pago",
@@ -173,7 +183,8 @@
 		"name": "American Samoa",
 		"timezones": [
 			"Pacific/Pago_Pago"
-		]
+		],
+		"place_id": "ChIJyf1IkreEpnER3UuuLZ5z7vM"
 	},
 	{
 		"capital": null,
@@ -197,7 +208,8 @@
 			"Antarctica/Syowa",
 			"Antarctica/Troll",
 			"Antarctica/Vostok"
-		]
+		],
+		"place_id": "ChIJS3WQM3uWuaQRdSAPdB--Um4"
 	},
 	{
 		"capital": "Saint John's",
@@ -212,7 +224,8 @@
 		"name": "Antigua and Barbuda",
 		"timezones": [
 			"America/Antigua"
-		]
+		],
+		"place_id": "ChIJwdG4bbluDYwRlHmL4Yg3aic"
 	},
 	{
 		"capital": "Canberra",
@@ -239,7 +252,8 @@
 			"Australia/Darwin",
 			"Australia/Perth",
 			"Australia/Eucla"
-		]
+		],
+		"place_id": "ChIJ38WHZwf9KysRUhNblaFnglM"
 	},
 	{
 		"capital": "Vienna",
@@ -254,7 +268,8 @@
 		"name": "Austria",
 		"timezones": [
 			"Europe/Vienna"
-		]
+		],
+		"place_id": "ChIJfyqdJZsHbUcRr8Hk3XvUEhA"
 	},
 	{
 		"capital": "Baku",
@@ -269,7 +284,8 @@
 		"name": "Azerbaijan",
 		"timezones": [
 			"Asia/Baku"
-		]
+		],
+		"place_id": "ChIJ3x2iGtl8MEARCM2DPmtSyeY"
 	},
 	{
 		"capital": "Bujumbura",
@@ -284,7 +300,8 @@
 		"name": "Burundi",
 		"timezones": [
 			"Africa/Bujumbura"
-		]
+		],
+		"place_id": "ChIJW_FUNtNEwRkRjewxVg5NI7E"
 	},
 	{
 		"capital": "Brussels",
@@ -299,7 +316,8 @@
 		"name": "Belgium",
 		"timezones": [
 			"Europe/Brussels"
-		]
+		],
+		"place_id": "ChIJl5fz7WR9wUcR8g_mObTy60c"
 	},
 	{
 		"capital": "Porto-Novo",
@@ -314,7 +332,8 @@
 		"name": "Benin",
 		"timezones": [
 			"Africa/Porto-Novo"
-		]
+		],
+		"place_id": "ChIJlVZ6BCtUIxAR9S5iy_h3suw"
 	},
 	{
 		"capital": "Ouagadougou",
@@ -329,7 +348,8 @@
 		"name": "Burkina Faso",
 		"timezones": [
 			"Africa/Ouagadougou"
-		]
+		],
+		"place_id": "ChIJm3Cm1SbKLQ4Rq22DRu0Kkyc"
 	},
 	{
 		"capital": "Dhaka",
@@ -344,7 +364,8 @@
 		"name": "Bangladesh",
 		"timezones": [
 			"Asia/Dhaka"
-		]
+		],
+		"place_id": "ChIJp4vhgO2qrTARa_zhxOAoLQ8"
 	},
 	{
 		"capital": "Sofia",
@@ -359,7 +380,8 @@
 		"name": "Bulgaria",
 		"timezones": [
 			"Europe/Sofia"
-		]
+		],
+		"place_id": "ChIJifBbyMH-qEAREEy_aRKgAAA"
 	},
 	{
 		"capital": "Manama",
@@ -374,7 +396,8 @@
 		"name": "Bahrain",
 		"timezones": [
 			"Asia/Bahrain"
-		]
+		],
+		"place_id": "ChIJEaJHak5SSD4RRhDa2-JQlC4"
 	},
 	{
 		"capital": "Nassau",
@@ -389,7 +412,8 @@
 		"name": "Bahamas",
 		"timezones": [
 			"America/Nassau"
-		]
+		],
+		"place_id": "ChIJPQ9Isjua1ogR5XnHaoO0PhM"
 	},
 	{
 		"capital": "Sarajevo",
@@ -404,7 +428,8 @@
 		"name": "Bosnia and Herzegovina",
 		"timezones": [
 			"Europe/Sarajevo"
-		]
+		],
+		"place_id": "ChIJ16k3xxWiSxMRDOm3QwPi920"
 	},
 	{
 		"capital": "Gustavia",
@@ -419,7 +444,8 @@
 		"name": "Saint Barthélemy",
 		"timezones": [
 			"America/St_Barthelemy"
-		]
+		],
+		"place_id": "ChIJnej-KlR1DowR5nUq6msRdAE"
 	},
 	{
 		"capital": "Minsk",
@@ -434,7 +460,8 @@
 		"name": "Belarus",
 		"timezones": [
 			"Europe/Minsk"
-		]
+		],
+		"place_id": "ChIJgUit4oQl2kYREIzsgdGhAAA"
 	},
 	{
 		"capital": "Belmopan",
@@ -449,7 +476,8 @@
 		"name": "Belize",
 		"timezones": [
 			"America/Belize"
-		]
+		],
+		"place_id": "ChIJ-foSwT5bXI8RTuMeP02KSvY"
 	},
 	{
 		"capital": "Hamilton",
@@ -464,7 +492,8 @@
 		"name": "Bermuda",
 		"timezones": [
 			"Atlantic/Bermuda"
-		]
+		],
+		"place_id": "ChIJpbBohp4TLYoRvLiZLMf93zw"
 	},
 	{
 		"capital": "Sucre",
@@ -479,7 +508,8 @@
 		"name": "Bolivia",
 		"timezones": [
 			"America/La_Paz"
-		]
+		],
+		"place_id": "ChIJlaK7d4nfXpERv-0VAbvCnhw"
 	},
 	{
 		"capital": "Brasília",
@@ -509,7 +539,8 @@
 			"America/Manaus",
 			"America/Eirunepe",
 			"America/Rio_Branco"
-		]
+		],
+		"place_id": "ChIJzyjM68dZnAARYz4p8gYVWik"
 	},
 	{
 		"capital": "Bridgetown",
@@ -524,7 +555,8 @@
 		"name": "Barbados",
 		"timezones": [
 			"America/Barbados"
-		]
+		],
+		"place_id": "ChIJoxoyrvvxQ4wRKzb0jLNR7A4"
 	},
 	{
 		"capital": "Bandar Seri Begawan",
@@ -539,7 +571,8 @@
 		"name": "Brunei",
 		"timezones": [
 			"Asia/Brunei"
-		]
+		],
+		"place_id": "ChIJ0bm4BEuZGDIR1toJ3YA1_l0"
 	},
 	{
 		"capital": "Thimphu",
@@ -554,7 +587,8 @@
 		"name": "Bhutan",
 		"timezones": [
 			"Asia/Thimphu"
-		]
+		],
+		"place_id": "ChIJz5XFc6WSWzcR2rw2KGWsDLs"
 	},
 	{
 		"capital": "Gaborone",
@@ -569,7 +603,8 @@
 		"name": "Botswana",
 		"timezones": [
 			"Africa/Gaborone"
-		]
+		],
+		"place_id": "ChIJESJF0SFDpB4Re68Vhyp8ZPE"
 	},
 	{
 		"capital": "Bangui",
@@ -584,7 +619,8 @@
 		"name": "Central African Republic",
 		"timezones": [
 			"Africa/Bangui"
-		]
+		],
+		"place_id": "ChIJt6KGjVPpuBARJIBcWgLGm7g"
 	},
 	{
 		"capital": "Ottawa",
@@ -626,7 +662,8 @@
 			"America/Vancouver",
 			"America/Whitehorse",
 			"America/Dawson"
-		]
+		],
+		"place_id": "ChIJ2WrMN9MDDUsRpY9Doiq3aJk"
 	},
 	{
 		"capital": "West Island",
@@ -641,7 +678,8 @@
 		"name": "Cocos (Keeling) Islands",
 		"timezones": [
 			"Indian/Cocos"
-		]
+		],
+		"place_id": "ChIJwWnofonFDi8Rpp_jEPBC0ds"
 	},
 	{
 		"capital": "Bern",
@@ -656,7 +694,8 @@
 		"name": "Switzerland",
 		"timezones": [
 			"Europe/Zurich"
-		]
+		],
+		"place_id": "ChIJYW1Zb-9kjEcRFXvLDxG1Vlw"
 	},
 	{
 		"capital": "Santiago",
@@ -672,7 +711,8 @@
 		"timezones": [
 			"America/Santiago",
 			"Pacific/Easter"
-		]
+		],
+		"place_id": "ChIJL68lBEHFYpYRHbkCERPhBQU"
 	},
 	{
 		"capital": "Beijing",
@@ -688,7 +728,8 @@
 		"timezones": [
 			"Asia/Shanghai",
 			"Asia/Urumqi"
-		]
+		],
+		"place_id": "ChIJwULG5WSOUDERbzafNHyqHZU"
 	},
 	{
 		"capital": "Yamoussoukro",
@@ -703,7 +744,8 @@
 		"name": "Ivory Coast",
 		"timezones": [
 			"Africa/Abidjan"
-		]
+		],
+		"place_id": "ChIJZ6BJsIcTlg8RQO65fGIe-QE"
 	},
 	{
 		"capital": "Yaoundé",
@@ -718,7 +760,8 @@
 		"name": "Cameroon",
 		"timezones": [
 			"Africa/Douala"
-		]
+		],
+		"place_id": "ChIJIQ8-cFM3YRARU5uCmUXEAys"
 	},
 	{
 		"capital": "Kinshasa",
@@ -734,7 +777,8 @@
 		"timezones": [
 			"Africa/Kinshasa",
 			"Africa/Lubumbashi"
-		]
+		],
+		"place_id": "ChIJvUZ1ms_6eRkRQfGTrF4-xgQ"
 	},
 	{
 		"capital": "Brazzaville",
@@ -749,7 +793,8 @@
 		"name": "Republic of the Congo",
 		"timezones": [
 			"Africa/Brazzaville"
-		]
+		],
+		"place_id": "ChIJCROj3WOlYBoRj2z8FM96AVU"
 	},
 	{
 		"capital": "Avarua",
@@ -764,7 +809,8 @@
 		"name": "Cook Islands",
 		"timezones": [
 			"Pacific/Rarotonga"
-		]
+		],
+		"place_id": "ChIJ3d57ue-KVHER2LQIiA6lTAI"
 	},
 	{
 		"capital": "Bogotá",
@@ -779,7 +825,8 @@
 		"name": "Colombia",
 		"timezones": [
 			"America/Bogota"
-		]
+		],
+		"place_id": "ChIJo5QVrjqkFY4RQKPy7wSaDZo"
 	},
 	{
 		"capital": "Moroni",
@@ -794,7 +841,8 @@
 		"name": "Comoros",
 		"timezones": [
 			"Indian/Comoro"
-		]
+		],
+		"place_id": "ChIJjaQIZAPjmBgR29Tf5L5_Cvc"
 	},
 	{
 		"capital": "Praia",
@@ -809,7 +857,8 @@
 		"name": "Cape Verde",
 		"timezones": [
 			"Atlantic/Cape_Verde"
-		]
+		],
+		"place_id": "ChIJMVERWSGPNQkRH-oY-TbyGms"
 	},
 	{
 		"capital": "San José",
@@ -824,7 +873,8 @@
 		"name": "Costa Rica",
 		"timezones": [
 			"America/Costa_Rica"
-		]
+		],
+		"place_id": "ChIJJcmsIWLlko8RK5qBNSX3VGI"
 	},
 	{
 		"capital": "Havana",
@@ -839,7 +889,8 @@
 		"name": "Cuba",
 		"timezones": [
 			"America/Havana"
-		]
+		],
+		"place_id": "ChIJtUx6DwdJzYgRGqQQkVL3jHk"
 	},
 	{
 		"capital": "Flying Fish Cove",
@@ -854,7 +905,8 @@
 		"name": "Christmas Island",
 		"timezones": [
 			"Indian/Christmas"
-		]
+		],
+		"place_id": "ChIJz6fA4yea9S4RFup1BAnW5xU"
 	},
 	{
 		"capital": "George Town",
@@ -869,7 +921,8 @@
 		"name": "Cayman Islands",
 		"timezones": [
 			"America/Cayman"
-		]
+		],
+		"place_id": "ChIJKaq4Lz6GJY8RXnFwh9PERXA"
 	},
 	{
 		"capital": "Nicosia",
@@ -884,7 +937,8 @@
 		"name": "Cyprus",
 		"timezones": [
 			"Asia/Nicosia"
-		]
+		],
+		"place_id": "ChIJVU1JymcX3hQRbhTEf4A8TDI"
 	},
 	{
 		"capital": "Prague",
@@ -899,7 +953,8 @@
 		"name": "Czech Republic",
 		"timezones": [
 			"Europe/Prague"
-		]
+		],
+		"place_id": "ChIJQ4Ld14-UC0cRb1jb03UcZvg"
 	},
 	{
 		"capital": "Berlin",
@@ -915,7 +970,8 @@
 		"timezones": [
 			"Europe/Berlin",
 			"Europe/Busingen"
-		]
+		],
+		"place_id": "ChIJa76xwh5ymkcRW-WRjmtd6HU"
 	},
 	{
 		"capital": "Djibouti",
@@ -930,7 +986,8 @@
 		"name": "Djibouti",
 		"timezones": [
 			"Africa/Djibouti"
-		]
+		],
+		"place_id": "ChIJAfb5NGfUIhYRiFsP76e7chQ"
 	},
 	{
 		"capital": "Roseau",
@@ -945,7 +1002,8 @@
 		"name": "Dominica",
 		"timezones": [
 			"America/Dominica"
-		]
+		],
+		"place_id": "ChIJ9bbx3jiIr44R4PcNBiQPAqY"
 	},
 	{
 		"capital": "Copenhagen",
@@ -960,7 +1018,8 @@
 		"name": "Denmark",
 		"timezones": [
 			"Europe/Copenhagen"
-		]
+		],
+		"place_id": "ChIJ-1-U7rYnS0YRzZLgw9BDh1I"
 	},
 	{
 		"capital": "Santo Domingo",
@@ -975,7 +1034,8 @@
 		"name": "Dominican Republic",
 		"timezones": [
 			"America/Santo_Domingo"
-		]
+		],
+		"place_id": "ChIJ9bbx3jiIr44R4PcNBiQPAqY"
 	},
 	{
 		"capital": "Algiers",
@@ -990,7 +1050,8 @@
 		"name": "Algeria",
 		"timezones": [
 			"Africa/Algiers"
-		]
+		],
+		"place_id": "ChIJ0XsDKGqKfg0RovjXq-O-QHE"
 	},
 	{
 		"capital": "Quito",
@@ -1006,7 +1067,8 @@
 		"timezones": [
 			"America/Guayaquil",
 			"Pacific/Galapagos"
-		]
+		],
+		"place_id": "ChIJ1UuaqN2HI5ARAjecEQSvdp0"
 	},
 	{
 		"capital": "Cairo",
@@ -1021,7 +1083,8 @@
 		"name": "Egypt",
 		"timezones": [
 			"Africa/Cairo"
-		]
+		],
+		"place_id": "ChIJ6TZcw3aJNhQRRMTEJQmgRSw"
 	},
 	{
 		"capital": "Asmara",
@@ -1036,7 +1099,8 @@
 		"name": "Eritrea",
 		"timezones": [
 			"Africa/Asmara"
-		]
+		],
+		"place_id": "ChIJZYW6nT9abRYR-g4SL_AIwhc"
 	},
 	{
 		"capital": "Madrid",
@@ -1053,7 +1117,8 @@
 			"Europe/Madrid",
 			"Africa/Ceuta",
 			"Atlantic/Canary"
-		]
+		],
+		"place_id": "ChIJi7xhMnjjQgwR7KNoB5Qs7KY"
 	},
 	{
 		"capital": "Tallinn",
@@ -1068,7 +1133,8 @@
 		"name": "Estonia",
 		"timezones": [
 			"Europe/Tallinn"
-		]
+		],
+		"place_id": "ChIJ_UuggpyUkkYRwyW0T7qf6kA"
 	},
 	{
 		"capital": "Addis Ababa",
@@ -1083,7 +1149,8 @@
 		"name": "Ethiopia",
 		"timezones": [
 			"Africa/Addis_Ababa"
-		]
+		],
+		"place_id": "ChIJK_1s3c7QNRYRWsVIU3-m9ns"
 	},
 	{
 		"capital": "Helsinki",
@@ -1098,7 +1165,8 @@
 		"name": "Finland",
 		"timezones": [
 			"Europe/Helsinki"
-		]
+		],
+		"place_id": "ChIJ3fYyS9_KgUYREKh1PNZGAQA"
 	},
 	{
 		"capital": "Suva",
@@ -1113,7 +1181,8 @@
 		"name": "Fiji",
 		"timezones": [
 			"Pacific/Fiji"
-		]
+		],
+		"place_id": "ChIJXdw8cP2QGW4Rk1vvRpkxnJ4"
 	},
 	{
 		"capital": "Stanley",
@@ -1128,7 +1197,8 @@
 		"name": "Falkland Islands",
 		"timezones": [
 			"Atlantic/Stanley"
-		]
+		],
+		"place_id": "ChIJo-ORRLmJKrwROsXZjf-qKjI"
 	},
 	{
 		"capital": "Paris",
@@ -1143,7 +1213,8 @@
 		"name": "France",
 		"timezones": [
 			"Europe/Paris"
-		]
+		],
+		"place_id": "ChIJMVd4MymgVA0R99lHx5Y__Ws"
 	},
 	{
 		"capital": "Tórshavn",
@@ -1158,7 +1229,8 @@
 		"name": "Faroe Islands",
 		"timezones": [
 			"Atlantic/Faroe"
-		]
+		],
+		"place_id": "ChIJ6_ktdpMVvEgRJBv3ZEgxsD8"
 	},
 	{
 		"capital": "Palikir",
@@ -1175,7 +1247,8 @@
 			"Pacific/Chuuk",
 			"Pacific/Pohnpei",
 			"Pacific/Kosrae"
-		]
+		],
+		"place_id": "ChIJE8hYrMW12WURJWWk-s2NelQ"
 	},
 	{
 		"capital": "Libreville",
@@ -1190,7 +1263,8 @@
 		"name": "Gabon",
 		"timezones": [
 			"Africa/Libreville"
-		]
+		],
+		"place_id": "ChIJ7fM4VIo7fxARFWt4Ng7DDHs"
 	},
 	{
 		"capital": "London",
@@ -1205,7 +1279,8 @@
 		"name": "United Kingdom",
 		"timezones": [
 			"Europe/London"
-		]
+		],
+		"place_id": "ChIJqZHHQhE7WgIReiWIMkOg-MQ"
 	},
 	{
 		"capital": "Tbilisi",
@@ -1220,7 +1295,8 @@
 		"name": "Georgia",
 		"timezones": [
 			"Asia/Tbilisi"
-		]
+		],
+		"place_id": "ChIJa2JP5tcMREARwkotEmR5kE8"
 	},
 	{
 		"capital": "St. Peter Port",
@@ -1235,7 +1311,8 @@
 		"name": "Guernsey",
 		"timezones": [
 			"Europe/Guernsey"
-		]
+		],
+		"place_id": "ChIJ7bO_9OQgDUgRmZgNXYrVCpk"
 	},
 	{
 		"capital": "Accra",
@@ -1250,7 +1327,8 @@
 		"name": "Ghana",
 		"timezones": [
 			"Africa/Accra"
-		]
+		],
+		"place_id": "ChIJx9baqM1a1w8RNtKT0DDy11Q"
 	},
 	{
 		"capital": "Gibraltar",
@@ -1265,7 +1343,8 @@
 		"name": "Gibraltar",
 		"timezones": [
 			"Europe/Gibraltar"
-		]
+		],
+		"place_id": "ChIJNb4UJ3a_DA0RD4cANiYlTjg"
 	},
 	{
 		"capital": "Conakry",
@@ -1280,7 +1359,8 @@
 		"name": "Guinea",
 		"timezones": [
 			"Africa/Conakry"
-		]
+		],
+		"place_id": "ChIJP5XOvCGzAQ8R9i1a18t7c-g"
 	},
 	{
 		"capital": "Basse-Terre",
@@ -1295,7 +1375,8 @@
 		"name": "Guadeloupe",
 		"timezones": [
 			"America/Guadeloupe"
-		]
+		],
+		"place_id": "ChIJUX0od1p1DowRqwdKtzc-vuw"
 	},
 	{
 		"capital": "Banjul",
@@ -1310,7 +1391,8 @@
 		"name": "Gambia",
 		"timezones": [
 			"Africa/Banjul"
-		]
+		],
+		"place_id": "ChIJBzivZSmcwg4RKp0Ta0BMSp4"
 	},
 	{
 		"capital": "Bissau",
@@ -1325,7 +1407,8 @@
 		"name": "Guinea-Bissau",
 		"timezones": [
 			"Africa/Bissau"
-		]
+		],
+		"place_id": "ChIJ8amCr3Q85A4RTggeVz-O6Ls"
 	},
 	{
 		"capital": "Malabo",
@@ -1340,7 +1423,8 @@
 		"name": "Equatorial Guinea",
 		"timezones": [
 			"Africa/Malabo"
-		]
+		],
+		"place_id": "ChIJp4euX2A6ZBARet4QLKKicMg"
 	},
 	{
 		"capital": "Athens",
@@ -1355,7 +1439,8 @@
 		"name": "Greece",
 		"timezones": [
 			"Europe/Athens"
-		]
+		],
+		"place_id": "ChIJY2xxEcdKWxMRHS2a3HUXOjY"
 	},
 	{
 		"capital": "St. George's",
@@ -1370,7 +1455,8 @@
 		"name": "Grenada",
 		"timezones": [
 			"America/Grenada"
-		]
+		],
+		"place_id": "ChIJ0XuH9IkXOIwRjk8fWgHH2DY"
 	},
 	{
 		"capital": "Nuuk",
@@ -1388,7 +1474,8 @@
 			"America/Danmarkshavn",
 			"America/Scoresbysund",
 			"America/Thule"
-		]
+		],
+		"place_id": "ChIJFXfA47sNok4RGOIUAYOdzzQ"
 	},
 	{
 		"capital": "Guatemala City",
@@ -1403,7 +1490,8 @@
 		"name": "Guatemala",
 		"timezones": [
 			"America/Guatemala"
-		]
+		],
+		"place_id": "ChIJa1DnNlATiIURu9WEWzcrmDU"
 	},
 	{
 		"capital": "Cayenne",
@@ -1418,7 +1506,8 @@
 		"name": "French Guiana",
 		"timezones": [
 			"America/Cayenne"
-		]
+		],
+		"place_id": "ChIJU9f3hVcVEo0RRvQKD-n3J94"
 	},
 	{
 		"capital": "Hagåtña",
@@ -1433,7 +1522,8 @@
 		"name": "Guam",
 		"timezones": [
 			"Pacific/Guam"
-		]
+		],
+		"place_id": "ChIJ7yQPk_92H2cRpuWzxZGucVU"
 	},
 	{
 		"capital": "Georgetown",
@@ -1448,7 +1538,8 @@
 		"name": "Guyana",
 		"timezones": [
 			"America/Guyana"
-		]
+		],
+		"place_id": "ChIJs8LYYK_vr40RQETltmeI40g"
 	},
 	{
 		"capital": "City of Victoria",
@@ -1463,7 +1554,8 @@
 		"name": "Hong Kong",
 		"timezones": [
 			"Asia/Hong_Kong"
-		]
+		],
+		"place_id": "ChIJD5gyo-3iAzQRfMnq27qzivA"
 	},
 	{
 		"capital": "Tegucigalpa",
@@ -1478,7 +1570,8 @@
 		"name": "Honduras",
 		"timezones": [
 			"America/Tegucigalpa"
-		]
+		],
+		"place_id": "ChIJzzG3cxp1ao8RZIL7toLe0X4"
 	},
 	{
 		"capital": "Zagreb",
@@ -1493,7 +1586,8 @@
 		"name": "Croatia",
 		"timezones": [
 			"Europe/Zagreb"
-		]
+		],
+		"place_id": "ChIJ7ZXdCghBNBMRfxtm4STA86A"
 	},
 	{
 		"capital": "Port-au-Prince",
@@ -1508,7 +1602,8 @@
 		"name": "Haiti",
 		"timezones": [
 			"America/Port-au-Prince"
-		]
+		],
+		"place_id": "ChIJEbvLf_PGto4R0_ZUTLI4FLU"
 	},
 	{
 		"capital": "Budapest",
@@ -1523,7 +1618,8 @@
 		"name": "Hungary",
 		"timezones": [
 			"Europe/Budapest"
-		]
+		],
+		"place_id": "ChIJw-Q333uDQUcREBAeDCnEAAA"
 	},
 	{
 		"capital": "Jakarta",
@@ -1541,7 +1637,8 @@
 			"Asia/Pontianak",
 			"Asia/Makassar",
 			"Asia/Jayapura"
-		]
+		],
+		"place_id": "ChIJtwRkSdcHTCwRhfStG-dNe-M"
 	},
 	{
 		"capital": "Douglas",
@@ -1556,7 +1653,8 @@
 		"name": "Isle of Man",
 		"timezones": [
 			"Europe/Isle_of_Man"
-		]
+		],
+		"place_id": "ChIJ1YEuRDCFY0gRDeDw8bxbAuo"
 	},
 	{
 		"capital": "New Delhi",
@@ -1571,7 +1669,8 @@
 		"name": "India",
 		"timezones": [
 			"Asia/Kolkata"
-		]
+		],
+		"place_id": "ChIJkbeSa_BfYzARphNChaFPjNc"
 	},
 	{
 		"capital": "Diego Garcia",
@@ -1586,7 +1685,8 @@
 		"name": "British Indian Ocean Territory",
 		"timezones": [
 			"Indian/Chagos"
-		]
+		],
+		"place_id": "ChIJh6OdhOBzkiQR4WsfEHBkT6k"
 	},
 	{
 		"capital": "Dublin",
@@ -1601,7 +1701,8 @@
 		"name": "Ireland",
 		"timezones": [
 			"Europe/Dublin"
-		]
+		],
+		"place_id": "ChIJ-ydAXOS6WUgRCPTbzjQSfM8"
 	},
 	{
 		"capital": "Tehran",
@@ -1616,7 +1717,8 @@
 		"name": "Iran",
 		"timezones": [
 			"Asia/Tehran"
-		]
+		],
+		"place_id": "ChIJ8R1rwS7s9z4RzvpRntOVsEA"
 	},
 	{
 		"capital": "Baghdad",
@@ -1631,7 +1733,8 @@
 		"name": "Iraq",
 		"timezones": [
 			"Asia/Baghdad"
-		]
+		],
+		"place_id": "ChIJEUr1VD2CVxURAhYGorthpW0"
 	},
 	{
 		"capital": "Reykjavik",
@@ -1646,7 +1749,8 @@
 		"name": "Iceland",
 		"timezones": [
 			"Atlantic/Reykjavik"
-		]
+		],
+		"place_id": "ChIJQ2Dro1Ir0kgRmkXB5TQEim8"
 	},
 	{
 		"capital": "Jerusalem",
@@ -1661,7 +1765,8 @@
 		"name": "Israel",
 		"timezones": [
 			"Asia/Jerusalem"
-		]
+		],
+		"place_id": "ChIJi8mnMiRJABURuiw1EyBCa2o"
 	},
 	{
 		"capital": "Rome",
@@ -1676,7 +1781,8 @@
 		"name": "Italy",
 		"timezones": [
 			"Europe/Rome"
-		]
+		],
+		"place_id": "ChIJA9KNRIL-1BIRb15jJFz1LOI"
 	},
 	{
 		"capital": "Kingston",
@@ -1691,7 +1797,8 @@
 		"name": "Jamaica",
 		"timezones": [
 			"America/Jamaica"
-		]
+		],
+		"place_id": "ChIJnXHPxhsq2o4R-g4StcDRoFk"
 	},
 	{
 		"capital": "Saint Helier",
@@ -1706,7 +1813,8 @@
 		"name": "Jersey",
 		"timezones": [
 			"Europe/Jersey"
-		]
+		],
+		"place_id": "ChIJM3WSjKRSDEgRw2waCqMjnFE"
 	},
 	{
 		"capital": "Amman",
@@ -1721,7 +1829,8 @@
 		"name": "Jordan",
 		"timezones": [
 			"Asia/Amman"
-		]
+		],
+		"place_id": "ChIJmd5kZkdvABURmU4mUQdbKI0"
 	},
 	{
 		"capital": "Tokyo",
@@ -1736,7 +1845,8 @@
 		"name": "Japan",
 		"timezones": [
 			"Asia/Tokyo"
-		]
+		],
+		"place_id": "ChIJLxl_1w9OZzQRRFJmfNR1QvU"
 	},
 	{
 		"capital": "Astana",
@@ -1755,7 +1865,8 @@
 			"Asia/Aqtobe",
 			"Asia/Aqtau",
 			"Asia/Oral"
-		]
+		],
+		"place_id": "ChIJR6n87AcQqTgRGw6z5C-Ee18"
 	},
 	{
 		"capital": "Nairobi",
@@ -1770,7 +1881,8 @@
 		"name": "Kenya",
 		"timezones": [
 			"Africa/Nairobi"
-		]
+		],
+		"place_id": "ChIJD5BQg9CAJxgR2W2XobAOO0A"
 	},
 	{
 		"capital": "Bishkek",
@@ -1785,7 +1897,8 @@
 		"name": "Kyrgyzstan",
 		"timezones": [
 			"Asia/Bishkek"
-		]
+		],
+		"place_id": "ChIJ8yfp_B04lzgRM8SITrdYECg"
 	},
 	{
 		"capital": "Phnom Penh",
@@ -1800,7 +1913,8 @@
 		"name": "Cambodia",
 		"timezones": [
 			"Asia/Phnom_Penh"
-		]
+		],
+		"place_id": "ChIJQzfc1L-HBzERUxL0ieC_t-Q"
 	},
 	{
 		"capital": "South Tarawa",
@@ -1817,7 +1931,8 @@
 			"Pacific/Tarawa",
 			"Pacific/Enderbury",
 			"Pacific/Kiritimati"
-		]
+		],
+		"place_id": "ChIJA4cCwpF8ZGURB8NSAQR9MoQ"
 	},
 	{
 		"capital": "Basseterre",
@@ -1832,7 +1947,8 @@
 		"name": "Saint Kitts and Nevis",
 		"timezones": [
 			"America/St_Kitts"
-		]
+		],
+		"place_id": "ChIJDXKKxm4ZEowR6IYdmsaa6d4"
 	},
 	{
 		"capital": "Seoul",
@@ -1847,7 +1963,8 @@
 		"name": "South Korea",
 		"timezones": [
 			"Asia/Seoul"
-		]
+		],
+		"place_id": "ChIJm7oRy-tVZDURS9uIugCbJJE"
 	},
 	{
 		"capital": "Kuwait City",
@@ -1862,7 +1979,8 @@
 		"name": "Kuwait",
 		"timezones": [
 			"Asia/Kuwait"
-		]
+		],
+		"place_id": "ChIJoVHqvj82xT8R0u3Yks1rcnQ"
 	},
 	{
 		"capital": "Vientiane",
@@ -1877,7 +1995,8 @@
 		"name": "Laos",
 		"timezones": [
 			"Asia/Vientiane"
-		]
+		],
+		"place_id": "ChIJiUWCsFeQFDERgc2ZH0iSxQ4"
 	},
 	{
 		"capital": "Beirut",
@@ -1892,7 +2011,8 @@
 		"name": "Lebanon",
 		"timezones": [
 			"Asia/Beirut"
-		]
+		],
+		"place_id": "ChIJraoihAIXHxURcPkAbAk0fcw"
 	},
 	{
 		"capital": "Monrovia",
@@ -1907,7 +2027,8 @@
 		"name": "Liberia",
 		"timezones": [
 			"Africa/Monrovia"
-		]
+		],
+		"place_id": "ChIJwfyp1AP4CQ8Rc2PRMmso038"
 	},
 	{
 		"capital": "Tripoli",
@@ -1922,7 +2043,8 @@
 		"name": "Libya",
 		"timezones": [
 			"Africa/Tripoli"
-		]
+		],
+		"place_id": "ChIJDQHOjtmSqBMRKsL5x0FgB_o"
 	},
 	{
 		"capital": "Castries",
@@ -1937,7 +2059,8 @@
 		"name": "Saint Lucia",
 		"timezones": [
 			"America/St_Lucia"
-		]
+		],
+		"place_id": "ChIJHaMt8WVgQIwR9Z056MSGdG4"
 	},
 	{
 		"capital": "Vaduz",
@@ -1952,7 +2075,8 @@
 		"name": "Liechtenstein",
 		"timezones": [
 			"Europe/Vaduz"
-		]
+		],
+		"place_id": "ChIJ_S9HHUQxm0cRibFa3Ta16mA"
 	},
 	{
 		"capital": "Colombo",
@@ -1967,7 +2091,8 @@
 		"name": "Sri Lanka",
 		"timezones": [
 			"Asia/Colombo"
-		]
+		],
+		"place_id": "ChIJnR5a9jxZ4joRjNPiALSkPeE"
 	},
 	{
 		"capital": "Maseru",
@@ -1982,7 +2107,8 @@
 		"name": "Lesotho",
 		"timezones": [
 			"Africa/Maseru"
-		]
+		],
+		"place_id": "ChIJ64xf1idIjB4Rsx7ReLhXLSM"
 	},
 	{
 		"capital": "Vilnius",
@@ -1997,7 +2123,8 @@
 		"name": "Lithuania",
 		"timezones": [
 			"Europe/Vilnius"
-		]
+		],
+		"place_id": "ChIJE74zDxSU3UYRubpdpdNUCvM"
 	},
 	{
 		"capital": "Luxembourg",
@@ -2012,7 +2139,8 @@
 		"name": "Luxembourg",
 		"timezones": [
 			"Europe/Luxembourg"
-		]
+		],
+		"place_id": "ChIJRyEhyrlFlUcR75LTAvZg22Q"
 	},
 	{
 		"capital": "Riga",
@@ -2027,7 +2155,8 @@
 		"name": "Latvia",
 		"timezones": [
 			"Europe/Riga"
-		]
+		],
+		"place_id": "ChIJ_ZqKe2cw6UYREPzyaM3PAAA"
 	},
 	{
 		"capital": null,
@@ -2042,7 +2171,8 @@
 		"name": "Macau",
 		"timezones": [
 			"Asia/Macau"
-		]
+		],
+		"place_id": "ChIJ88g14uB6ATQR9qyFtCzje8Y"
 	},
 	{
 		"capital": "Marigot",
@@ -2057,7 +2187,8 @@
 		"name": "Saint Martin",
 		"timezones": [
 			"America/Marigot"
-		]
+		],
+		"place_id": "ChIJ_U5xCKxvDowRp4huTgqDGbk"
 	},
 	{
 		"capital": "Rabat",
@@ -2072,7 +2203,8 @@
 		"name": "Morocco",
 		"timezones": [
 			"Africa/Casablanca"
-		]
+		],
+		"place_id": "ChIJjcVRlmGICw0Rw_8sxIGT09k"
 	},
 	{
 		"capital": "Monaco",
@@ -2087,7 +2219,8 @@
 		"name": "Monaco",
 		"timezones": [
 			"Europe/Monaco"
-		]
+		],
+		"place_id": "ChIJMYU_e2_CzRIR_JzEOkx493Q"
 	},
 	{
 		"capital": "Chișinău",
@@ -2102,7 +2235,8 @@
 		"name": "Moldova",
 		"timezones": [
 			"Europe/Chisinau"
-		]
+		],
+		"place_id": "ChIJoWm3KDZ8yUARy6xT36wZgSU"
 	},
 	{
 		"capital": "Antananarivo",
@@ -2117,7 +2251,8 @@
 		"name": "Madagascar",
 		"timezones": [
 			"Indian/Antananarivo"
-		]
+		],
+		"place_id": "ChIJRYUj6uOk0SERiBN7l8HjRFI"
 	},
 	{
 		"capital": "Malé",
@@ -2132,7 +2267,8 @@
 		"name": "Maldives",
 		"timezones": [
 			"Indian/Maldives"
-		]
+		],
+		"place_id": "ChIJvXv7qr-ZtSQRiWKVgeEJRUE"
 	},
 	{
 		"capital": "Mexico City",
@@ -2157,7 +2293,8 @@
 			"America/Hermosillo",
 			"America/Tijuana",
 			"America/Bahia_Banderas"
-		]
+		],
+		"place_id": "ChIJU1NoiDs6BIQREZgJa760ZO0"
 	},
 	{
 		"capital": "Majuro",
@@ -2173,7 +2310,8 @@
 		"timezones": [
 			"Pacific/Majuro",
 			"Pacific/Kwajalein"
-		]
+		],
+		"place_id": "ChIJK8opIbIZAWURdrcJqugDPos"
 	},
 	{
 		"capital": "Skopje",
@@ -2188,7 +2326,8 @@
 		"name": "Macedonia",
 		"timezones": [
 			"Europe/Skopje"
-		]
+		],
+		"place_id": "ChIJCUi8cJ8VVBMRscUfyNZa8uA"
 	},
 	{
 		"capital": "Bamako",
@@ -2203,7 +2342,8 @@
 		"name": "Mali",
 		"timezones": [
 			"Africa/Bamako"
-		]
+		],
+		"place_id": "ChIJz3MQG4g-FA4RgM-9oOJbOrs"
 	},
 	{
 		"capital": "Valletta",
@@ -2218,7 +2358,8 @@
 		"name": "Malta",
 		"timezones": [
 			"Europe/Malta"
-		]
+		],
+		"place_id": "ChIJxUeGHShFDhMROUK-NmHYgvU"
 	},
 	{
 		"capital": "Naypyidaw",
@@ -2233,7 +2374,8 @@
 		"name": "Myanmar",
 		"timezones": [
 			"Asia/Rangoon"
-		]
+		],
+		"place_id": "ChIJBylOcadSVjAREStiHOQOe7o"
 	},
 	{
 		"capital": "Podgorica",
@@ -2248,7 +2390,8 @@
 		"name": "Montenegro",
 		"timezones": [
 			"Europe/Podgorica"
-		]
+		],
+		"place_id": "ChIJyx8sJBcyTBMRRtP_boadTDg"
 	},
 	{
 		"capital": "Ulan Bator",
@@ -2265,7 +2408,8 @@
 			"Asia/Ulaanbaatar",
 			"Asia/Hovd",
 			"Asia/Choibalsan"
-		]
+		],
+		"place_id": "ChIJS22qaQYFJzYRluDmNzkh3eA"
 	},
 	{
 		"capital": "Saipan",
@@ -2280,7 +2424,8 @@
 		"name": "Northern Mariana Islands",
 		"timezones": [
 			"Pacific/Saipan"
-		]
+		],
+		"place_id": "ChIJUVyZkDSx2GYRMg46fKvrt50"
 	},
 	{
 		"capital": "Maputo",
@@ -2295,7 +2440,8 @@
 		"name": "Mozambique",
 		"timezones": [
 			"Africa/Maputo"
-		]
+		],
+		"place_id": "ChIJxUr95uqs1BgRFaEWrrm_uxI"
 	},
 	{
 		"capital": "Nouakchott",
@@ -2310,7 +2456,8 @@
 		"name": "Mauritania",
 		"timezones": [
 			"Africa/Nouakchott"
-		]
+		],
+		"place_id": "ChIJTzmzFMO4gA4RTlO-1usLIoM"
 	},
 	{
 		"capital": "Plymouth",
@@ -2325,7 +2472,8 @@
 		"name": "Montserrat",
 		"timezones": [
 			"America/Montserrat"
-		]
+		],
+		"place_id": "ChIJnTbH4VOrE4wRorEFiIPqDx4"
 	},
 	{
 		"capital": "Fort-de-France",
@@ -2340,7 +2488,8 @@
 		"name": "Martinique",
 		"timezones": [
 			"America/Martinique"
-		]
+		],
+		"place_id": "ChIJDQdmAPmgaowRsOevFxIbAOE"
 	},
 	{
 		"capital": "Port Louis",
@@ -2355,7 +2504,8 @@
 		"name": "Mauritius",
 		"timezones": [
 			"Indian/Mauritius"
-		]
+		],
+		"place_id": "ChIJyXRE-U1QfCERMdBrEcLZA0I"
 	},
 	{
 		"capital": "Lilongwe",
@@ -2370,7 +2520,8 @@
 		"name": "Malawi",
 		"timezones": [
 			"Africa/Blantyre"
-		]
+		],
+		"place_id": "ChIJ18ATk91b2BgRQ4VmKRcuo0Q"
 	},
 	{
 		"capital": "Kuala Lumpur",
@@ -2386,7 +2537,8 @@
 		"timezones": [
 			"Asia/Kuala_Lumpur",
 			"Asia/Kuching"
-		]
+		],
+		"place_id": "ChIJrzBnX5fTNDAR2BwhKJOWRQc"
 	},
 	{
 		"capital": "Mamoudzou",
@@ -2401,7 +2553,8 @@
 		"name": "Mayotte",
 		"timezones": [
 			"Indian/Mayotte"
-		]
+		],
+		"place_id": "ChIJu43y3DMOCiIRSyr-lWcXMv8"
 	},
 	{
 		"capital": "Windhoek",
@@ -2416,7 +2569,8 @@
 		"name": "Namibia",
 		"timezones": [
 			"Africa/Windhoek"
-		]
+		],
+		"place_id": "ChIJIXXTbn489RsRYbLsqKXludM"
 	},
 	{
 		"capital": "Nouméa",
@@ -2431,7 +2585,8 @@
 		"name": "New Caledonia",
 		"timezones": [
 			"Pacific/Noumea"
-		]
+		],
+		"place_id": "ChIJyzIaP2niJ2wR7HqT1Y_20PY"
 	},
 	{
 		"capital": "Niamey",
@@ -2446,7 +2601,8 @@
 		"name": "Niger",
 		"timezones": [
 			"Africa/Niamey"
-		]
+		],
+		"place_id": "ChIJDY2kfa8LThARyAvFaEH-qJk"
 	},
 	{
 		"capital": "Kingston",
@@ -2461,7 +2617,8 @@
 		"name": "Norfolk Island",
 		"timezones": [
 			"Pacific/Norfolk"
-		]
+		],
+		"place_id": "ChIJOcm6rR_RS2wRUhVdMyOYerk"
 	},
 	{
 		"capital": "Abuja",
@@ -2476,7 +2633,8 @@
 		"name": "Nigeria",
 		"timezones": [
 			"Africa/Lagos"
-		]
+		],
+		"place_id": "ChIJDY2kfa8LThARyAvFaEH-qJk"
 	},
 	{
 		"capital": "Managua",
@@ -2491,7 +2649,8 @@
 		"name": "Nicaragua",
 		"timezones": [
 			"America/Managua"
-		]
+		],
+		"place_id": "ChIJzSL_zgDCEI8RtRWsP-Wn-sg"
 	},
 	{
 		"capital": "Alofi",
@@ -2506,7 +2665,8 @@
 		"name": "Niue",
 		"timezones": [
 			"Pacific/Niue"
-		]
+		],
+		"place_id": "ChIJO7duNyolnXERGIvcezR4QpE"
 	},
 	{
 		"capital": "Amsterdam",
@@ -2521,7 +2681,8 @@
 		"name": "Netherlands",
 		"timezones": [
 			"Europe/Amsterdam"
-		]
+		],
+		"place_id": "ChIJu-SH28MJxkcRnwq9_851obM"
 	},
 	{
 		"capital": "Oslo",
@@ -2536,7 +2697,8 @@
 		"name": "Norway",
 		"timezones": [
 			"Europe/Oslo"
-		]
+		],
+		"place_id": "ChIJv-VNj0VoEkYRK9BkuJ07sKE"
 	},
 	{
 		"capital": "Kathmandu",
@@ -2551,7 +2713,8 @@
 		"name": "Nepal",
 		"timezones": [
 			"Asia/Kathmandu"
-		]
+		],
+		"place_id": "ChIJz2gufcfolTkR3obM0LyaojQ"
 	},
 	{
 		"capital": "Yaren",
@@ -2566,7 +2729,8 @@
 		"name": "Nauru",
 		"timezones": [
 			"Pacific/Nauru"
-		]
+		],
+		"place_id": "ChIJTVvkHR8cfW8RgQrUxfSd2Vk"
 	},
 	{
 		"capital": "Wellington",
@@ -2582,7 +2746,8 @@
 		"timezones": [
 			"Pacific/Auckland",
 			"Pacific/Chatham"
-		]
+		],
+		"place_id": "ChIJh5Z3Fw4gLG0RM0dqdeIY1rE"
 	},
 	{
 		"capital": "Muscat",
@@ -2597,7 +2762,8 @@
 		"name": "Oman",
 		"timezones": [
 			"Asia/Muscat"
-		]
+		],
+		"place_id": "ChIJv5vVqWaf1j0RF6ixZXZMBjo"
 	},
 	{
 		"capital": "Islamabad",
@@ -2612,7 +2778,8 @@
 		"name": "Pakistan",
 		"timezones": [
 			"Asia/Karachi"
-		]
+		],
+		"place_id": "ChIJH3X9-NJS2zgRXJIU5veht0Y"
 	},
 	{
 		"capital": "Panama City",
@@ -2627,7 +2794,8 @@
 		"name": "Panama",
 		"timezones": [
 			"America/Panama"
-		]
+		],
+		"place_id": "ChIJ4yu-yIMVpo8Rz5ulH03g7nk"
 	},
 	{
 		"capital": "Adamstown",
@@ -2642,7 +2810,8 @@
 		"name": "Pitcairn Islands",
 		"timezones": [
 			"Pacific/Pitcairn"
-		]
+		],
+		"place_id": "ChIJiweo3H8POJ4RyJoVGceMnEY"
 	},
 	{
 		"capital": "Lima",
@@ -2657,7 +2826,8 @@
 		"name": "Peru",
 		"timezones": [
 			"America/Lima"
-		]
+		],
+		"place_id": "ChIJ9RRZwFDIBZERSAYheRIBnvI"
 	},
 	{
 		"capital": "Manila",
@@ -2672,7 +2842,8 @@
 		"name": "Philippines",
 		"timezones": [
 			"Asia/Manila"
-		]
+		],
+		"place_id": "ChIJY96HXyFTQDIRV9opeu-QR3g"
 	},
 	{
 		"capital": "Ngerulmud",
@@ -2687,7 +2858,8 @@
 		"name": "Palau",
 		"timezones": [
 			"Pacific/Palau"
-		]
+		],
+		"place_id": "ChIJmQOvorRFhDIRu-uhOd0e7RI"
 	},
 	{
 		"capital": "Port Moresby",
@@ -2703,7 +2875,8 @@
 		"timezones": [
 			"Pacific/Port_Moresby",
 			"Pacific/Bougainville"
-		]
+		],
+		"place_id": "ChIJr54Ov6_oWWgRehKcjg3l8No"
 	},
 	{
 		"capital": "Warsaw",
@@ -2718,7 +2891,8 @@
 		"name": "Poland",
 		"timezones": [
 			"Europe/Warsaw"
-		]
+		],
+		"place_id": "ChIJuwtkpGSZAEcR6lXMScpzdQk"
 	},
 	{
 		"capital": "San Juan",
@@ -2733,7 +2907,8 @@
 		"name": "Puerto Rico",
 		"timezones": [
 			"America/Puerto_Rico"
-		]
+		],
+		"place_id": "ChIJ-aeSGyaWAowRGpsEGCjsNvM"
 	},
 	{
 		"capital": "Pyongyang",
@@ -2748,7 +2923,8 @@
 		"name": "North Korea",
 		"timezones": [
 			"Asia/Pyongyang"
-		]
+		],
+		"place_id": "ChIJN0NP5toCfjURHIYdPhyHCzo"
 	},
 	{
 		"capital": "Lisbon",
@@ -2765,7 +2941,8 @@
 			"Europe/Lisbon",
 			"Atlantic/Madeira",
 			"Atlantic/Azores"
-		]
+		],
+		"place_id": "ChIJ1SZCvy0kMgsRQfBOHAlLuCo"
 	},
 	{
 		"capital": "Asunción",
@@ -2780,7 +2957,8 @@
 		"name": "Paraguay",
 		"timezones": [
 			"America/Asuncion"
-		]
+		],
+		"place_id": "ChIJYz3xkDQIXJQR8y5YHWH_-rM"
 	},
 	{
 		"capital": "Ramallah",
@@ -2796,7 +2974,8 @@
 		"timezones": [
 			"Asia/Gaza",
 			"Asia/Hebron"
-		]
+		],
+		"place_id": "ChIJ2b1miNLyHBURhvZm0QGgF-4"
 	},
 	{
 		"capital": "Papeetē",
@@ -2813,7 +2992,8 @@
 			"Pacific/Tahiti",
 			"Pacific/Marquesas",
 			"Pacific/Gambier"
-		]
+		],
+		"place_id": "ChIJTddtfNB1GHQREVfDCXp6wJs"
 	},
 	{
 		"capital": "Doha",
@@ -2828,7 +3008,8 @@
 		"name": "Qatar",
 		"timezones": [
 			"Asia/Qatar"
-		]
+		],
+		"place_id": "ChIJf-jc_zTFRT4RMkArgc-I-hw"
 	},
 	{
 		"capital": "Saint-Denis",
@@ -2843,7 +3024,8 @@
 		"name": "Réunion",
 		"timezones": [
 			"Indian/Reunion"
-		]
+		],
+		"place_id": "ChIJO-S4EIF3eCER-erb7ImOf0o"
 	},
 	{
 		"capital": "Bucharest",
@@ -2858,7 +3040,8 @@
 		"name": "Romania",
 		"timezones": [
 			"Europe/Bucharest"
-		]
+		],
+		"place_id": "ChIJw3aJlSb_sUARlLEEqJJP74Q"
 	},
 	{
 		"capital": "Moscow",
@@ -2898,7 +3081,8 @@
 			"Asia/Srednekolymsk",
 			"Asia/Kamchatka",
 			"Asia/Anadyr"
-		]
+		],
+		"place_id": "ChIJ-yRniZpWPEURE_YRZvj9CRQ"
 	},
 	{
 		"capital": "Kigali",
@@ -2913,7 +3097,8 @@
 		"name": "Rwanda",
 		"timezones": [
 			"Africa/Kigali"
-		]
+		],
+		"place_id": "ChIJ40A451SWwhkRA6HMyyawkHQ"
 	},
 	{
 		"capital": "Riyadh",
@@ -2928,7 +3113,8 @@
 		"name": "Saudi Arabia",
 		"timezones": [
 			"Asia/Riyadh"
-		]
+		],
+		"place_id": "ChIJQSqV5z-z5xURm7YawktQYFk"
 	},
 	{
 		"capital": "Khartoum",
@@ -2943,7 +3129,8 @@
 		"name": "Sudan",
 		"timezones": [
 			"Africa/Khartoum"
-		]
+		],
+		"place_id": "ChIJlbFyEMQc2RURNythKkZwv9I"
 	},
 	{
 		"capital": "Dakar",
@@ -2958,7 +3145,8 @@
 		"name": "Senegal",
 		"timezones": [
 			"Africa/Dakar"
-		]
+		],
+		"place_id": "ChIJcbvFs_VywQ4RQFlhmVClRlo"
 	},
 	{
 		"capital": "Singapore",
@@ -2973,7 +3161,8 @@
 		"name": "Singapore",
 		"timezones": [
 			"Asia/Singapore"
-		]
+		],
+		"place_id": "ChIJdZOLiiMR2jERxPWrUs9peIg"
 	},
 	{
 		"capital": "King Edward Point",
@@ -2988,7 +3177,8 @@
 		"name": "South Georgia",
 		"timezones": [
 			"Atlantic/South_Georgia"
-		]
+		],
+		"place_id": "ChIJJXmoUuK2PbkRvbBNiNp8434"
 	},
 	{
 		"capital": "Longyearbyen",
@@ -3003,7 +3193,8 @@
 		"name": "Svalbard and Jan Mayen",
 		"timezones": [
 			"Arctic/Longyearbyen"
-		]
+		],
+		"place_id": "ChIJgQmY0JVjd0URQdKkzJ42A4U"
 	},
 	{
 		"capital": "Honiara",
@@ -3018,7 +3209,8 @@
 		"name": "Solomon Islands",
 		"timezones": [
 			"Pacific/Guadalcanal"
-		]
+		],
+		"place_id": "ChIJ0QlQVeBR02gRgClEF6DATLQ"
 	},
 	{
 		"capital": "Freetown",
@@ -3033,7 +3225,8 @@
 		"name": "Sierra Leone",
 		"timezones": [
 			"Africa/Freetown"
-		]
+		],
+		"place_id": "ChIJQ_OrOhgGAQ8RGfcsx83paVM"
 	},
 	{
 		"capital": "San Salvador",
@@ -3048,7 +3241,8 @@
 		"name": "El Salvador",
 		"timezones": [
 			"America/El_Salvador"
-		]
+		],
+		"place_id": "ChIJVwZkWaYnY48RMkiFmOsWmm8"
 	},
 	{
 		"capital": "City of San Marino",
@@ -3063,7 +3257,8 @@
 		"name": "San Marino",
 		"timezones": [
 			"Europe/San_Marino"
-		]
+		],
+		"place_id": "ChIJeT_m9V_rLBMRECA0gpnzAAA"
 	},
 	{
 		"capital": "Mogadishu",
@@ -3078,7 +3273,8 @@
 		"name": "Somalia",
 		"timezones": [
 			"Africa/Mogadishu"
-		]
+		],
+		"place_id": "ChIJg1vR7KcuHRgRvuXpXM46OZ4"
 	},
 	{
 		"capital": "Saint-Pierre",
@@ -3093,7 +3289,8 @@
 		"name": "Saint Pierre and Miquelon",
 		"timezones": [
 			"America/Miquelon"
-		]
+		],
+		"place_id": "ChIJ0VcO-0tLbEsREVxs6jdncZw"
 	},
 	{
 		"capital": "Belgrade",
@@ -3108,7 +3305,8 @@
 		"name": "Serbia",
 		"timezones": [
 			"Europe/Belgrade"
-		]
+		],
+		"place_id": "ChIJlYCJ8t8dV0cRXYYjN-pQXgU"
 	},
 	{
 		"capital": "São Tomé",
@@ -3123,7 +3321,8 @@
 		"name": "São Tomé and Príncipe",
 		"timezones": [
 			"Africa/Sao_Tome"
-		]
+		],
+		"place_id": "ChIJidiaC_nscBAR6jB2VQwjUWI"
 	},
 	{
 		"capital": "Paramaribo",
@@ -3138,7 +3337,8 @@
 		"name": "Suriname",
 		"timezones": [
 			"America/Paramaribo"
-		]
+		],
+		"place_id": "ChIJUdXT2dU2CI0RsjYpccDhNxA"
 	},
 	{
 		"capital": "Bratislava",
@@ -3153,7 +3353,8 @@
 		"name": "Slovakia",
 		"timezones": [
 			"Europe/Bratislava"
-		]
+		],
+		"place_id": "ChIJf8Z8rrlgFEcRfTpysWdha80"
 	},
 	{
 		"capital": "Ljubljana",
@@ -3168,7 +3369,8 @@
 		"name": "Slovenia",
 		"timezones": [
 			"Europe/Ljubljana"
-		]
+		],
+		"place_id": "ChIJYYOWXuckZUcRZdTiJR5FQOc"
 	},
 	{
 		"capital": "Stockholm",
@@ -3183,7 +3385,8 @@
 		"name": "Sweden",
 		"timezones": [
 			"Europe/Stockholm"
-		]
+		],
+		"place_id": "ChIJ8fA1bTmyXEYRYm-tjaLruCI"
 	},
 	{
 		"capital": "Lobamba",
@@ -3198,7 +3401,8 @@
 		"name": "Swaziland",
 		"timezones": [
 			"Africa/Mbabane"
-		]
+		],
+		"place_id": "ChIJBw8yR-HO6B4RaXANGC_GPcE"
 	},
 	{
 		"capital": "Victoria",
@@ -3213,7 +3417,8 @@
 		"name": "Seychelles",
 		"timezones": [
 			"Indian/Mahe"
-		]
+		],
+		"place_id": "ChIJO62-cP0hXCIR99pJ06DQ0zI"
 	},
 	{
 		"capital": "Damascus",
@@ -3228,7 +3433,8 @@
 		"name": "Syria",
 		"timezones": [
 			"Asia/Damascus"
-		]
+		],
+		"place_id": "ChIJp8Y8QdzmGBURIPYqiPRGdYc"
 	},
 	{
 		"capital": "Cockburn Town",
@@ -3243,7 +3449,8 @@
 		"name": "Turks and Caicos Islands",
 		"timezones": [
 			"America/Grand_Turk"
-		]
+		],
+		"place_id": "ChIJdWu7vlVfS4kR3sGNAoDHEX4"
 	},
 	{
 		"capital": "N'Djamena",
@@ -3258,7 +3465,8 @@
 		"name": "Chad",
 		"timezones": [
 			"Africa/Ndjamena"
-		]
+		],
+		"place_id": "ChIJYXNnvXg55xARnIDAzluDYDs"
 	},
 	{
 		"capital": "Lomé",
@@ -3273,7 +3481,8 @@
 		"name": "Togo",
 		"timezones": [
 			"Africa/Lome"
-		]
+		],
+		"place_id": "ChIJGVQYE8HhIxARYJPRGjBbrvo"
 	},
 	{
 		"capital": "Bangkok",
@@ -3288,7 +3497,8 @@
 		"name": "Thailand",
 		"timezones": [
 			"Asia/Bangkok"
-		]
+		],
+		"place_id": "ChIJsU1CR_eNTTARAuhXB4gs154"
 	},
 	{
 		"capital": "Dushanbe",
@@ -3303,7 +3513,8 @@
 		"name": "Tajikistan",
 		"timezones": [
 			"Asia/Dushanbe"
-		]
+		],
+		"place_id": "ChIJzbO8enN2sTgRtYgZT4QxwyU"
 	},
 	{
 		"capital": "Fakaofo",
@@ -3318,7 +3529,8 @@
 		"name": "Tokelau",
 		"timezones": [
 			"Pacific/Fakaofo"
-		]
+		],
+		"place_id": "ChIJ9x14s6omUnARN5vbbUZicI8"
 	},
 	{
 		"capital": "Ashgabat",
@@ -3333,7 +3545,8 @@
 		"name": "Turkmenistan",
 		"timezones": [
 			"Asia/Ashgabat"
-		]
+		],
+		"place_id": "ChIJy2y8dFXLZT8RkaRpQWuC3X4"
 	},
 	{
 		"capital": "Dili",
@@ -3348,7 +3561,8 @@
 		"name": "Timor-Leste",
 		"timezones": [
 			"Asia/Dili"
-		]
+		],
+		"place_id": "ChIJKaHkhgnl_SwRPFvoh4PG5QM"
 	},
 	{
 		"capital": "Nuku'alofa",
@@ -3363,7 +3577,8 @@
 		"name": "Tonga",
 		"timezones": [
 			"Pacific/Tongatapu"
-		]
+		],
+		"place_id": "ChIJHdCfu0S2k3ERqeJexcrMbfM"
 	},
 	{
 		"capital": "Port of Spain",
@@ -3378,7 +3593,8 @@
 		"name": "Trinidad and Tobago",
 		"timezones": [
 			"America/Port_of_Spain"
-		]
+		],
+		"place_id": "ChIJxbZQY5cHNowRJ_E5xlUoCP8"
 	},
 	{
 		"capital": "Tunis",
@@ -3393,7 +3609,8 @@
 		"name": "Tunisia",
 		"timezones": [
 			"Africa/Tunis"
-		]
+		],
+		"place_id": "ChIJ4aQWg0SVVRIR75sBqjozhDo"
 	},
 	{
 		"capital": "Ankara",
@@ -3408,7 +3625,8 @@
 		"name": "Turkey",
 		"timezones": [
 			"Europe/Istanbul"
-		]
+		],
+		"place_id": "ChIJcSZPllwVsBQRKl9iKtTb2UA"
 	},
 	{
 		"capital": "Funafuti",
@@ -3423,7 +3641,8 @@
 		"name": "Tuvalu",
 		"timezones": [
 			"Pacific/Funafuti"
-		]
+		],
+		"place_id": "ChIJTaCxWbmcwW8RLhIHB2hUZ48"
 	},
 	{
 		"capital": "Taipei",
@@ -3438,7 +3657,8 @@
 		"name": "Taiwan",
 		"timezones": [
 			"Asia/Taipei"
-		]
+		],
+		"place_id": "ChIJL1cHXAbzbjQRaVScvwTwEec"
 	},
 	{
 		"capital": "Dodoma",
@@ -3453,7 +3673,8 @@
 		"name": "Tanzania",
 		"timezones": [
 			"Africa/Dar_es_Salaam"
-		]
+		],
+		"place_id": "ChIJEaFpSDFRSxgRMMTBSzEXWog"
 	},
 	{
 		"capital": "Kampala",
@@ -3468,7 +3689,8 @@
 		"name": "Uganda",
 		"timezones": [
 			"Africa/Kampala"
-		]
+		],
+		"place_id": "ChIJRfmZZJ-mcRcRSUUBQ85VQYc"
 	},
 	{
 		"capital": "Kiev",
@@ -3485,7 +3707,8 @@
 			"Europe/Kiev",
 			"Europe/Uzhgorod",
 			"Europe/Zaporozhye"
-		]
+		],
+		"place_id": "ChIJjw5wVMHZ0UAREED2iIQGAQA"
 	},
 	{
 		"capital": "Montevideo",
@@ -3500,7 +3723,8 @@
 		"name": "Uruguay",
 		"timezones": [
 			"America/Montevideo"
-		]
+		],
+		"place_id": "ChIJCd5f-zoHdZURSlIWYGGWVUo"
 	},
 	{
 		"capital": "Washington D.C.",
@@ -3543,7 +3767,8 @@
 			"America/Nome",
 			"America/Adak",
 			"Pacific/Honolulu"
-		]
+		],
+		"place_id": "ChIJCzYy5IS16lQRQrfeQ5K5Oxw"
 	},
 	{
 		"capital": "Tashkent",
@@ -3559,7 +3784,8 @@
 		"timezones": [
 			"Asia/Samarkand",
 			"Asia/Tashkent"
-		]
+		],
+		"place_id": "ChIJsXbWpSCLrjgRIB6Efq1tCso"
 	},
 	{
 		"capital": "Vatican City",
@@ -3574,7 +3800,8 @@
 		"name": "Vatican City",
 		"timezones": [
 			"Europe/Vatican"
-		]
+		],
+		"place_id": "ChIJPS3UVwqJJRMRsH46sppPCQA"
 	},
 	{
 		"capital": "Kingstown",
@@ -3589,7 +3816,8 @@
 		"name": "Saint Vincent and the Grenadines",
 		"timezones": [
 			"America/St_Vincent"
-		]
+		],
+		"place_id": "ChIJuzU5nuKsQIwRsaHSjejT_TE"
 	},
 	{
 		"capital": "Caracas",
@@ -3604,7 +3832,8 @@
 		"name": "Venezuela",
 		"timezones": [
 			"America/Caracas"
-		]
+		],
+		"place_id": "ChIJAdjLNstTKIwR003VfFjyoNw"
 	},
 	{
 		"capital": "Road Town",
@@ -3619,7 +3848,8 @@
 		"name": "British Virgin Islands",
 		"timezones": [
 			"America/Tortola"
-		]
+		],
+		"place_id": "ChIJzVNkK5xzBYwRPTvsse5woG0"
 	},
 	{
 		"capital": "Charlotte Amalie",
@@ -3634,7 +3864,8 @@
 		"name": "United States Virgin Islands",
 		"timezones": [
 			"America/St_Thomas"
-		]
+		],
+		"place_id": "ChIJuaza8mUQBYwRBRzFGx2JHfk"
 	},
 	{
 		"capital": "Hanoi",
@@ -3649,7 +3880,8 @@
 		"name": "Vietnam",
 		"timezones": [
 			"Asia/Ho_Chi_Minh"
-		]
+		],
+		"place_id": "ChIJXx5qc016FTERvmL-4smwO7A"
 	},
 	{
 		"capital": "Port Vila",
@@ -3664,7 +3896,8 @@
 		"name": "Vanuatu",
 		"timezones": [
 			"Pacific/Efate"
-		]
+		],
+		"place_id": "ChIJE2CSyF5giW4RaibQvs85gzQ"
 	},
 	{
 		"capital": "Mata-Utu",
@@ -3679,7 +3912,8 @@
 		"name": "Wallis and Futuna",
 		"timezones": [
 			"Pacific/Wallis"
-		]
+		],
+		"place_id": "ChIJPUsabgaxyHERGwrSj-wYyRY"
 	},
 	{
 		"capital": "Apia",
@@ -3694,7 +3928,8 @@
 		"name": "Samoa",
 		"timezones": [
 			"Pacific/Apia"
-		]
+		],
+		"place_id": "ChIJAxDsZKMTpXERcnhhdJYMh6Y"
 	},
 	{
 		"capital": "Sana'a",
@@ -3709,7 +3944,8 @@
 		"name": "Yemen",
 		"timezones": [
 			"Asia/Aden"
-		]
+		],
+		"place_id": "ChIJX7w0fKzbAxYRrneufjcp8ZI"
 	},
 	{
 		"capital": "Pretoria",
@@ -3724,7 +3960,8 @@
 		"name": "South Africa",
 		"timezones": [
 			"Africa/Johannesburg"
-		]
+		],
+		"place_id": "ChIJURLu2YmmNBwRoOikHwxjXeg"
 	},
 	{
 		"capital": "Lusaka",
@@ -3739,7 +3976,8 @@
 		"name": "Zambia",
 		"timezones": [
 			"Africa/Lusaka"
-		]
+		],
+		"place_id": "ChIJcQv8_KX0QBkRRT5Yfqz5n_E"
 	},
 	{
 		"capital": "Harare",
@@ -3754,7 +3992,8 @@
 		"name": "Zimbabwe",
 		"timezones": [
 			"Africa/Harare"
-		]
+		],
+		"place_id": "ChIJYXGxBuekMRkR7r_LxV84wKE"
 	},
 	{
 		"capital": "Willemstad",
@@ -3768,23 +4007,9 @@
 		],
 		"name": "Curazao",
 		"timezones": [
-            "America/Curacao"
-        ]
-	},
-	{
-		"capital": "Philipsburg",
-		"continent_code": "NA",
-		"continent_name": "North America",
-		"country_code": "SX",
-		"dial_code": "+1",
-		"latlng": [
-			18.031944,
-			-63.067778
+			"America/Curacao"
 		],
-		"name": "Sint Maarten (Netherlands)",
-		"timezones": [
-            "Europe/Amsterdam"
-        ]
+		"place_id": "ChIJx_3HYr6dhI4RI0fG2yiSf_w"
 	},
 	{
 		"capital": "Juba",
@@ -3798,8 +4023,25 @@
 		],
 		"name": "South Sudan",
 		"timezones": [
-            "Africa/Juba"
-        ]
+			"Africa/Juba"
+		],
+		"place_id": "ChIJGTE-PbUwGRcRl7y2fmND8Ns"
+	},
+	{
+		"capital": "Philipsburg",
+		"continent_code": "NA",
+		"continent_name": "North America",
+		"country_code": "SX",
+		"dial_code": "+1",
+		"latlng": [
+			18.031944,
+			-63.067778
+		],
+		"name": "Sint Maarten (Netherlands)",
+		"timezones": [
+			"Europe/Amsterdam"
+		],
+		"place_id": null
 	},
 	{
 		"capital": "Laayoune",
@@ -3813,7 +4055,8 @@
 		],
 		"name": "Western Sahara",
 		"timezones": [
-            "Africa/Casablanca"
-        ]
+			"Africa/Casablanca"
+		],
+		"place_id": null
 	}
 ]

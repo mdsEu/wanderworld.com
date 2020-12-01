@@ -29,6 +29,7 @@ use App\Http\Controllers\PhotoController;
 Route::group(['prefix' => 'services/v1/'], function () {
     
     Route::get('/photos/{photo}', [PhotoController::class, 'show']);
+    Route::get('/users/{user_id}/avatar', [UserController::class, 'showAvatar']);
 
     Route::middleware([SwitchLanguageMiddleware::class,ModelActiveMiddleware::class])->group(function () {
 
@@ -69,6 +70,9 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::post('/travels/{travel_id}/recommendations', [TravelController::class, 'createRecommendation']);
 
             Route::get('/friends/{friend_id}/profile', [UserController::class, 'getFriendProfileInfo']);
+
+
+            Route::post('/search-connections', [VariousController::class, 'searchCountryConnections']);
             
         });
     });
@@ -103,6 +107,9 @@ Route::group(['prefix' => 'auth'], function () {
 
             Route::get('/me/friends-level2', [UserController::class, 'getFriendsUntilLevel2']);
             Route::get('/me/friends-level2/reduced', [UserController::class, 'getFriendsUntilLevel2']);
+
+
+            Route::post('/me/report-image', [PhotoController::class, 'reportImage']);
             
             
             Route::post('/logout', [AuthController::class, 'logout']);

@@ -34,10 +34,3 @@ Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
-
-
-Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
-    Route::get('/mails', function (Request $request) {
-        return view('mails.generic2');
-    });
-});

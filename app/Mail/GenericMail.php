@@ -17,19 +17,19 @@ class GenericMail extends Mailable {
     public $title;
     public $description;
     public $button;
-    public $extraContent;
+    public $image;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($title, $description, $button = null, $extraContent = null)
+    public function __construct($title, $description, $button = null, $image = null)
     {
         $this->title   = $title;
         $this->description = $description;
         $this->button = $button;
-        $this->extraContent = $extraContent;
+        $this->image = $image ? $image : \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/bus-welcome.png');
     }
 
     /**

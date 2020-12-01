@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Exceptions\WanderException;
 
@@ -182,12 +183,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         
         if( 
             $request->is('api/auth/me/common-friends/*') ||
+            $request->is('api/services/v1/search-connections') ||
             $request->is('api/auth/me/friends-level2/reduced')
         ) {
             $temp = array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
             $re = [];
             foreach($temp as $key=>$item) {
-                if(!in_array($key,['id','name','avatar','city_name','country_code','country_name','level'])) {
+                if(!in_array($key,['id','name','avatar','city_name','country_code','country_name','level','city_gplace_id'])) {
                     continue;
                 }
                 $re[$key] = $item;
@@ -436,6 +438,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getPublicName() {
         return $this->name;
+    }
+    
+
+    /**
+     * 
+     */
+    public function showAvatar() {
+        return Storage::disk(config('voyager.storage.disk'))->response($this->avatar);
     }
 
     /**

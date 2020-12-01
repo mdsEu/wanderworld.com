@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\WanderException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpFoundation\Response;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,27 @@ class UserController extends Controller
 
     public function authenticate(Request $request) {
         return null;
+    }
+
+    /**
+     * 
+     */
+    public function showAvatar(Request $request, $user_id) {
+        try {
+            $token = $request->get('token', null);
+
+            if(!$token) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+            $user = auth($this->guard)->setToken($token)->user();
+
+            if(!$user) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+            return AppUser::findOrFail($user_id)->showAvatar();
+        } catch (\Exception $e) {
+            return \abort(Response::HTTP_UNAUTHORIZED);
+        }
     }
 
     /**

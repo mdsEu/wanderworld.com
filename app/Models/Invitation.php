@@ -102,7 +102,7 @@ class Invitation extends Model
                 return sendMail((new GenericMail(
                     __('notification.title_invitation'),
                     __('notification.user_has_invited', ['user' => $userPName]),
-                     $button
+                    $button
                 ))->subject(__('notification.subject_user_has_invited', ['user' => $userPName]))
                     ->to($email));
                 break;
