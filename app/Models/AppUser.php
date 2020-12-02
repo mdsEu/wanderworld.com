@@ -882,10 +882,12 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getProfileInfo() {
         $bundle = new \stdClass;
         
+        $requestTravels = $this->requestsTravels();
+
         $bundle->id = $this->id;
-        $bundle->times_host = 1;
-        $bundle->times_guider = 5;
-        $bundle->number_travels = 0;
+        $bundle->times_host = $requestTravels->whereIn('request_type', [Travel::RTYPE_HOST, Travel::RTYPE_HOST_GUIDER])->count();;
+        $bundle->times_guider = $requestTravels->whereIn('request_type', [Travel::RTYPE_GUIDER, Travel::RTYPE_HOST_GUIDER])->count();
+        $bundle->number_travels = $this->finishedTravels()->count();
 
         $bundle->name = $this->name;
         
@@ -943,5 +945,18 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function isMyFriend($user) {
         return !!($this->activeFriends()->find($user));
+    }
+
+
+    /**
+     * Get common friends
+     * @return Collection
+     */
+    public function getCommonContacts($contactUser) {
+
+        $myFriendsIds = $this->activeFriendsLevel( 2 )->pluck('id');
+        $commons = $contactUser->activeFriendsLevel( 2 )->whereIn('id',$myFriendsIds);
+
+        return collect($commons->values());
     }
 }

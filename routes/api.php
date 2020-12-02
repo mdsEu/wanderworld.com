@@ -70,6 +70,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::post('/travels/{travel_id}/recommendations', [TravelController::class, 'createRecommendation']);
 
             Route::get('/friends/{friend_id}/profile', [UserController::class, 'getFriendProfileInfo']);
+            Route::get('/friends/{friend_id}/finished-travels', [UserController::class, 'getFriendFinishedTravels']);
 
 
             Route::post('/search-connections', [VariousController::class, 'searchCountryConnections']);
@@ -110,6 +111,8 @@ Route::group(['prefix' => 'auth'], function () {
 
 
             Route::post('/me/report-image', [PhotoController::class, 'reportImage']);
+            
+            Route::get('/me/markers-map', [VariousController::class, 'markersMap']);
             
             
             Route::post('/logout', [AuthController::class, 'logout']);

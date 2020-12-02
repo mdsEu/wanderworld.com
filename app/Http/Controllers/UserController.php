@@ -520,7 +520,9 @@ class UserController extends Controller
         try {
             $user = auth($this->guard)->user();
             $friend = AppUser::findOrFail($friend_id);
-            return sendResponse($friend->getProfileInfo());
+            $info = $friend->getProfileInfo();
+            $info->common_contacts = $user->getCommonContacts($friend);
+            return sendResponse($info);
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
@@ -542,10 +544,10 @@ class UserController extends Controller
 
             $contactUser = AppUser::findOrFail($contact_id);
 
-            $myFriendsIds = $user->activeFriends()->pluck('friend_id');
-            $commons = $contactUser->activeFriends()->whereIn('friend_id',$myFriendsIds)->get();
+            $myFriendsIds = $user->activeFriendsLevel( 2 )->pluck('id');
+            $commons = $contactUser->activeFriendsLevel( 2 )->whereIn('id',$myFriendsIds);
 
-            return sendResponse($commons);
+            return sendResponse($commons->values());
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
@@ -607,4 +609,27 @@ class UserController extends Controller
         }
     }
 
+
+    /**
+     * Retun friend finished travel with minimal photo information
+     */
+    public function getFriendFinishedTravels(Request $request, $friend_id) {
+        try {
+            $user = auth($this->guard)->user();
+
+            
+            $friend = AppUser::with(['finishedTravels' => function($relationTravel){
+                $relationTravel->with('activeAlbums.activePhotos');
+            }])->findOrFail($friend_id);
+            return sendResponse($friend->finishedTravels);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
 }

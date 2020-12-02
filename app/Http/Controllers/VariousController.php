@@ -99,18 +99,15 @@ class VariousController extends Controller
 
             $input = trim($needle);
 
-            $sessionToken = Str::random(20);
+            $sessionToken = $request->get('session_token', Str::random(20));
             $lang = app()->getLocale();
+
             $googleKey = setting('admin.google_maps_key', env('GOOGLE_KEY', ''));
-
-
 
             $countries = readJsonCountries();
 
             $results = [];
 
-
-            
             $response = Http::get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(regions)&sessiontoken=$sessionToken&key=$googleKey&language=$lang");
     
             if(!$response->successful()) {
@@ -145,23 +142,62 @@ class VariousController extends Controller
                 }
             }
 
-            $returList = [];
+            $collectResults = collect([]);
             foreach($listUsersFound as $appUser) {
-                $idxFound = \findInArray($appUser->city_gplace_id, $returList, 'city_gplace_id');
-                if($idxFound === false) {
-                    $countryObj = new \stdClass;
-                    $countryObj->amount = 1;
-                    $countryObj->country_code = $appUser->country_code;
-                    $countryObj->city_gplace_id = $appUser->city_gplace_id;
-                    $countryObj->city_name = $appUser->city_name;
-                    $countryObj->country_name = $appUser->country_name;
-                    $returList[] = $countryObj;
-                } else  {
-                    $returList[$idxFound]->amount = $returList[$idxFound]->amount + 1;
-                }
+                $userInfo = new \stdClass;
+
+                $userInfo->id = $appUser->id;
+                $userInfo->name = $appUser->name;
+                $userInfo->country_code = $appUser->country_code;
+                $userInfo->city_gplace_id = $appUser->city_gplace_id;
+                $userInfo->city_name = $appUser->city_name;
+                $userInfo->country_name = $appUser->country_name;
+                $userInfo->number_commons = $user->getCommonContacts($appUser)->count();
+                
+                $collectResults->push($userInfo);
             }
 
-            return sendResponse($returList);
+            $grouped = $collectResults->groupBy('city_gplace_id');
+
+            $grouped->all();
+
+            return sendResponse(collect($grouped)->sortDesc()->values());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Simplified friends for maps (markers)
+     */
+    public function markersMap(Request $request) {
+        try {
+
+            
+            $user = auth($this->guard)->user();
+
+            $lang = app()->getLocale();
+
+            $friendsGrouped = $user->activeFriendsLevel( 2 )->groupBy('country_code');
+
+            $collectResults = collect([]);
+            foreach($friendsGrouped as $code=>$arrUsers) {
+                $countryGroup = new \stdClass;
+
+                $countryGroup->country_code = $code;
+                $countryGroup->number = count($arrUsers);
+                
+                $collectResults->push($countryGroup);
+            }
+
+            return sendResponse($collectResults);
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {

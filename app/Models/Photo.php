@@ -57,4 +57,29 @@ class Photo extends Model
         return false;
     }
 
+    /**
+     * ToArray function
+     */
+    public function toArray() {
+        $request = request();
+        $myAppends = [
+        ];
+        if( 
+            $request->is('api/services/v1/friends/*/finished-travels')
+        ) {
+            $temp = array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
+            $re = [];
+            foreach($temp as $key=>$item) {
+                if(!in_array($key,['id','status'])) {
+                    continue;
+                }
+                $re[$key] = $item;
+            }
+            return $re;
+        }
+        
+        return array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
+    }
+
+
 }
