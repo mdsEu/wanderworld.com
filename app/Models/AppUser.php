@@ -214,7 +214,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function activeFriends() {
         return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id')
-                        //->withPivot('status')
+                        ->withPivot('status')
                         ->wherePivotIn('status', [
                             self::FRIEND_STATUS_ACTIVE,
                             self::FRIEND_STATUS_MUTED,
@@ -445,7 +445,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * 
      */
     public function showAvatar() {
-        return Storage::disk(config('voyager.storage.disk'))->response($this->avatar);
+        try {
+            return Storage::disk(config('voyager.storage.disk'))->response($this->avatar);
+        } catch(\League\Flysystem\FileNotFoundException $fnf) {
+            return Storage::disk(config('voyager.storage.disk'))->url($this->avatar);
+        }
     }
 
     /**
@@ -574,6 +578,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $response = Http::withHeaders([
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->post("$urlWanbox/api/chatusers", [
+                'user_id' => $this->id,
                 'user_login' => $this->cid,
                 'user_name' => $this->getPublicName(),
                 'user_password' => $newkey,
@@ -732,7 +737,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 if( $response->status() == 404 ) {
                     throw new WanderException(__('app.no_action_no_ini_conversation'));
                 }
-                throw new WanderException(__('app.chat_connection_error'));
+                throw new WanderException(__('app.chat_connection_error').' '.$response->status());
             }
 
             switch ($action) {
@@ -740,7 +745,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                     $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_MUTED]);
                     break;
                 case 'block':
-                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_BLOCKED]);
+                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_BLOCKED_REQUESTS]);
                     break;
                 case 'unmute':
                 case 'unblock':

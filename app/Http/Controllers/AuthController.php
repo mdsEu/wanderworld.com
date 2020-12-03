@@ -289,16 +289,47 @@ class AuthController extends Controller
      */
     public function updatePassword(Request $request) {
         try {
-            $password = $request->get('password');
+            $params = $request->only([
+                'current_password',
+                'password',
+                'confirm_password',
+            ]);
 
-            $user = AppUser::where('email',$email)->firstOrFail();
-            $user->password = bcrypt($password);
+            $validator = Validator::make(['password' => $params['password']], [
+                'password' => [
+                    'required',
+                    'max:20',
+                    function($attribute, $value, $fail) {
+                        $this->passwordRules($attribute, $value, $fail);
+                    }
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            $user = auth($this->guard)->user();
+            
+            
+            if(!auth($this->guard)->validate(array(
+                'email' => $user->email,
+                'password' => $params['current_password'],
+            ))) {
+                throw new WanderException(__('xx:Current password incorrect'));
+            }
+
+            if($params['password'] !== $params['confirm_password']) {
+                throw new WanderException(__('xx:Differents passwords'));
+            }
+
+            $user->password = bcrypt($params['password']);
 
             if (!$user->save()) {
                 throw new WanderException(__('auth.something_wrong_updating_user_info'));
             }
 
-            return sendResponse($user);
+            return sendResponse();
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {

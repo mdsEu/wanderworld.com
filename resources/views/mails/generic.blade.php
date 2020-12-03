@@ -133,13 +133,7 @@ $imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.d
                                                     <tbody>
                                                         <tr>
                                                             <td>
-                                                                <a href="{{$button['link']}}" style="text-decoration: none;color: #fff;"><table width="200" align="center" style="text-align:center;padding:5px 15px;color:#fff;line-height:1.6;font-size:17px;font-weight:bold;font-family:Arial,sans-serif;border-radius: 25px;height: 50px;" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColorPrimaryButton; ?>">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>{{$button['text']}}</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table></a>
+                                                                <a href="{{$button['link']}}" style="background-color: <?php echo $bgColorPrimaryButton; ?>;text-align:center;padding:10px 30px;color:#fff;line-height:1.6;font-size:17px;font-weight:bold;font-family:Arial,sans-serif;border-radius: 25px;text-decoration: none;width:110px;display:block;margin: 0 auto;border-radius:25px;">{{$button['text']}}</a>
                                                             </td>
                                                         </tr>
                                                     </tbody>

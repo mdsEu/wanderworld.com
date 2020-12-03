@@ -82,7 +82,16 @@ class TravelController extends Controller
 
             $host_id = $request->get('host_id', null);
 
-            $host = $user->activeFriendsLevel( 2 )->find($host_id);
+            $activeFriends = $user->activeFriendsLevel( 2 );
+            $hostFoundIndex = $activeFriends->search(function ($appUser) use ($host_id) {
+                return $appUser->id === $host_id;
+            });
+
+            if($hostFoundIndex === false) {
+                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests 1'));
+            }
+
+            $host = $activeFriends->get($hostFoundIndex);
 
             if(!$host) {
                 throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests 1'));

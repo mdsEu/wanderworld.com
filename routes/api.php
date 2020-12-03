@@ -90,7 +90,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('/sign-in', [AuthController::class, 'registration']);
 
         Route::post('/email-verification', [AuthController::class, 'verifyEmail']);
-        //Route::post('/password', [AuthController::class, 'updatePassword']);
+        
         Route::post('/reset-password', [AuthController::class, 'resetPassword']);
         Route::post('/recovery-account', [AuthController::class, 'sendEmailRecoveryAccount']);
 
@@ -113,6 +113,8 @@ Route::group(['prefix' => 'auth'], function () {
             Route::post('/me/report-image', [PhotoController::class, 'reportImage']);
             
             Route::get('/me/markers-map', [VariousController::class, 'markersMap']);
+
+            Route::put('/me/change-password', [AuthController::class, 'updatePassword']);
             
             
             Route::post('/logout', [AuthController::class, 'logout']);
