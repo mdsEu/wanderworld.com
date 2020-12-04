@@ -421,9 +421,7 @@ class UserController extends Controller
 
                 $user->updateMetaValue('info_public_saved', 'yes');
                 
-                if (!$user->save()) {
-                    throw new WanderException(__('app.connection_error'));
-                }
+                
             } else {
 
 
@@ -472,10 +470,13 @@ class UserController extends Controller
 
                 $user->updateMetaValue('info_private_saved', 'yes');
 
-                if (!$user->save()) {
-                    throw new WanderException(__('app.connection_error'));
-                }
             }
+
+            if (!$user->save()) {
+                throw new WanderException(__('app.connection_error'));
+            }
+
+            $user->updateChatDataAccount();
 
             DB::commit();
 

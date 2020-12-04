@@ -518,11 +518,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return String
      */
     public function getChatUserToken() {
-        $meta = $this->metas()->where('meta_key','chat_user_token')->first();
-        if(empty($meta)) {
+        $val = $this->getMetaValue('chat_user_token');
+        if(empty($val)) {
             throw new WanderException(__('app.chat_connection_error'));
         }
-        return $meta->meta_value;
+        return $val;
     }
 
 
@@ -543,6 +543,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $response = Http::withHeaders([
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->put("$urlWanbox/api/chatusers/$uid", [
+                'user_id' => $this->id,
+                'user_name' => $this->getPublicName(),
                 'user_login' => $this->cid,
                 'user_password' => $newkey,
                 'user_email' => $this->email,
@@ -555,6 +557,36 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return $newkey;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             throw new WanderException(__('app.connection_error'));
+        }
+    }
+
+    /**
+     * Update the user's chat data account (password chat)
+     */
+    public function updateChatDataAccount() {
+        
+        try {
+
+            $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
+            $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic $apiKeyMiddleware",
+            ])->put("$urlWanbox/api/chatusers/{$this->chat_user_id}", [
+                'user_id' => $this->id,
+                'user_name' => $this->getPublicName(),
+                'user_login' => $this->cid,
+                'user_password' => $this->chat_key,
+                'user_email' => $this->email,
+                'user_token' => $this->getChatUserToken(),
+            ]);
+
+            if(!$response->successful()) {
+                throw new WanderException(__('app.chat_connection_error'));
+            }
+            return true;
+        } catch (\Illuminate\Http\Client\ConnectionException $th) {
+            throw new WanderException($th->getMessage());
         }
     }
 
