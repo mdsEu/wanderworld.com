@@ -57,7 +57,7 @@ class UserController extends Controller
     }
 
     /**
-     * Return user logged friends
+     * Return user's friends
      * (Paginated)
      */
     public function meFriends(Request $request) {
@@ -78,6 +78,26 @@ class UserController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+    /**
+     * Return user's friends logins (Chat)
+     * (Paginated)
+     */
+    public function meFriendsChatLogins(Request $request) {
+        try {
+            $user = auth()->user();
+            return sendResponse($user->friends()->get()->pluck('chat_user_id'));
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.friend_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+    
 
     /**
      * Return single user logged friend

@@ -97,6 +97,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('/me', [AuthController::class, 'me']);
         
         Route::middleware(['auth:api'])->group(function () {
+            Route::get('/me/friends-cid', [UserController::class, 'meFriendsChatLogins']);
 
             Route::get('/me/friends', [UserController::class, 'meFriends']);
             Route::get('/me/friends/{id}', [UserController::class, 'meFriend']);
