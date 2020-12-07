@@ -146,6 +146,9 @@ return [
         'photos.*' => [
             'mimes' => 'Some images are not of type: :values',
         ],
+        'message' => [
+            'required' => 'Aún no has escrito tu comentario',
+        ],
     ],
 
 

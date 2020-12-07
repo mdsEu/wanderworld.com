@@ -146,6 +146,10 @@ return [
         'photos.*' => [
             'mimes' => 'Some images are not of type: :values',
         ],
+
+        'message' => [
+            'required' => 'Ups. You didn\'t write anything',
+        ],
     ],
 
 
