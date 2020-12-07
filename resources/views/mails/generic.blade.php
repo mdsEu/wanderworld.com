@@ -143,12 +143,12 @@ $imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.d
                                                     <tbody>
                                                         <tr style="font-size:11px;color:#999999">
                                                             <td style="padding-top:10px;">
-    															@lang('xx:Do you have any doubt? Contact us to give you the help you need. WanderWorld.')
+    															@lang('notification.do_you_have_doubts')
                                                             </td>
                                                         </tr>
                                                         <tr style="font-size:11px;color:#999999">
                                                             <td style="padding-top:10px;">
-    															@lang('xx:2020 Copyright @ All right reserved.')
+    															@lang('notification.copyright', ['year' => date('Y')])
                                                             </td>
                                                         </tr>
                                                     </tbody>

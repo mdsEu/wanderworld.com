@@ -49,7 +49,7 @@ class TravelController extends Controller
                 'start' => [
                     function ($attribute, $value, $fail) {
                         if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
-                            $fail(__('xx:The dates for your travel are not valid.'));
+                            $fail(__('app.start_date_travel_not_valid'));
                             return;
                         }
                     }
@@ -57,7 +57,7 @@ class TravelController extends Controller
                 'end' => [
                     function ($attribute, $value, $fail) {
                         if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
-                            $fail(__('xx:The dates for your travel are not valid.'));
+                            $fail(__('app.end_date_travel_not_valid'));
                             return;
                         }
                     }
@@ -88,18 +88,18 @@ class TravelController extends Controller
             });
 
             if($hostFoundIndex === false) {
-                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests 1'));
+                throw new WanderException(__('app.no_accepting_host_request'));
             }
 
             $host = $activeFriends->get($hostFoundIndex);
 
             if(!$host) {
-                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests 1'));
+                throw new WanderException(__('app.no_accepting_host_request'));
             }
             
             $isMyFriend = $user->isMyFriend($host);
             if($isMyFriend && $host->pivot->status === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {
-                throw new WanderException(__('xx:In this moment this friend is not accepting host or guide requests 2'));
+                throw new WanderException(__('app.no_accepting_host_request'));
             }
 
             if(!$isMyFriend) {
@@ -114,10 +114,10 @@ class TravelController extends Controller
             $now = Carbon::now('UTC');
 
             if($now->diffInDays($startDate, false) <= 0) {
-                throw new WanderException(__('xx:Dates range selection not valid'));
+                throw new WanderException(__('app.dates_range_not_valid'));
             }
             if($startDate->diffInDays($endDate, false) <= 0) {
-                throw new WanderException(__('xx:Dates range selection not valid'));
+                throw new WanderException(__('app.dates_range_not_valid'));
             }
 
 
@@ -131,7 +131,7 @@ class TravelController extends Controller
             ]);
 
             if(!$travel) {
-                throw new WanderException(__('xx:It was not posible to process the request. Try again.'));
+                throw new WanderException(__('app.no_posible_process_request_try'));
             }
 
             $contacts = $request->get('contacts', []);
@@ -304,7 +304,7 @@ class TravelController extends Controller
 
             if (!$travel) {
                 DB::rollback();
-                return sendResponse(null,['travel' => __('xx:Travel not selected')],false);
+                return sendResponse(null,['travel' => __('app.travel_not_selected')],false);
             }
 
             $listPhotos = $request->file('photos');
@@ -330,7 +330,7 @@ class TravelController extends Controller
             $travel->status = Travel::STATUS_FINISHED;
 
             if(!$travel->save()) {
-                throw new WanderException(__('xx:Something was wrong saving the album'));
+                throw new WanderException(__('app.something_wrong_saving_album'));
             }
             
             DB::commit();
@@ -384,20 +384,20 @@ class TravelController extends Controller
 
             if (!$travel) {
                 DB::rollback();
-                return sendResponse(null,['travel' => __('xx:Travel not selected')],false);
+                return sendResponse(null,['travel' => __('app.travel_not_selected')],false);
             }
 
             $album = $travel->albums()->find($album_id);
 
             if (!$album) {
-                throw new WanderException( __('xx:Album not found') );
+                throw new WanderException( __('app.album_not_found') );
             }
 
             if (!empty($params['name'])) {
                 $album->name = trim($params['name']);
 
                 if(!$album->save()) {
-                    throw new WanderException(__('xx:Something was wrong saving the album name'));
+                    throw new WanderException(__('app.something_wrong_saving_album_name'));
                 }
             }
 
@@ -464,13 +464,13 @@ class TravelController extends Controller
 
 
             if (!$travel) {
-                throw new WanderException( __('xx:Travel not found') );
+                throw new WanderException( __('app.travel_not_found') );
             }
 
             $album = $travel->albums()->find($album_id);
 
             if (!$album) {
-                throw new WanderException( __('xx:Album not found') );
+                throw new WanderException( __('app.album_not_found') );
             }
 
             foreach($listPhotosIds as $photo_id) {
@@ -503,13 +503,13 @@ class TravelController extends Controller
 
 
             if (!$travel) {
-                throw new WanderException( __('xx:Travel not found') );
+                throw new WanderException( __('app.travel_not_found') );
             }
 
             $album = $travel->albums()->find($album_id);
 
             if (!$album) {
-                throw new WanderException( __('xx:Album not found') );
+                throw new WanderException( __('app.album_not_found') );
             }
 
             return sendResponse($album->activePhotos()->get());
@@ -606,18 +606,18 @@ class TravelController extends Controller
                             break;
                         
                         default:
-                            throw new WanderException( __('xx:Travel not found') );
+                            throw new WanderException( __('app.travel_not_found') );
                             break;
                     }
                 } else {
-                    throw new WanderException( __('xx:Travel not found') );
+                    throw new WanderException( __('app.travel_not_found') );
                 }
             }
 
             $travel->status = $newStatus;
 
             if(!$travel->save()) {
-                throw new WanderException(__('xx:Something was wrong changing the travel status'));
+                throw new WanderException(__('app.something_wrong_changing_travel_status'));
             }
             
             return sendResponse(call_user_func(array($user, $params['func_travels'])));
@@ -647,7 +647,7 @@ class TravelController extends Controller
                 'start' => [
                     function ($attribute, $value, $fail) {
                         if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
-                            $fail(__('xx:The dates for your travel are not valid.'));
+                            $fail(__('app.start_date_travel_not_valid'));
                             return;
                         }
                     }
@@ -655,7 +655,7 @@ class TravelController extends Controller
                 'end' => [
                     function ($attribute, $value, $fail) {
                         if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
-                            $fail(__('xx:The dates for your travel are not valid.'));
+                            $fail(__('app.end_date_travel_not_valid'));
                             return;
                         }
                     }
@@ -674,10 +674,10 @@ class TravelController extends Controller
             $now = Carbon::now('UTC');
 
             if($now->diffInDays($startDate, false) <= 0) {
-                throw new WanderException(__('xx:Dates range selection not valid'));
+                throw new WanderException(__('app.dates_range_not_valid'));
             }
             if($startDate->diffInDays($endDate, false) <= 0) {
-                throw new WanderException(__('xx:Dates range selection not valid'));
+                throw new WanderException(__('app.dates_range_not_valid'));
             }
             
             $user = auth($this->guard)->user();
@@ -685,14 +685,14 @@ class TravelController extends Controller
             $travel = $user->scheduleTravels()->find($travel_id);
 
             if(!$travel) {
-                throw new WanderException( __('xx:Travel not found') );
+                throw new WanderException( __('app.travel_not_found') );
             }
 
             $travel->start_at = $startDate->format('Y-m-d');
             $travel->end_at = $endDate->format('Y-m-d');
 
             if(!$travel->save()) {
-                throw new WanderException(__('xx:Something was wrong changing the travel dates'));
+                throw new WanderException(__('app.something_wrong_changing_travel_dates'));
             }
 
             return sendResponse($user->scheduleTravelsWithExtra());
@@ -719,7 +719,7 @@ class TravelController extends Controller
             $travel = $user->travels()->find($travel_id);
 
             if(!$travel) {
-                throw new WanderException( __('xx:Travel not found') );
+                throw new WanderException( __('app.travel_not_found') );
             }
 
             $recommendationsArr = [];

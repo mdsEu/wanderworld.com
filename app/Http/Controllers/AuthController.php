@@ -316,11 +316,11 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'password' => $params['current_password'],
             ))) {
-                throw new WanderException(__('xx:Current password incorrect'));
+                throw new WanderException(__('app.current_password_incorrect'));
             }
 
             if($params['password'] !== $params['confirm_password']) {
-                throw new WanderException(__('xx:Differents passwords'));
+                throw new WanderException(__('app.passwords_no_match'));
             }
 
             $user->password = bcrypt($params['password']);

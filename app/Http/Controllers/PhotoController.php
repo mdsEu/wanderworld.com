@@ -68,7 +68,6 @@ class PhotoController extends Controller
             ];
 
             if( !\in_array($reference, $in) ) {
-                //throw new WanderException(__('xx:'));
                 return sendResponse();
             }
 
@@ -109,14 +108,14 @@ class PhotoController extends Controller
                         'datetime' => strNowTime(),
                         'image_report_id' => $report->id,
                     )));
-                    $comment = $request->get('comment_reported', __('xx:User picture profile reported as inappropiate'));
+                    $comment = $request->get('comment_reported', __('User picture profile reported as inappropiate'));
                     break;
                 case ImageReport::REFMODEL_PHOTO:
                     $photo = Photo::findOrFail($model_id);
                     $photo->status = Photo::STATUS_REPORTED;
                     $photo->times_report = intval($photo->times_report) + 1;
                     $photo->save();
-                    $comment = $request->get('comment_reported', __('xx:Travel picture reported as inappropiate'));
+                    $comment = $request->get('comment_reported', __('Travel picture reported as inappropiate'));
                     break;
             }
 

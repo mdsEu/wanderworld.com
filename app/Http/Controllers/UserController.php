@@ -462,7 +462,7 @@ class UserController extends Controller
                 $limitChangeCity = intval( $user->getMetaValue('limit_change_city', setting('admin.limit_change_city', 2)) );
                 if ($user->city_gplace_id !== $new_gplace_id && $timesChangeCity >= $limitChangeCity) {
                     DB::rollback();
-                    return sendResponse(null,['city' => 'xx:You have reached the limit for changing the city'],false);
+                    return sendResponse(null,['city' => __('app.reached_city_change_limit')],false);
                 }
 
                 if ($user->city_gplace_id !== $new_gplace_id) {
