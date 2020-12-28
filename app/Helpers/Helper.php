@@ -599,8 +599,8 @@ if (!function_exists('makeFriendRelationship')) {
      */
     function makeFriendRelationship(AppUser $user1, AppUser $user2) {
 
-        $user1->friends()->syncWithoutDetaching($user2, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
-        $user2->friends()->syncWithoutDetaching($user1, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
+        $user1->friends()->syncWithoutDetaching([ $user2->id => ['status' => AppUser::FRIEND_STATUS_ACTIVE] ]);
+        $user2->friends()->syncWithoutDetaching([ $user1->id => ['status' => AppUser::FRIEND_STATUS_ACTIVE] ]);
 
         event(new \App\Events\FriendRelationshipCreated($user1,$user2));
 

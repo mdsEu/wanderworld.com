@@ -622,7 +622,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             }
             $arrayData = $response->json();
 
-            logActivity(var_export($arrayData,true));
+            //logActivity($arrayData);
             
             $this->updateMetaValue('chat_user_id',$arrayData['data']['uid']);
             $this->updateMetaValue('chat_user_token',$arrayData['data']['token']);
@@ -758,7 +758,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 'user_email' => $this->email,
             ];
 
-            logActivity($paramsRequestChat);
+            //logActivity($paramsRequestChat);
 
             $response = Http::withHeaders([
                 'Authorization' => "Basic $apiKeyMiddleware",
@@ -839,7 +839,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 return null;
             }
 
-            $invited = self::find($list->first());
+            $invited = self::find($list->first()->user_id);
         }
 
         return $invited;
@@ -995,5 +995,19 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $commons = $contactUser->activeFriendsLevel( 2 )->whereIn('id',$myFriendsIds);
 
         return collect($commons->values());
+    }
+
+    /**
+     * Function to get status between to friends level 2
+     * @return string
+     */
+    public function getRelationshipStatusLevel2($user) {
+        $statusLevel2 = \parseStrToJson($this->getMetaValue('friends_level2_status', '[]'));
+
+        $foundIdx = \findInArray($user->id, $statusLevel2,'user');
+        if($foundIdx === false) {
+            return self::FRIEND_STATUS_ACTIVE;
+        }
+        return $statusLevel2[$foundIdx]->status;
     }
 }

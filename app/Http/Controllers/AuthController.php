@@ -207,7 +207,7 @@ class AuthController extends Controller
             }
             $foundCountry = $countries[$idxFoundCountry];
 
-            $defaultAvatar = secure_url('storage/users/default_avatar.png');
+            $defaultAvatar = 'users/default_avatar.png';
 
             $newAppUser = array(
                 'cid' => AppUser::getChatId(),

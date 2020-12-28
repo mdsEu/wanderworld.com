@@ -34,11 +34,11 @@ class VariousController extends Controller
         try {
 
             $params = $request->only([
-                'message',
+                'comment',
             ]);
 
             $validator = Validator::make($params, [
-                'message' => 'required|max:240',
+                'comment' => 'required|max:240',
             ]);
 
             if ($validator->fails()) {
@@ -62,7 +62,7 @@ class VariousController extends Controller
 
             $comment = new Comment();
 
-            $comment->message = $params['message'];
+            $comment->message = $params['comment'];
             $comment->user_id = $user->id;
 
             if(!$comment->save()) {
@@ -148,6 +148,7 @@ class VariousController extends Controller
 
                 $userInfo->id = $appUser->id;
                 $userInfo->name = $appUser->name;
+                $userInfo->level = $appUser->level;
                 $userInfo->country_code = $appUser->country_code;
                 $userInfo->city_gplace_id = $appUser->city_gplace_id;
                 $userInfo->city_name = $appUser->city_name;

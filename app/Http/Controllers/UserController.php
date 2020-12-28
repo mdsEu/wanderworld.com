@@ -189,6 +189,8 @@ class UserController extends Controller
             $invitedEmail = $request->get('email', null);
             $invitedPhone = sanitizePhone($request->get('phone', null));
             $invitedFacebookId = $request->get('facebook_id', null);
+
+            $invitedFriendLevel2Id = $request->get('friend_level2_id', null);
             
 
             switch ($typeNoti) {
@@ -198,7 +200,7 @@ class UserController extends Controller
                     }
                     break;
                 case 'email':
-                    if(!$invitedPhone) {
+                    if(!$invitedEmail) {
                         throw new WanderException(__('app.contact_info_enough'));
                     }
                     break;
@@ -206,6 +208,12 @@ class UserController extends Controller
                     if(!$invitedFacebookId) {
                         throw new WanderException(__('app.contact_info_enough'));
                     }
+                    break;
+                case 'level2':
+                    if(!$invitedFriendLevel2Id) {
+                        throw new WanderException(__('app.contact_info_enough'));
+                    }
+                    $invitedEmail = AppUser::findOrFail($invitedFriendLevel2Id)->email;
                     break;
                 default:
                     throw new WanderException(__('app.action_denied'));

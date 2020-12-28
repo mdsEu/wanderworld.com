@@ -69,6 +69,11 @@ class Invitation extends Model
 
                 $urlRestNrsGatewaySendMessage = setting('admin.endpoint_sendmessage_nrsgateway', "https://gateway.plusmms.net/rest/message");
 
+                $phone = $this->getPhone();
+
+                $phone = \str_replace(['+',' '],['',''], $phone);
+                $phone = '+'.$phone;
+
                 $client = new Client();
                 $guzzleRes = $client->post($urlRestNrsGatewaySendMessage, [
                     'headers' => [
@@ -76,7 +81,7 @@ class Invitation extends Model
                         'Content-Type' => "application/json",
                     ], 
                     'json' => [
-                        'to' => [$this->getPhone()],
+                        'to' => [$phone],
                         'text' => $tplMessage,
                         'from' => "WanderWorld",
                     ],
@@ -106,7 +111,8 @@ class Invitation extends Model
                 ))->subject(__('notification.subject_user_has_invited', ['user' => $userPName]))
                     ->to($email));
                 break;
-            
+            case 'level2':
+                return true;
             default:
                 return false;
         }
@@ -160,6 +166,29 @@ class Invitation extends Model
             default:
                 throw new WanderException(__('app.action_not_valid'));
         }
+    }
+
+    /**
+     * Find a invitation user user_id, email or phone
+     */
+    public static function findPendingByEmailOrPhoneOrFbid($user_id, $invitedEmail, $invitedPhone, $invitedFbid = null) {
+        $listInvitations = AppUser::findOrFail($user_id)->myPendingInvitations();
+
+        $invitationE = $listInvitations->where('invited_email', $invitedEmail)->first();
+        if($invitationE) {
+            return $invitationE;
+        }
+
+        $invitationP = $listInvitations->where('invited_phone', $invitedPhone)->first();
+        if($invitationP) {
+            return $invitationP;
+        }
+
+        $invitationF = $listInvitations->where('invited_fbid', $invitedFbid)->first();
+        if($invitationF) {
+            return $invitationF;
+        }
+        return null;
     }
 
 }

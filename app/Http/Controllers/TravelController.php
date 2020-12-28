@@ -102,10 +102,8 @@ class TravelController extends Controller
                 throw new WanderException(__('app.no_accepting_host_request'));
             }
 
-            if(!$isMyFriend) {
-                /**
-                 * To DO
-                 */
+            if(!$isMyFriend && $host->getRelationshipStatusLevel2($user) === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {
+                throw new WanderException(__('app.no_accepting_host_request'));
             }
 
             $startDate = Carbon::createFromFormat('Y-m-d',$params['start']);
