@@ -174,6 +174,10 @@ class Invitation extends Model
     public static function findPendingByEmailOrPhoneOrFbid($user_id, $invitedEmail, $invitedPhone, $invitedFbid = null) {
         $listInvitations = AppUser::findOrFail($user_id)->myPendingInvitations();
 
+        $invitedEmail = getStrFakeVal($invitedEmail);
+        $invitedPhone = getStrFakeVal($invitedPhone);
+        $invitedFbid = getStrFakeVal($invitedFbid);
+
         $invitationE = $listInvitations->where('invited_email', $invitedEmail)->first();
         if($invitationE) {
             return $invitationE;

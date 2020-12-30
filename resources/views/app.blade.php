@@ -168,8 +168,8 @@
             Object.defineProperty(window, 'openApp', {
                 get: function (){
                     return function() {
-                        var deepLinkAndroid = "{{ env('DEEPLINK_ANDROID','wanderworld://').$screen }}";
-                        var deepLinkIOS = "{{ env('DEEPLINK_IOS','wanderworld://').$screen }}";
+                        var deepLinkAndroid = "{{ env('DEEPLINK_ANDROID','wanderworld://app/').$screen }}";
+                        var deepLinkIOS = "{{ env('DEEPLINK_IOS','wanderworld://app/').$screen }}";
 
                         var deepLink = null;
 

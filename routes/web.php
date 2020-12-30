@@ -23,9 +23,8 @@ Route::get('/', function () {
 
 Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
     Route::get('/app/{screen}', function (Request $request, $screen) {
-
         return view('app',array(
-            'screen' => $screen,
+            'screen' => $screen.(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : ''),
         ));
     });
 });

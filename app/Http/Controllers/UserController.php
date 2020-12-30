@@ -239,7 +239,7 @@ class UserController extends Controller
                         ->get();
 
                 if($result->count() > 0) {
-                    throw new WanderException(__('app.already_send_invitation'));
+                    return sendResponse(null, __('app.already_send_invitation'));
                 }
 
                 $invited_id = $invited->id;
@@ -253,7 +253,7 @@ class UserController extends Controller
 
                 $invitation = Invitation::findPendingByEmailOrPhoneOrFbid($user->id, $invitedEmail, $invitedPhone, $invitedFacebookId);
                 if($invitation) {
-                    throw new WanderException(__('app.already_send_invitation'));
+                    return sendResponse(null, __('app.already_send_invitation'));
                 }
 
             }

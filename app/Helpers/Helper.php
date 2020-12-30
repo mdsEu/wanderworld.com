@@ -390,6 +390,10 @@ if (!function_exists('checkRecoveryToken')) {
      */
     function checkRecoveryToken($token64, $hoursLimit = 0) {
 
+        if (!$token64) {
+            throw new WanderException(__('auth.recovery_token_not_valid'));
+        }
+        
         list($email,$token) = explode('::',base64_decode($token64));
 
         $rowToken = DB::table('password_resets')
