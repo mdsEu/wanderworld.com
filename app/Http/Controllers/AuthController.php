@@ -156,8 +156,8 @@ class AuthController extends Controller
             ]);
 
             $validator = Validator::make($params, [
-                'fullname' => 'required|max:20',
-                'nickname' => 'required|max:20|unique:app_users,nickname',
+                'fullname' => 'required|max:40',
+                'nickname' => 'max:40',
                 'email' => 'required|email|max:75|unique:app_users,email',
                 'password' => [
                     'required',
@@ -207,13 +207,13 @@ class AuthController extends Controller
             }
             $foundCountry = $countries[$idxFoundCountry];
 
-            $defaultAvatar = 'users/default_avatar.png';
+            $defaultAvatar = AppUser::DEFAULT_AVATAR;
 
             $newAppUser = array(
                 'cid' => AppUser::getChatId(),
                 'name' => $params['fullname'],
                 'email' => $params['email'],
-                'nickname' => $params['nickname'],
+                'nickname' => isset($params['nickname']) ? $params['nickname'] : null,
                 'avatar' => $defaultAvatar,
                 'continent_code' => $foundCountry['continent_code'],
                 'country_code' => $foundCountry['country_code'],

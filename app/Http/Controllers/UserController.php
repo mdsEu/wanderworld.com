@@ -50,7 +50,15 @@ class UserController extends Controller
             if(!$user) {
                 return \abort(Response::HTTP_UNAUTHORIZED);
             }
-            return AppUser::findOrFail($user_id)->showAvatar();
+            $friend = AppUser::findOrFail($user_id);
+
+            $is_avatar_private = $friend->getMetaValue('is_avatar_private', 'no');
+
+            if($is_avatar_private === 'yes' && !$friend->isMyFriend($user)) {
+                return showImage(AppUser::DEFAULT_AVATAR);
+            }
+            
+            return $friend->showAvatar();
         } catch (\Exception $e) {
             return \abort(Response::HTTP_UNAUTHORIZED);
         }
@@ -196,22 +204,22 @@ class UserController extends Controller
             switch ($typeNoti) {
                 case 'sms':
                     if(!$invitedPhone) {
-                        throw new WanderException(__('app.contact_info_enough'));
+                        throw new WanderException(__('app.contact_info_no_enough'));
                     }
                     break;
                 case 'email':
                     if(!$invitedEmail) {
-                        throw new WanderException(__('app.contact_info_enough'));
+                        throw new WanderException(__('app.contact_info_no_enough'));
                     }
                     break;
                 case 'facebook':
                     if(!$invitedFacebookId) {
-                        throw new WanderException(__('app.contact_info_enough'));
+                        throw new WanderException(__('app.contact_info_no_enough'));
                     }
                     break;
                 case 'level2':
                     if(!$invitedFriendLevel2Id) {
-                        throw new WanderException(__('app.contact_info_enough'));
+                        throw new WanderException(__('app.contact_info_no_enough'));
                     }
                     $invitedEmail = AppUser::findOrFail($invitedFriendLevel2Id)->email;
                     break;
@@ -360,10 +368,9 @@ class UserController extends Controller
 
             $isPublic = $request->get('public', 'public') === 'public';
 
-            \logActivity($request->all());
-            
             $params = $request->only($isPublic ? [
                 'name',
+                'nickname',
                 'image',
                 'aboutme',
                 'interests',
@@ -377,7 +384,8 @@ class UserController extends Controller
             ]);
 
             $rules = $isPublic ? [
-                'name' => 'required|max:20',
+                'name' => 'required|max:40',
+                'nickname' => 'max:40',
                 'image' => 'image|mimes:jpeg,png,jpg|max:2048',
                 'aboutme' => 'required|max:300',
                 'interests' => 'required|array|max:15',
@@ -431,12 +439,18 @@ class UserController extends Controller
             if($isPublic) {
 
                 $user->name = $params['name'];
+                if(!empty($params['nickname'])) {
+                    $user->nickname = $params['nickname'];
+                }
                 if($request->file('image')) {
                     $user->avatar = $request->file('image')->store('avatars', [
                         'disk' => config('voyager.storage.disk'),
                         'visibility' => 'public',
                     ]);
                 }
+
+                $user->updateMetaValue('is_avatar_private', $request->get('is_avatar_private', 'no'));
+
                 
                 $user->updateMetaValue('about_me', $params['aboutme']);
                 $user->updateMetaValue('is_aboutme_private', $request->get('is_aboutme_private', 'no'));
@@ -559,6 +573,35 @@ class UserController extends Controller
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Function to remove user avatar
+     */
+    public function meRemoveAvatar(Request $request) {
+        try {
+
+            $user = auth($this->guard)->user();
+            $user->avatar = AppUser::DEFAULT_AVATAR;
+
+            if (!$user->save()) {
+                throw new WanderException(__('app.connection_error'));
+            }
+
+            return sendResponse();
+        } catch (QueryException $qe) {
+            DB::rollback();
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            DB::rollback();
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            DB::rollback();
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            DB::rollback();
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }

@@ -660,6 +660,23 @@ if (!function_exists('getPaginate')) {
 }
 
 
+if (!function_exists('showImage')) {
+    /**
+     * @param \Illuminate\Support\Collection $items
+     * @param int $perPage
+     * @param int|null $page
+     * @return String|null
+     */
+    function showImage($image) {
+        try {
+            return Storage::disk(config('voyager.storage.disk'))->response($image);
+        } catch(\League\Flysystem\FileNotFoundException $fnf) {
+            return Storage::disk(config('voyager.storage.disk'))->url($image);
+        }
+    }
+}
+
+
 /**
  * Read countries json
  * @return Array

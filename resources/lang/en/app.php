@@ -14,7 +14,7 @@ return [
     
     'data_not_found' => 'Data not found.',
     'something_was_wrong' => 'Something was wrong.',
-    'contact_info_enough' => 'The contact\'s information is not enough to do this action.',
+    'contact_info_no_enough' => 'The contact\'s information is not enough to do this action.',
     'action_denied' => 'Action denied.',
     'is_it_you' => 'This person is it you?',
     'already_send_invitation' => 'You already sent a invitation for this person.',

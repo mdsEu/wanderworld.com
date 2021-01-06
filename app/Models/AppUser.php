@@ -30,6 +30,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     const FRIEND_STATUS_BLOCKED          = '3';
     const FRIEND_STATUS_MUTED            = '4';
     const FRIEND_STATUS_BLOCKED_REQUESTS = '5';
+
+    const DEFAULT_AVATAR = 'users/default_avatar.png';
     
 
     /**
@@ -437,7 +439,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return String
      */
     public function getPublicName() {
-        return $this->name;
+        return !empty($this->nickname) ? $this->nickname : $this->name;
     }
     
 
@@ -445,11 +447,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * 
      */
     public function showAvatar() {
-        try {
-            return Storage::disk(config('voyager.storage.disk'))->response($this->avatar);
-        } catch(\League\Flysystem\FileNotFoundException $fnf) {
-            return Storage::disk(config('voyager.storage.disk'))->url($this->avatar);
-        }
+        return showImage($this->avatar);
     }
 
     /**
@@ -927,11 +925,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $bundle->number_travels = $this->finishedTravels()->count();
 
         $bundle->name = $this->name;
+        $bundle->nickname = $this->nickname;
         
         $bundle->email = $this->email;
         $bundle->is_email_private = $this->getMetaValue('is_email_private', 'no');
 
         $bundle->image = $this->avatar;
+        $bundle->is_avatar_private = $this->getMetaValue('is_avatar_private', 'no');
+        
 
         $bundle->aboutme = $this->getMetaValue('about_me', '');
         $bundle->is_aboutme_private = $this->getMetaValue('is_aboutme_private', 'no');
@@ -977,11 +978,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
-     * Return if host is my friend
+     * Return if an user is my friend
      * @return bool
      */
     public function isMyFriend($user) {
-        return !!($this->activeFriends()->find($user));
+        return !!($this->activeFriends()->find($user) || $user->id === $this->id);
     }
 
 

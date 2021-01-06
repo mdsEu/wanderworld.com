@@ -14,7 +14,7 @@ return [
 
     'data_not_found' => 'Datos no encontrados.',
     'something_was_wrong' => 'Algo salió mal.',
-    'contact_info_enough' => 'La información del contacto no es suficiente para realizar esta acción.',
+    'contact_info_no_enough' => 'La información del contacto no es suficiente para realizar esta acción.',
     'action_denied' => 'Acceso denegado.',
     'is_it_you' => '¿Esta persona es usted?',
     'already_send_invitation' => 'Ya has enviado una invitación a esta persona.',
