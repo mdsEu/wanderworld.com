@@ -41,4 +41,6 @@ return [
     'something_wrong_changing_travel_status' => 'Algo salió mal cambiando el estado del viaje',
     'something_wrong_changing_travel_dates' => 'Algo salió mal cambiando las fechas del viaje',
     'reached_city_change_limit' => 'Has alcanzado el limite para cambiar tu ciudad',
+    'email_necessary_invitation' => 'Es necesario el correo electrónico de esta persona para enviarle una invitación.',
+    'travel_not_accepted_by_host' => 'El viaje no ha sido aceptado por el hospedador',
 ];

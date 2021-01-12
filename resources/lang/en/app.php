@@ -41,4 +41,6 @@ return [
     'something_wrong_changing_travel_status' => 'Something was wrong changing the travel status',
     'something_wrong_changing_travel_dates' => 'Something was wrong changing the travel dates',
     'reached_city_change_limit' => 'You have reached the limit for changing the city',
+    'email_necessary_invitation' => 'It\'s necessary the email of this person to send an invitacion',
+    'travel_not_accepted_by_host' => 'The trip was not accepted by the host',
 ];

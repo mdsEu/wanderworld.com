@@ -325,6 +325,10 @@ class TravelController extends Controller
                 ]);
             }
 
+            if($travel->status !== Travel::STATUS_ACCEPTED) {
+                throw new WanderException(__('app.travel_not_accepted_by_host'));
+            }
+
             $travel->status = Travel::STATUS_FINISHED;
 
             if(!$travel->save()) {
@@ -531,6 +535,7 @@ class TravelController extends Controller
 
             return sendResponse(array(
                 'finished_travels' => $user->finishedTravels()->count(),
+                'accepted_travels' => $user->acceptedTravels()->count(),
                 'schedule_travels' => $user->scheduleTravels()->count(),
                 'requests_travels' => $user->requestsTravels()->count(),
                 'recommendations' => $user->visitRecommendations()->count(),

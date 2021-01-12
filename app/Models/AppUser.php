@@ -299,6 +299,17 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
+     * Return user's accepted travels
+     * @return hasMany
+     */
+    public function acceptedTravels() {
+        return $this->hasMany(Travel::class,'user_id')
+                        ->whereIn('status', [
+                            Travel::STATUS_ACCEPTED,
+                        ]);
+    }
+
+    /**
      * Return user's schedule travels
      * @return hasMany
      */
@@ -308,6 +319,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                             Travel::STATUS_ACCEPTED,
                             Travel::STATUS_PENDING,
                             Travel::STATUS_CANCELLED,
+                            Travel::STATUS_REJECTED,
                         ]);
     }
 
@@ -817,6 +829,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             if($invitedFbid) {
 
+                $invitedFbid = getStrFakeVal($invitedFbid);
+
                 $list = AppUserMeta::where('meta_key','facebook_user_id')
                     ->where('meta_value',$invitedFbid)
                     ->get();
@@ -827,13 +841,16 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             }
 
-
+            $invitedPhone = getStrFakeVal($invitedPhone);
 
             $list = AppUserMeta::where('meta_key','phone')
                     ->where('meta_value',$invitedPhone)
                     ->get();
-
-            if($list->count() !== 1) {
+            $count = $list->count();
+            if($count > 1) {
+                throw new WanderException(__('app.email_necessary_invitation'));   
+            }
+            if($count === 0) {
                 return null;
             }
 
