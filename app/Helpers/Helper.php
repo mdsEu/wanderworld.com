@@ -373,7 +373,7 @@ if (!function_exists('sendRecoveryAccountEmail')) {
                 __('auth.recovery_account_title_email'),
                 __('auth.recovery_account_description_email'),
                  $button,
-                 Storage::disk(config('voyager.storage.disk'))->url('mails/recovery-mailings.png')
+                 Storage::disk(config('voyager.storage.disk'))->url('mails/recovery-mailings.gif')
             ))->subject(__('auth.recovery_account_subject_email'))
                 ->to($user->email));
         } catch (\Exception $e) {

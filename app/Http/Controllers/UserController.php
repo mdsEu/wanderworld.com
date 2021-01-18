@@ -193,6 +193,7 @@ class UserController extends Controller
             $user = JWTAuth::parseToken()->authenticate();
 
             $typeNoti = $request->get('type_notification', 'sms');
+            $typeNoti = 'email';
 
             $invitedEmail = $request->get('email', null);
             $invitedPhone = sanitizePhone($request->get('phone', null));

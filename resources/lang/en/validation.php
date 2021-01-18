@@ -145,6 +145,7 @@ return [
         ],
         'photos.*' => [
             'mimes' => 'Some images are not of type: :values',
+            'uploaded' => 'Some images can\'t be upload',
         ],
 
         'message' => [

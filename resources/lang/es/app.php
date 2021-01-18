@@ -43,4 +43,5 @@ return [
     'reached_city_change_limit' => 'Has alcanzado el limite para cambiar tu ciudad',
     'email_necessary_invitation' => 'Es necesario el correo electrónico de esta persona para enviarle una invitación.',
     'travel_not_accepted_by_host' => 'El viaje no ha sido aceptado por el hospedador',
+    'travel_already_schedule' => 'Ya tienes un viaje programado con :name',
 ];

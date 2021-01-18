@@ -96,6 +96,15 @@ class TravelController extends Controller
             if(!$host) {
                 throw new WanderException(__('app.no_accepting_host_request'));
             }
+
+            $myScheduleTravels = $user->scheduleTravels();
+
+            $scheduleTravelHost = $myScheduleTravels->where('host_id', $host->id)->get();
+
+            if($scheduleTravelHost->count() > 0) {
+                logActivity(get_class($scheduleTravelHost));
+                throw new WanderException(__('app.travel_already_schedule', ['name' => $host->getPublicName()]));
+            }
             
             $isMyFriend = $user->isMyFriend($host);
             if($isMyFriend && $host->pivot->status === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {

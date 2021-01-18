@@ -145,6 +145,7 @@ return [
         ],
         'photos.*' => [
             'mimes' => 'Some images are not of type: :values',
+            'uploaded' => 'Algunas imagenes no pueden ser subidas',
         ],
         'message' => [
             'required' => 'Aún no has escrito tu comentario',
