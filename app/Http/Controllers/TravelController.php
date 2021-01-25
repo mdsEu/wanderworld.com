@@ -546,7 +546,7 @@ class TravelController extends Controller
                 'finished_travels' => $user->finishedTravels()->count(),
                 'accepted_travels' => $user->acceptedTravels()->count(),
                 'schedule_travels' => $user->scheduleTravels()->count(),
-                'requests_travels' => $user->requestsTravels()->count(),
+                'requests_travels' => $user->pendingTravels()->count(),
                 'recommendations' => $user->visitRecommendations()->count(),
             ));
 

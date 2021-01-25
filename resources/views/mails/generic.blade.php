@@ -8,6 +8,9 @@ $orangeColor = '#ef5443';
 $logo = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/logo-mailings.png');
 $imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/name-mailings.png');
 
+$imageNameDark = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/name-mailings-dark.png');
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -17,8 +20,8 @@ $imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.d
         <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
         <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
         <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no"> <!-- Tell iOS not to automatically link certain text strings. -->
-        <meta name="color-scheme" content="light">
-        <meta name="supported-color-schemes" content="light">
+        <meta name="color-scheme" content="light dark">
+        <meta name="supported-color-schemes" content="light dark">
         <title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
         <!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
@@ -59,7 +62,25 @@ $imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.d
 
         <!-- Progressive Enhancements : BEGIN -->
         <style>
-
+            @media (prefers-color-scheme: dark) {
+                /* Shows Dark Mode-Only Content, Like Images */
+                .dark-image-logo {
+                    display: table !important;
+                }
+                
+                /* Hides Light Mode-Only Content, Like Images */
+                .light-image-logo {
+                    display: none;
+                    display: none !important;
+                }
+            }
+            [data-ogsc] .dark-image-logo {
+                display: table !important;
+            }
+            [data-ogsc] .light-image-logo {
+                display: none;
+                display: none !important;
+            }
         </style>
         <!-- Progressive Enhancements : END -->
 
@@ -89,7 +110,7 @@ $imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.d
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                                <table align="center" style="text-align:center;line-height:1.6;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:#444;" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
+                                                <table class="light-image-logo" align="center" style="text-align:center;line-height:1.6;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:#444;" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
                                                     <tbody>
                                                         <tr>
                                                             <td style="line-height:32px;padding:0px 30px 0px 30px;" valign="baseline">
@@ -102,6 +123,19 @@ $imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.d
                                                         </tr>
                                                     </tbody>
                                                 </table>
+                                                <!--[if !mso]><! --><table class="dark-image-logo" align="center" style="text-align:center;line-height:1.6;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:#444;display: none;" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="line-height:32px;padding:0px 30px 0px 30px;" valign="baseline">
+                                                                <span>
+                                                                    <div style="padding: 0 0 25px 0;">
+                                                                    <img src="{{$imageNameDark}}" alt="" width="180" height="21" style="border: 0px solid transparent;"/>
+                                                                    </div>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table><!--<![endif]-->
                                                 
                                                 <table width="550" align="center" style="text-align:center;padding:0;color:#444;line-height:1.6;font-size:12px;font-family:Arial,sans-serif;" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
                                                     <tbody>

@@ -447,10 +447,22 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
+     * Get user's country name
+     * @return String
+     */
+    public function getNameAttribute($name) {
+        $request = request();
+        if( $request->is('admin/app-users/*') ) {
+            return $name;
+        }
+        return !empty($this->nickname) ? $this->nickname : $name;
+    }
+
+    /**
      * Get user's public name
      * @return String
      */
-    public function getPublicName() {
+    public function getPublicName($name = null) {
         return !empty($this->nickname) ? $this->nickname : $this->name;
     }
     
@@ -754,8 +766,22 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             $myFriend = $friends->find($friend_id);
 
+            
             if(empty($myFriend)) {
-                throw new WanderException(__('app.no_friend_selected'));
+                $activeFriends2 = $this->activeFriendsLevel( 2 );
+                $hostFoundIndex = $activeFriends2->search(function ($appUser) use ($friend_id) {
+                    return $appUser->id === $friend_id;
+                });
+
+                if($hostFoundIndex === false) {
+                    throw new WanderException(__('app.no_friend_selected'));
+                }
+
+                $myFriend = $activeFriends2->get($hostFoundIndex);
+
+                if(!$myFriend) {
+                    throw new WanderException(__('app.no_friend_selected'));
+                }
             }
 
             $chat_user_id = $myFriend->chat_user_id;
@@ -782,24 +808,44 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 throw new WanderException(__('app.chat_connection_error').' '.$response->status());
             }
 
-            switch ($action) {
-                case 'mute':
-                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_MUTED]);
-                    break;
-                case 'block':
-                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_BLOCKED_REQUESTS]);
-                    break;
-                case 'unmute':
-                case 'unblock':
-                    $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
-                    break;
-                case 'delete':
-                    brokeFriendRelationship($this,$myFriend);
-                    break;
-                
-                default:
-                    break;
+            if($this->isMyFriend($myFriend)) {
+                switch ($action) {
+                    case 'mute':
+                        $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_MUTED]);
+                        break;
+                    case 'block':
+                        $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_BLOCKED_REQUESTS]);
+                        break;
+                    case 'unmute':
+                    case 'unblock':
+                        $friends->updateExistingPivot($myFriend->id, ['status' => AppUser::FRIEND_STATUS_ACTIVE]);
+                        break;
+                    case 'delete':
+                        brokeFriendRelationship($this,$myFriend);
+                        break;
+                    
+                    default:
+                        break;
+                }
+            } else {
+                switch ($action) {
+                    case 'mute':
+                        $this->updateRelationshipStatusLevel2($myFriend, AppUser::FRIEND_STATUS_MUTED);
+                        break;
+                    case 'block':
+                        $this->updateRelationshipStatusLevel2($myFriend, AppUser::FRIEND_STATUS_BLOCKED_REQUESTS);
+                        break;
+                    case 'unmute':
+                    case 'unblock':
+                        $this->updateRelationshipStatusLevel2($myFriend, AppUser::FRIEND_STATUS_ACTIVE);
+                        break;
+                    
+                    default:
+                        break;
+                }
             }
+
+            
             
             DB::commit();
 
@@ -941,7 +987,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $bundle->times_guider = $requestTravels->whereIn('request_type', [Travel::RTYPE_GUIDER, Travel::RTYPE_HOST_GUIDER])->count();
         $bundle->number_travels = $this->finishedTravels()->count();
 
-        $bundle->name = $this->name;
+        $request = request();
+        if( $request->is('api/services/v1/friends/*/profile') ) {
+            $bundle->name = $this->name;
+        } else {
+            $bundle->name = $this->getRawOriginal('name');
+        }
+
         $bundle->nickname = $this->nickname;
         
         $bundle->email = $this->email;
@@ -1020,12 +1072,65 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return string
      */
     public function getRelationshipStatusLevel2($user) {
-        $statusLevel2 = \parseStrToJson($this->getMetaValue('friends_level2_status', '[]'));
 
-        $foundIdx = \findInArray($user->id, $statusLevel2,'user');
-        if($foundIdx === false) {
+        $row1 = DB::table('friends_status')->where('user_id',$user->id)
+                                            ->where('friend_id',$this->id)->first();
+
+        $row2 = DB::table('friends_status')->where('user_id',$this->id)
+                                            ->where('friend_id',$user->id)->first();
+
+        if(!$row1 && !$row2) {
             return self::FRIEND_STATUS_ACTIVE;
         }
-        return $statusLevel2[$foundIdx]->status;
+
+        if($row1) {
+            return $row1->status;
+        }
+
+        return $row2->status;
+    }
+
+    /**
+     * Function to update status between to friends level 2
+     * @return bool
+     */
+    public function updateRelationshipStatusLevel2($friend, $status) {
+
+        $row1 = DB::table('friends_status')->where('user_id',$friend->id)
+                                            ->where('friend_id',$this->id)->first();
+
+        $row2 = DB::table('friends_status')->where('user_id',$this->id)
+                                            ->where('friend_id',$friend->id)->first();
+
+        if(!$row1 && !$row2) {
+            return DB::table('friends_status')
+                ->updateOrInsert(
+                    [
+                        'user_id' => $this->id, 
+                        'friend_id' => $friend->id
+                    ],
+                    ['status' => $status]
+            );
+        }
+
+        if($row1) {
+            return DB::table('friends_status')
+                ->updateOrInsert(
+                    [
+                        'user_id' => $friend->id, 
+                        'friend_id' => $this->id
+                    ],
+                    ['status' => $status]
+            );
+        }
+
+        return DB::table('friends_status')
+                ->updateOrInsert(
+                    [
+                        'user_id' => $this->id, 
+                        'friend_id' => $friend->id
+                    ],
+                    ['status' => $status]
+            );
     }
 }
