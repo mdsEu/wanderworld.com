@@ -224,10 +224,11 @@ class AuthController extends Controller
             $user = AppUser::create($newAppUser);
 
             if(!($user && $user->id)) {
-                throw new WanderException("auth.user_not_created_try_again");
+                throw new WanderException(__("auth.user_not_created_try_again"));
             }
 
             $user->updateMetaValue('birthday', $params['birthday']);
+            $user->updateMetaValue('is_default_avatar', 'yes');
             
             $phone = sanitizePhone($params['cellphone']['dial'].$params['cellphone']['number']);
             $user->updateMetaValue('phone', $phone);

@@ -292,10 +292,11 @@ class TravelController extends Controller
                 'photos',
             ]);
 
+            $sizeKb = setting('admin.file_size_limit', 2048);
+
             $rules = [
                 'name' => 'required|max:40',
-                'photos' => 'required',
-                'photos.*' => 'image|mimes:jpeg,png,jpg|max:'.setting('admin.file_size_limit', 2048),
+                'photos.*' => 'file|mimes:jpeg,png,jpg|max:'.$sizeKb,
             ] ;
 
             $validator = Validator::make($params, $rules);
@@ -321,17 +322,19 @@ class TravelController extends Controller
                 'status' => Album::STATUS_ACCEPTED,
             ]);
 
-            $disk = config('voyager.storage.disk');
-            $dt = Carbon::now('UTC')->format('FY');
-            foreach($listPhotos as $uploadFilePhoto) {
-                $path = $uploadFilePhoto->store("photos/album{$album->id}/$dt", [
-                    'disk' => $disk,
-                    //'visibility' => 'public',
-                ]);
-                $album->photos()->create([
-                    'path' => $path,
-                    'disk' => $disk,
-                ]);
+            if(!empty($listPhotos)) {
+                $disk = config('voyager.storage.disk');
+                $dt = Carbon::now('UTC')->format('FY');
+                foreach($listPhotos as $uploadFilePhoto) {
+                    $path = $uploadFilePhoto->store("photos/album{$album->id}/$dt", [
+                        'disk' => $disk,
+                        //'visibility' => 'public',
+                    ]);
+                    $album->photos()->create([
+                        'path' => $path,
+                        'disk' => $disk,
+                    ]);
+                }
             }
 
             if($travel->status !== Travel::STATUS_ACCEPTED) {
@@ -431,6 +434,79 @@ class TravelController extends Controller
 
             $reAlbum = Album::with('activePhotos')->find($album->id);
             return sendResponse($reAlbum);
+        } catch (QueryException $qe) {
+            DB::rollback();
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            DB::rollback();
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            DB::rollback();
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Upload just one photo
+     */
+    public function uploadOnePhotoAlbum(Request $request, $travel_id, $album_id) {
+        try {
+
+            DB::beginTransaction();
+            
+            $params = $request->only([
+                'photo',
+            ]);
+
+            $sizeKb = setting('admin.file_size_limit', 2048);
+            $rules = [
+                'photo' => 'file|mimes:jpeg,png,jpg|max:'.$sizeKb,
+            ] ;
+
+            $validator = Validator::make($params, $rules);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            $uploadedPhoto = $request->file('photo');
+
+
+            $user = auth($this->guard)->user();
+            $travel = $user->travels()->find($travel_id);
+
+
+            if (!$travel) {
+                DB::rollback();
+                return sendResponse(null,['travel' => __('app.travel_not_selected')],false);
+            }
+
+            $album = $travel->albums()->find($album_id);
+
+            if (!$album) {
+                throw new WanderException( __('app.album_not_found') );
+            }
+
+            if( !empty($uploadedPhoto) ) {
+                $disk = config('voyager.storage.disk');
+                $dt = Carbon::now('UTC')->format('FY');
+                $path = $uploadedPhoto->store("photos/album{$album->id}/$dt", [
+                    'disk' => $disk,
+                    //'visibility' => 'public',
+                ]);
+                $album->photos()->create([
+                    'path' => $path,
+                    'disk' => $disk,
+                ]); 
+            }
+            
+            DB::commit();
+
+            return sendResponse($album);
         } catch (QueryException $qe) {
             DB::rollback();
             return sendResponse(null, __('app.database_query_exception'), false, $qe);

@@ -193,7 +193,7 @@ class UserController extends Controller
             $user = JWTAuth::parseToken()->authenticate();
 
             $typeNoti = $request->get('type_notification', 'sms');
-            $typeNoti = 'email';
+            //$typeNoti = 'email';
 
             $invitedEmail = $request->get('email', null);
             $invitedPhone = sanitizePhone($request->get('phone', null));
@@ -383,11 +383,13 @@ class UserController extends Controller
                 'gender',
                 'personal_status',
             ]);
-
+            
+            $sizeKb = setting('admin.file_size_limit', 2048);
+            
             $rules = $isPublic ? [
                 'name' => 'required|max:40',
                 'nickname' => 'max:40',
-                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'image|mimes:jpeg,png,jpg|max:'.$sizeKb,
                 'aboutme' => 'required|max:300',
                 'interests' => 'required|array|max:15',
                 'languages' => 'required|array|max:6',
@@ -448,6 +450,7 @@ class UserController extends Controller
                         'disk' => config('voyager.storage.disk'),
                         'visibility' => 'public',
                     ]);
+                    $user->updateMetaValue('is_default_avatar', 'no');
                 }
 
                 $user->updateMetaValue('is_avatar_private', $request->get('is_avatar_private', 'no'));
@@ -586,6 +589,7 @@ class UserController extends Controller
 
             $user = auth($this->guard)->user();
             $user->avatar = AppUser::DEFAULT_AVATAR;
+            $user->updateMetaValue('is_default_avatar', 'yes');
 
             if (!$user->save()) {
                 throw new WanderException(__('app.connection_error'));

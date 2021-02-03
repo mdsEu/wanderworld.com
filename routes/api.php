@@ -62,6 +62,8 @@ Route::group(['prefix' => 'services/v1/'], function () {
             Route::post('/travels/{travel_id}/albums/{album_id}', [TravelController::class, 'updateAlbum']);
             Route::delete('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'deleteAlbumPhotos']);
             Route::get('/travels/{travel_id}/albums/{album_id}/photos', [TravelController::class, 'getAlbumPhotos']);
+            Route::post('/travels/{travel_id}/albums/{album_id}/photo', [TravelController::class, 'uploadOnePhotoAlbum']);
+            
             Route::get('/notifications-counters', [TravelController::class, 'countersNotifications']);
 
             Route::post('/travels/{travel_id}/change-status', [TravelController::class, 'changeTravelStatus']);

@@ -82,6 +82,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         'chat_key',
         'city_name',
         'country_name',
+        'is_default_avatar'
         //'level',
     ];
 
@@ -328,7 +329,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return hasMany
      */
     public function pendingTravels() {
-        return $this->hasMany(Travel::class,'user_id')
+        return $this->hasMany(Travel::class,'host_id')
                         ->whereIn('status', [
                             Travel::STATUS_PENDING,
                         ]);
@@ -459,6 +460,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
+     * Get user's is_default_avatar attribute
+     * @return String
+     */
+    public function getIsDefaultAvatarAttribute($name) {
+        return $this->getMetaValue('is_default_avatar', 'no');
+    }
+
+    /**
      * Get user's public name
      * @return String
      */
@@ -574,7 +583,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
 
             if(!$response->successful()) {
-                throw new WanderException(__('app.chat_connection_error'));
+                sleep(2);
+                return $this->refreshChatKey();
+                //throw new WanderException(__('app.chat_connection_error'));
             }
             return $newkey;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -604,7 +615,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
 
             if(!$response->successful()) {
-                throw new WanderException(__('app.chat_connection_error'));
+                sleep(2);
+                return $this->updateChatDataAccount();
+                //throw new WanderException(__('app.chat_connection_error'));
             }
             return true;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -612,19 +625,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
     }
 
-
-    /**
-     * Update the user's chat_user_id key of the database. Also it's updated the chat_key (password chat) 
-     * and other important data to perform the login in tinode backend
-     */
-    public function refreshChatUserId() {
+    private function recursiveRefreshChatUserId($newkey) {
 
         try {
 
-            DB::beginTransaction();
-
-
-            $newkey = Str::random(50);
 
             $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
             $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
@@ -640,9 +644,33 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
     
             if(!$response->successful()) {
-                throw new WanderException(__('app.chat_connection_error'));
+                sleep(2);
+                return $this->recursiveRefreshChatUserId($newkey);
             }
-            $arrayData = $response->json();
+            return $response->json();
+        } catch (\Illuminate\Http\Client\ConnectionException $th) {
+            throw new WanderException(__('app.connection_error'));
+        } catch (WanderException $we) {
+            throw new WanderException($we->getMessage());
+        } catch (\Exception $e) {
+            logActivity($e->getMessage());
+            throw new WanderException(__('app.something_was_wrong'));
+        }
+    }
+
+    /**
+     * Update the user's chat_user_id key of the database. Also it's updated the chat_key (password chat) 
+     * and other important data to perform the login in tinode backend
+     */
+    public function refreshChatUserId() {
+
+        try {
+
+            DB::beginTransaction();
+
+            $newkey = Str::random(50);
+
+            $arrayData = $this->recursiveRefreshChatUserId($newkey);
 
             //logActivity($arrayData);
             
@@ -1001,6 +1029,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
         $bundle->image = $this->avatar;
         $bundle->is_avatar_private = $this->getMetaValue('is_avatar_private', 'no');
+        $bundle->is_default_avatar = $this->getMetaValue('is_default_avatar', 'no');
         
 
         $bundle->aboutme = $this->getMetaValue('about_me', '');
