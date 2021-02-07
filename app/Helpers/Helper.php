@@ -168,7 +168,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
 
         $password = bcrypt(Str::random(40));
 
-        $avatar = secure_url('/storage/users/default_avatar.png');
+        $defaultAvatar = AppUser::DEFAULT_AVATAR;
 
         if (
             $userFBInfo['picture'] &&
@@ -176,7 +176,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
             $userFBInfo['picture']['data']['url'] &&
             checkFileExists($userFBInfo['picture']['data']['url'])
             ) {
-            $avatar = $userFBInfo['picture']['data']['url'];
+            $defaultAvatar = $userFBInfo['picture']['data']['url'];
         }
 
         if (!$user) {
@@ -185,7 +185,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
                 'name' => $userFBInfo['name'],
                 'email' => $userFBInfo['email'],
                 'password' => $password,
-                'avatar' => $avatar,
+                'avatar' => $defaultAvatar,
                 /*
                 'nickname' => $params['nickname'],
                 'continent_code' => $foundCountry['continent_code'],
@@ -201,11 +201,12 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
 
         $user->password = $password;
 
+        $user->updateMetaValue('facebook_user_id',$userFBInfo['id']);
+
         if (!$user->save()) {
             throw new WanderException(__('auth.something_was_wrong_login_process'));
         }
 
-        $user->updateMetaValue('facebook_user_id',$userFBInfo['id']);
 
         return $user;
     }
@@ -218,7 +219,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
      * @param String $identityToken
      * @return Boolean
      */
-    function getOrCreateUserFromApple($identityToken, $email, $name = null, $userAppleId = null) {
+    function getOrCreateUserFromApple($identityToken, $userAppleId, $paramsUser) {
 
         $appleSignInPayload = ASDecoder::getAppleSignInPayload($identityToken);
 
@@ -239,7 +240,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
             'isvalid' => $isValid,
         );
 
-        $emailLogin = empty($email) ? $hideEmail : $email;
+        $emailLogin = empty($paramsUser['email']) ? $hideEmail : $paramsUser['email'];
 
         if (!filter_var($emailLogin, FILTER_VALIDATE_EMAIL)) {
             throw new WanderException(__('app.no_detected_email'));
@@ -250,26 +251,27 @@ if (!function_exists('getOrCreateUserFromApple')) {
         $user = AppUser::where('email', $emailLogin)->first();
 
         if (!$user) {
-            $avatar = secure_url('/storage/users/default_avatar.png');
+            $defaultAvatar = AppUser::DEFAULT_AVATAR;
 
-            $user = AppUser::create([
+            $attrsCreate = [
                 'cid' => AppUser::getChatId(),
-                'name' => $name,
                 'email' => $emailLogin,
                 'password' => $password,
-                'avatar' => $avatar,
-                /*
-                'nickname' => $params['nickname'],
-                'continent_code' => $foundCountry['continent_code'],
-                'country_code' => $foundCountry['country_code'],
-                'city_gplace_id' => $params['city']['place_id'],
-                */
+                'avatar' => $defaultAvatar,
                 'email_verified_at' => strNowTime(),
-            ]);
+            ];
+
+            $user = AppUser::create(array_merge(
+                $paramsUser,
+                $attrsCreate,
+            ));
         }
 
         $user->setRole(config('voyager.user.default_role'));
         $user->password = $password;
+
+        $user->updateMetaValue('apple_user_id', $userAppleId);
+
         if (!$user->save()) {
             throw new WanderException(__('auth.something_was_wrong_login_process'));
         }

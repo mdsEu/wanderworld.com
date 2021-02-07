@@ -88,7 +88,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
         Route::post('/login', [AuthController::class, 'login'])->name('login');
         Route::post('/facebook-login', [AuthController::class, 'facebookLogin']);
-        Route::post('/apple-login', [AuthController::class, 'appleLogin']);
+        Route::post('/apple-login/{identitytoken}', [AuthController::class, 'appleLogin']);
         Route::post('/sign-in', [AuthController::class, 'registration']);
 
         Route::post('/email-verification', [AuthController::class, 'verifyEmail']);

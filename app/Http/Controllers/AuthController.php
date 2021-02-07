@@ -111,11 +111,49 @@ class AuthController extends Controller
     public function appleLogin(Request $request, $identityToken) {
 
         try {
-            $email = $request->get('email', null);
-            $userAppleId = $request->get('user_apple_id', null);
-            $userName = $request->get('name', null);
 
-            $user = getOrCreateUserFromApple($identityToken, $email, $userName, $userAppleId);
+            $params = $request->only([
+                'name',
+                'email',
+                'city',
+            ]);
+
+            $validator = Validator::make($params, [
+                'name' => 'required|max:40',
+                'city.name' => 'required',
+                'city.place_id' => 'required',
+                'city.country.name' => 'required',
+                'city.country.code' => [
+                    'required',
+                    Rule::in(LIST_COUNTRYS_CODES),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            $countries = readJsonCountries();
+
+            $idxFoundCountry = findInArray($params['city']['country']['code'], $countries, 'country_code');
+
+            if ($idxFoundCountry === false) {
+                //Never will happen. Previously validated....
+            }
+            $foundCountry = $countries[$idxFoundCountry];
+
+            $appleUserId = $request->get('apple_user_id', null);
+
+
+            $newAppUser = array(
+                'name' => $params['name'],
+                'email' => $params['email'],
+                'continent_code' => $foundCountry['continent_code'],
+                'country_code' => $foundCountry['country_code'],
+                'city_gplace_id' => $params['city']['place_id'],
+            );
+
+            $user = getOrCreateUserFromApple($identityToken, $appleUserId, $newAppUser);
 
             if ($user->status == AppUser::STATUS_PENDING) {
                 return sendResponse(null,__('auth.email_not_verified'), false);
