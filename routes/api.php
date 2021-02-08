@@ -40,6 +40,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
         Route::get('/settings', [SettingsController::class, 'filterSettings']);
 
         Route::get('/pages/{slug}', [MultiPage::class, 'getPage'])->name('single-page');
+        Route::get('/faqs', [MultiPage::class, 'getFaqs'])->name('all-faqs');
 
         Route::middleware(['auth:api'])->group(function () {
 

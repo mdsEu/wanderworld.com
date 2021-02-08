@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\OnboardingItem;
 use App\Models\Page;
+use App\Models\Faq;
 
 use Illuminate\Support\Facades\App;
 
@@ -40,4 +41,13 @@ class MultiPage extends Controller
             return sendResponse( null, $e->getMessage(), false);
         }
     }
+
+    public function getFaqs(Request $request) {
+        try {
+            return sendResponse( Faq::withTranslations()->get() );
+        } catch (\Exception $e) {
+            return sendResponse( null, $e->getMessage(), false);
+        }
+    }
+    
 }
