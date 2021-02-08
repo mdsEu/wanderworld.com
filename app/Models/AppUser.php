@@ -183,6 +183,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $myAppends['completed_profile'] = $this->getMetaValue('info_public_saved') === 'yes' && $this->getMetaValue('info_private_saved') === 'yes' ? 'yes' : 'no';
             $myAppends['times_change_city'] = $this->getTimesChangeCity();
         }
+
+        if( $request->is('api/auth/me/friends') ) {
+            $user = auth('api')->user();
+            $myAppends['has_any_travel'] = $this->hasAnyTravel($user);
+        }
         
         if( 
             $request->is('api/auth/me/common-friends/*') ||
@@ -204,11 +209,21 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
+     * Check if has any active travel with friend
+     * @param AppUser $friend
+     * @return bool
+     */
+    public function hasAnyTravel($friend) {
+        $count = $this->acceptedTravels()->where('host_id', $friend->id)->get()->count();
+        return $count > 0;
+    }
+
+    /**
      * Return all user's friends
      * @return belongsToMany
      */
     public function friends() {
-        return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id');
+        return $this->belongsToMany(AppUser::class,'friends','user_id','friend_id')->withPivot('status');
     }
 
     /**
@@ -336,11 +351,23 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
-     * Return user's request travels
+     * Return user's request travels where I am the host
      * @return hasMany
      */
     public function requestsTravels() {
         return $this->hasMany(Travel::class,'host_id')
+                        ->whereIn('status', [
+                            Travel::STATUS_ACCEPTED,
+                            Travel::STATUS_PENDING,
+                        ]);
+    }
+
+    /**
+     * Return user's request travels where I requested someone to be my host
+     * @return hasMany
+     */
+    public function meRequestsTravels() {
+        return $this->hasMany(Travel::class,'user_id')
                         ->whereIn('status', [
                             Travel::STATUS_ACCEPTED,
                             Travel::STATUS_PENDING,
@@ -575,6 +602,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->put("$urlWanbox/api/chatusers/$uid", [
                 'user_id' => $this->id,
+                'place' => $this->city_name.' / '.$this->country_name,
                 'user_name' => $this->getPublicName(),
                 'user_login' => $this->cid,
                 'user_password' => $newkey,
@@ -583,9 +611,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
 
             if(!$response->successful()) {
-                sleep(2);
-                return $this->refreshChatKey();
-                //throw new WanderException(__('app.chat_connection_error'));
+                //sleep(2);
+                //return $this->refreshChatKey();
+                throw new WanderException(__('app.chat_connection_error'));
             }
             return $newkey;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -607,6 +635,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->put("$urlWanbox/api/chatusers/{$this->chat_user_id}", [
                 'user_id' => $this->id,
+                'place' => $this->city_name.' / '.$this->country_name,
                 'user_name' => $this->getPublicName(),
                 'user_login' => $this->cid,
                 'user_password' => $this->chat_key,
@@ -615,9 +644,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
 
             if(!$response->successful()) {
-                sleep(2);
-                return $this->updateChatDataAccount();
-                //throw new WanderException(__('app.chat_connection_error'));
+                //sleep(2);
+                //return $this->updateChatDataAccount();
+                throw new WanderException(__('app.chat_connection_error'));
             }
             return true;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -637,6 +666,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->post("$urlWanbox/api/chatusers", [
                 'user_id' => $this->id,
+                'place' => $this->city_name.' / '.$this->country_name,
                 'user_login' => $this->cid,
                 'user_name' => $this->getPublicName(),
                 'user_password' => $newkey,
@@ -644,8 +674,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
     
             if(!$response->successful()) {
-                sleep(2);
-                return $this->recursiveRefreshChatUserId($newkey);
+                //sleep(2);
+                //return $this->recursiveRefreshChatUserId($newkey);
+                return $response->json();
             }
             return $response->json();
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -833,7 +864,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                 if( $response->status() == 404 ) {
                     throw new WanderException(__('app.no_action_no_ini_conversation'));
                 }
-                throw new WanderException(__('app.chat_connection_error').' '.$response->status());
+                throw new WanderException(__('app.chat_connection_error'));
             }
 
             if($this->isMyFriend($myFriend)) {
@@ -1102,19 +1133,20 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getRelationshipStatusLevel2($user) {
 
-        $row1 = DB::table('friends_status')->where('user_id',$user->id)
-                                            ->where('friend_id',$this->id)->first();
+        //$row1 = DB::table('friends_status')->where('user_id',$user->id)
+        //                                    ->where('friend_id',$this->id)->first();
 
         $row2 = DB::table('friends_status')->where('user_id',$this->id)
                                             ->where('friend_id',$user->id)->first();
 
-        if(!$row1 && !$row2) {
+        //if(!$row1 && !$row2) {
+        if(!$row2) {
             return self::FRIEND_STATUS_ACTIVE;
         }
 
-        if($row1) {
+        /*if($row1) {
             return $row1->status;
-        }
+        }*/
 
         return $row2->status;
     }
@@ -1125,13 +1157,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function updateRelationshipStatusLevel2($friend, $status) {
 
-        $row1 = DB::table('friends_status')->where('user_id',$friend->id)
-                                            ->where('friend_id',$this->id)->first();
+        //$row1 = DB::table('friends_status')->where('user_id',$friend->id)
+        //                                    ->where('friend_id',$this->id)->first();
 
         $row2 = DB::table('friends_status')->where('user_id',$this->id)
                                             ->where('friend_id',$friend->id)->first();
 
-        if(!$row1 && !$row2) {
+        //if(!$row1 && !$row2) {
+        if(!$row2) {
             return DB::table('friends_status')
                 ->updateOrInsert(
                     [
@@ -1142,6 +1175,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             );
         }
 
+        /*
         if($row1) {
             return DB::table('friends_status')
                 ->updateOrInsert(
@@ -1151,7 +1185,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                     ],
                     ['status' => $status]
             );
-        }
+        }*/
 
         return DB::table('friends_status')
                 ->updateOrInsert(

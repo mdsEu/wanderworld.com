@@ -80,7 +80,42 @@ class AuthController extends Controller
                 return sendResponse(null,__('auth.facebook_access_failed'), false);
             }
 
-            $user = getOrCreateUserFromFacebook($accessToken);
+
+            $params = $request->only([
+                'city',
+            ]);
+
+            $validator = Validator::make($params, [
+                'city.name' => 'required',
+                'city.place_id' => 'required',
+                'city.country.name' => 'required',
+                'city.country.code' => [
+                    'required',
+                    Rule::in(LIST_COUNTRYS_CODES),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            $countries = readJsonCountries();
+
+            $idxFoundCountry = findInArray($params['city']['country']['code'], $countries, 'country_code');
+
+            if ($idxFoundCountry === false) {
+                //Never will happen. Previously validated....
+            }
+            $foundCountry = $countries[$idxFoundCountry];
+
+
+            $newAppUser = array(
+                'continent_code' => $foundCountry['continent_code'],
+                'country_code' => $foundCountry['country_code'],
+                'city_gplace_id' => $params['city']['place_id'],
+            );
+
+            $user = getOrCreateUserFromFacebook($accessToken, $newAppUser);
 
             if ($user->status == AppUser::STATUS_PENDING) {
                 return sendResponse(null,__('auth.email_not_verified'), false);
@@ -146,7 +181,7 @@ class AuthController extends Controller
 
 
             $newAppUser = array(
-                'name' => $params['name'],
+                'name' => trim($params['name']),
                 'email' => $params['email'],
                 'continent_code' => $foundCountry['continent_code'],
                 'country_code' => $foundCountry['country_code'],

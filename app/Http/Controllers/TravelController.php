@@ -97,7 +97,7 @@ class TravelController extends Controller
                 throw new WanderException(__('app.no_accepting_host_request'));
             }
 
-            $myScheduleTravels = $user->scheduleTravels();
+            $myScheduleTravels = $user->meRequestsTravels();
 
             $scheduleTravelHost = $myScheduleTravels->where('host_id', $host->id)->get();
 
@@ -107,9 +107,11 @@ class TravelController extends Controller
             }
             
             $isMyFriend = $user->isMyFriend($host);
-            if($isMyFriend && $host->pivot->status === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {
+            $hostSide = $host->friends()->where('friend_id', $user->id)->first();
+            if($isMyFriend && $hostSide->pivot->status === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {
                 throw new WanderException(__('app.no_accepting_host_request'));
             }
+
 
             if(!$isMyFriend && $host->getRelationshipStatusLevel2($user) === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS) {
                 throw new WanderException(__('app.no_accepting_host_request'));

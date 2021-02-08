@@ -109,6 +109,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::post('/me/remove-avatar', [UserController::class, 'meRemoveAvatar']);
             
             Route::get('/me/common-friends/{contact_id}', [UserController::class, 'getCommonFriends']);
+            Route::get('/me/blocked-friends', [UserController::class, 'getBlockedFriends']);
             Route::get('/me/visit-recommendations', [UserController::class, 'getVisitRecommendations']);
 
             Route::get('/me/friends-level2', [UserController::class, 'getFriendsUntilLevel2']);

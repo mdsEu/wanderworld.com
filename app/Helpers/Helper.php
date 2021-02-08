@@ -150,7 +150,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
      * @param string $accessToken
      * @return Boolean
      */
-    function getOrCreateUserFromFacebook($accessToken)
+    function getOrCreateUserFromFacebook($accessToken, $paramsUser)
     {
         if (!fbValidAccessToken($accessToken)) {
             throw new WanderException(__('auth.invalid_fb_access_token'));
@@ -180,23 +180,21 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
         }
 
         if (!$user) {
-            $user = AppUser::create([
+
+            $attrsCreate = [
                 'cid' => AppUser::getChatId(),
                 'name' => $userFBInfo['name'],
                 'email' => $userFBInfo['email'],
                 'password' => $password,
                 'avatar' => $defaultAvatar,
-                /*
-                'nickname' => $params['nickname'],
-                'continent_code' => $foundCountry['continent_code'],
-                'country_code' => $foundCountry['country_code'],
-                'city_gplace_id' => $params['city']['place_id'],
-                */
+                'status' => AppUser::STATUS_ACTIVE,
                 'email_verified_at' => strNowTime(),
-            ]);
-            /**
-             * To DO: Create Inbox Chat User in Chat Backend
-             */
+            ];
+
+            $user = AppUser::create(array_merge(
+                $paramsUser,
+                $attrsCreate
+            ));
         }
 
         $user->password = $password;
@@ -258,16 +256,16 @@ if (!function_exists('getOrCreateUserFromApple')) {
                 'email' => $emailLogin,
                 'password' => $password,
                 'avatar' => $defaultAvatar,
+                'status' => AppUser::STATUS_ACTIVE,
                 'email_verified_at' => strNowTime(),
             ];
 
             $user = AppUser::create(array_merge(
                 $paramsUser,
-                $attrsCreate,
+                $attrsCreate
             ));
         }
 
-        $user->setRole(config('voyager.user.default_role'));
         $user->password = $password;
 
         $user->updateMetaValue('apple_user_id', $userAppleId);
@@ -671,6 +669,9 @@ if (!function_exists('showImage')) {
      */
     function showImage($image) {
         try {
+            if(!(strpos($image, 'https:') === false)) {
+                return file_get_contents($image);
+            }
             return Storage::disk(config('voyager.storage.disk'))->response($image);
         } catch(\League\Flysystem\FileNotFoundException $fnf) {
             return Storage::disk(config('voyager.storage.disk'))->url($image);

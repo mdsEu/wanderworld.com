@@ -93,7 +93,7 @@ class UserController extends Controller
      */
     public function meFriendsChatLogins(Request $request) {
         try {
-            $user = auth()->user();
+            $user = auth($this->guard)->user();
             return sendResponse($user->friends()->get()->pluck('chat_user_id'));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
@@ -625,6 +625,32 @@ class UserController extends Controller
             $commons = $contactUser->activeFriendsLevel( 2 )->whereIn('id',$myFriendsIds);
 
             return sendResponse($commons->values());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Return blocked friends of the user logged with other user
+     */
+    public function getBlockedFriends(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+
+            $attrs = $request->get('attrs', []);
+
+            $myFriendsIds = $user->activeFriendsLevel( 2 )->filter(function($friend) {
+                return $friend->pivot->status === AppUser::FRIEND_STATUS_BLOCKED_REQUESTS;
+            })->pluck('id');
+
+            return sendResponse($myFriendsIds);
+            //return sendResponse($myFriendsIds->values());
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {

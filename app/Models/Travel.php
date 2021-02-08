@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Http;
+use App\Exceptions\WanderException;
+use Carbon\Carbon;
 
 class Travel extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    //use HasFactory, SoftDeletes;
 
 
     const RTYPE_HOST        = 'H';
@@ -53,10 +57,58 @@ class Travel extends Model
         return $this->hasMany(Recommendation::class,'travel_id');
     }
 
-    public function notifyAcceptHostRequest() {
+    public function notifyAcceptHostRequest($times = 1) {
         /**
          * To DO
          */
+
+        $user = $this->user;
+        $host = $this->host;
+
+        try {
+
+
+            $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
+            $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
+
+
+            $startDate = Carbon::createFromFormat('Y-m-d',$this->start_at);
+            $endDate = Carbon::createFromFormat('Y-m-d',$this->end_at);
+
+            $place = $host->city_name.' / '.$host->country_name;
+
+            $json = array(
+                'txt' => __('app.auto_message', ['user' => $host->name, 'place' => $place, 'start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d')]),
+                'fmt' => [
+                    array(
+                        'at' => 0,
+                        'len' => 0,
+                        'tp' => 'IV',
+                    )
+                ],
+            );
+
+            $response = Http::withHeaders([
+                'Authorization' => "Basic $apiKeyMiddleware",
+            ])->post("$urlWanbox/api/chatmessages", [
+                'friend_id' => $host->chat_user_id,
+                'message' => json_encode($json),
+                'user_login' => $user->cid,
+                'user_password' => $user->chat_key,
+            ]);
+
+            if(!$response->successful()) {
+                if($times > 3) {
+                    throw new WanderException(__('app.chat_connection_error'));
+                }
+                sleep(2);
+                $this->notifyAcceptHostRequest($times + 1);
+            }
+            
+        } catch (\Illuminate\Http\Client\ConnectionException $th) {
+            throw new WanderException(__('app.connection_error'));
+        }
+
     }
 
     public function notifyRejectHostRequest() {

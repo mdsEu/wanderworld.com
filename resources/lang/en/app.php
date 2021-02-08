@@ -44,4 +44,5 @@ return [
     'email_necessary_invitation' => 'It\'s necessary the email of this person to send an invitacion',
     'travel_not_accepted_by_host' => 'The trip was not accepted by the host',
     'travel_already_schedule' => 'You already have a schedule travel with :name',
+    'auto_message' => 'Hello :user. I will travel to :place about :start_date to :end_date and, could you please be my host?',
 ];

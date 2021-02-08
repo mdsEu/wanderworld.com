@@ -44,4 +44,5 @@ return [
     'email_necessary_invitation' => 'Es necesario el correo electrónico de esta persona para enviarle una invitación.',
     'travel_not_accepted_by_host' => 'El viaje no ha sido aceptado por el hospedador',
     'travel_already_schedule' => 'Ya tienes un viaje programado con :name',
+    'auto_message' => 'Hola :user. Viajaré a :place aproximadamente entre :start_date al :end_date y me preguntaba si ¿me podría quedar en tu casa?',
 ];
