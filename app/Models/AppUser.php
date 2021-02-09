@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Exceptions\WanderException;
+use App\Exceptions\ChatException;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -425,7 +426,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getChatKeyAttribute() {
         if(empty($this->chat_user_id)) {
-            throw new WanderException(__('app.chat_connection_error'));
+            throw new ChatException(__('app.chat_connection_error'));
         }
         $metaValue = $this->getMetaValue('chat_key');
         if(empty($metaValue)) {
@@ -578,7 +579,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     public function getChatUserToken() {
         $val = $this->getMetaValue('chat_user_token');
         if(empty($val)) {
-            throw new WanderException(__('app.chat_connection_error'));
+            throw new ChatException(__('app.chat_connection_error'));
         }
         return $val;
     }
@@ -587,9 +588,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     /**
      * Update the user's chat_key (password chat)
      */
-    public function refreshChatKey() {
+    public function refreshChatKey($times = 1) {
         
         try {
+
+            if($times > 3) {
+                throw new ChatException(__('app.chat_connection_error'));
+            }
 
             $newkey = Str::random(50);
 
@@ -611,9 +616,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
 
             if(!$response->successful()) {
-                //sleep(2);
-                //return $this->refreshChatKey();
-                throw new WanderException(__('app.chat_connection_error'));
+                sleep(2);
+                return $this->refreshChatKey($times + 1);
             }
             return $newkey;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -624,9 +628,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     /**
      * Update the user's chat data account (password chat)
      */
-    public function updateChatDataAccount() {
+    public function updateChatDataAccount($times = 1) {
         
         try {
+
+            if($times > 3) {
+                throw new ChatException(__('app.chat_connection_error'));
+            }
 
             $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
             $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
@@ -644,9 +652,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
 
             if(!$response->successful()) {
-                //sleep(2);
-                //return $this->updateChatDataAccount();
-                throw new WanderException(__('app.chat_connection_error'));
+                sleep(2);
+                return $this->updateChatDataAccount($times + 1);
             }
             return true;
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -654,10 +661,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
     }
 
-    private function recursiveRefreshChatUserId($newkey) {
+    private function recursiveRefreshChatUserId($newkey, $times = 1) {
 
         try {
 
+            if($times > 3) {
+                throw new ChatException(__('app.chat_connection_error'));
+            }
 
             $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
             $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
@@ -674,9 +684,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             ]);
     
             if(!$response->successful()) {
-                //sleep(2);
-                //return $this->recursiveRefreshChatUserId($newkey);
-                return $response->json();
+                sleep(2);
+                return $this->recursiveRefreshChatUserId($newkey, $times + 1);
+                //return $response->json();
             }
             return $response->json();
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
@@ -808,6 +818,62 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
     }
 
+
+    private function updateChatTopicStatus($friends, $action, $friend_id, $times = 1) {
+        if($times > 3) {
+            return;
+        }
+        $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
+        $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
+
+
+        $myFriend = $friends->find($friend_id);
+
+        
+        if(empty($myFriend)) {
+            $activeFriends2 = $this->activeFriendsLevel( 2 );
+            $hostFoundIndex = $activeFriends2->search(function ($appUser) use ($friend_id) {
+                return $appUser->id === $friend_id;
+            });
+
+            if($hostFoundIndex === false) {
+                throw new WanderException(__('app.no_friend_selected'));
+            }
+
+            $myFriend = $activeFriends2->get($hostFoundIndex);
+
+            if(!$myFriend) {
+                throw new WanderException(__('app.no_friend_selected'));
+            }
+        }
+
+        $chat_user_id = $myFriend->chat_user_id;
+
+        $paramsRequestChat = [
+            'action' => $action,
+            'friend_id' => $chat_user_id,
+            'user_login' => $this->cid,
+            'user_password' => $this->chat_key,
+            'user_email' => $this->email,
+        ];
+
+        //logActivity($paramsRequestChat);
+
+        $response = Http::withHeaders([
+            'Authorization' => "Basic $apiKeyMiddleware",
+        ])->put("$urlWanbox/api/chattopics", $paramsRequestChat);
+
+        if(!$response->successful()) {
+
+            if( $response->getStatusCode() == 500 ) {
+                return $this->updateChatTopicStatus($friends, $action, $friend_id, $times + 1);
+                //throw new ChatException(__('app.no_action_no_ini_conversation'));
+            }
+            //throw new ChatException(__('app.chat_connection_error').' '.$response->getStatusCode());
+        }
+        return $myFriend;
+    }
+
     /**
      * Update friend relationship in the database and the tinode backend
      */
@@ -818,54 +884,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             DB::beginTransaction();
 
-            $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
-            $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
 
             $friends = $this->friends();
 
-            $myFriend = $friends->find($friend_id);
-
+            $myFriend = $this->updateChatTopicStatus($friends, $action, $friend_id);
             
-            if(empty($myFriend)) {
-                $activeFriends2 = $this->activeFriendsLevel( 2 );
-                $hostFoundIndex = $activeFriends2->search(function ($appUser) use ($friend_id) {
-                    return $appUser->id === $friend_id;
-                });
-
-                if($hostFoundIndex === false) {
-                    throw new WanderException(__('app.no_friend_selected'));
-                }
-
-                $myFriend = $activeFriends2->get($hostFoundIndex);
-
-                if(!$myFriend) {
-                    throw new WanderException(__('app.no_friend_selected'));
-                }
-            }
-
-            $chat_user_id = $myFriend->chat_user_id;
-
-            $paramsRequestChat = [
-                'action' => $action,
-                'friend_id' => $chat_user_id,
-                'user_login' => $this->cid,
-                'user_password' => $this->chat_key,
-                'user_email' => $this->email,
-            ];
-
-            //logActivity($paramsRequestChat);
-
-            $response = Http::withHeaders([
-                'Authorization' => "Basic $apiKeyMiddleware",
-            ])->put("$urlWanbox/api/chattopics", $paramsRequestChat);
-    
-            if(!$response->successful()) {
-
-                if( $response->status() == 404 ) {
-                    throw new WanderException(__('app.no_action_no_ini_conversation'));
-                }
-                throw new WanderException(__('app.chat_connection_error'));
-            }
 
             if($this->isMyFriend($myFriend)) {
                 switch ($action) {

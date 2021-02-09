@@ -680,6 +680,44 @@ if (!function_exists('showImage')) {
 }
 
 
+function getOptimizedImage($pathImage) {
+
+    /*if(file_exists($pathImage)) {
+        $pathImage = file_get_contents($pathImage);
+        //throw new WanderException(__('auth.image_not_found'));
+    }*/
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.tinify.com/shrink',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $pathImage,
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: Basic YXBpOnNkUkxOSzI1cXBuSm15eWxDRG5XanJLVzd4VFc5S1JI',
+            'Content-Type: image/jpeg'
+        ),
+    ));
+
+    $response = curl_exec($curl);
+
+    $httpcode = intval( curl_getinfo($curl, CURLINFO_HTTP_CODE) );
+
+    curl_close($curl);
+    if($httpcode < 200 || $httpcode > 299) {
+        throw new WanderException(__('auth.image_not_found'));
+        //logActivity('no optimized');
+        //return false;
+    }
+    return json_decode($response);
+}
+
+
 /**
  * Read countries json
  * @return Array

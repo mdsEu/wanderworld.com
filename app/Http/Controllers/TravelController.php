@@ -467,7 +467,7 @@ class TravelController extends Controller
             $sizeKb = setting('admin.file_size_limit', 2048);
             $rules = [
                 'photo' => 'file|mimes:jpeg,png,jpg|max:'.$sizeKb,
-            ] ;
+            ];
 
             $validator = Validator::make($params, $rules);
 
@@ -494,6 +494,27 @@ class TravelController extends Controller
             }
 
             if( !empty($uploadedPhoto) ) {
+                
+                $opInfo = getOptimizedImage($uploadedPhoto->get());
+                
+                $disk = config('voyager.storage.disk');
+                $dt = Carbon::now('UTC')->format('FY');
+
+                $ext = $uploadedPhoto->getClientOriginalExtension();
+
+                $nameImage = uniqid($album_id);
+
+                \logActivity($opInfo);
+                
+                $path = Storage::disk($disk)->put("photos/album{$album->id}/$dt/$nameImage", file_get_contents($opInfo->output->url));
+
+                //\file_put_contents(\storage_path())
+
+                $album->photos()->create([
+                    'path' => "photos/album{$album->id}/$dt/$nameImage",
+                    'disk' => $disk,
+                ]);
+                /*
                 $disk = config('voyager.storage.disk');
                 $dt = Carbon::now('UTC')->format('FY');
                 $path = $uploadedPhoto->store("photos/album{$album->id}/$dt", [
@@ -503,7 +524,8 @@ class TravelController extends Controller
                 $album->photos()->create([
                     'path' => $path,
                     'disk' => $disk,
-                ]); 
+                ]);
+                */ 
             }
             
             DB::commit();

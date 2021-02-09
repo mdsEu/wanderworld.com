@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Http;
 use App\Exceptions\WanderException;
+use App\Exceptions\ChatException;
+
 use Carbon\Carbon;
 
 class Travel extends Model
@@ -57,6 +59,17 @@ class Travel extends Model
         return $this->hasMany(Recommendation::class,'travel_id');
     }
 
+    private function getCustomAutoMessage() {
+        switch ($this->request_type) {
+            case Travel::RTYPE_HOST_GUIDER:
+                return 'app.auto_message_host_guider';
+            case Travel::RTYPE_GUIDER:
+                return 'app.auto_message_guider';
+            default:
+                return 'app.auto_message_host_guider';
+        }
+    }
+
     public function notifyAcceptHostRequest($times = 1) {
         /**
          * To DO
@@ -78,7 +91,7 @@ class Travel extends Model
             $place = $host->city_name.' / '.$host->country_name;
 
             $json = array(
-                'txt' => __('app.auto_message', ['user' => $host->name, 'place' => $place, 'start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d')]),
+                'txt' => __($this->getCustomAutoMessage(), ['user' => $host->name, 'place' => $place, 'start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d')]),
                 'fmt' => [
                     array(
                         'at' => 0,
@@ -99,7 +112,7 @@ class Travel extends Model
 
             if(!$response->successful()) {
                 if($times > 3) {
-                    throw new WanderException(__('app.chat_connection_error'));
+                    throw new ChatException(__('app.chat_connection_error'));
                 }
                 sleep(2);
                 $this->notifyAcceptHostRequest($times + 1);

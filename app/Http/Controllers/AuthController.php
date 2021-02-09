@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\WanderException;
+use App\Exceptions\ChatException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Models\AppUser;
 
 use JWTAuth;
@@ -282,6 +284,8 @@ class AuthController extends Controller
 
             $defaultAvatar = AppUser::DEFAULT_AVATAR;
 
+            DB::beginTransaction();
+
             $newAppUser = array(
                 'cid' => AppUser::getChatId(),
                 'name' => $params['fullname'],
@@ -310,14 +314,23 @@ class AuthController extends Controller
 
             sendVerificationEmail($user);
 
+            DB::commit();
+
             return sendResponse($user);
         } catch (QueryException $qe) {
+            DB::rollback();
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
+            DB::rollback();
             return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
         } catch (WanderException $we) {
+            DB::rollback();
             return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (ChatException $ce) {
+            DB::rollback();
+            return sendResponse(null, 'No fue posible realizar su regitro. Intente nuevamente.', false, $ce);
         } catch (\Exception $e) {
+            DB::rollback();
             return sendResponse(null, $e->getMessage(), false, $e);
         }
     }
