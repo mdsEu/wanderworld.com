@@ -113,6 +113,8 @@ class Invitation extends Model
                 break;
             case 'level2':
                 return true;
+            case 'facebook':
+                return true;
             default:
                 return false;
         }

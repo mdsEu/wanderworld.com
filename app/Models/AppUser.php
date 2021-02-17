@@ -691,6 +691,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return $response->json();
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             throw new WanderException(__('app.connection_error'));
+        } catch (ChatException $ce) {
+            throw new ChatException($ce->getMessage());
         } catch (WanderException $we) {
             throw new WanderException($we->getMessage());
         } catch (\Exception $e) {
@@ -725,6 +727,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
             throw new WanderException(__('app.connection_error'));
+        } catch (ChatException $ce) {
+            throw new ChatException($ce->getMessage());
         } catch (WanderException $we) {
             DB::rollback();
             throw new WanderException($we->getMessage());
@@ -808,6 +812,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
             throw new WanderException(__('app.connection_error'));
+        } catch (ChatException $ce) {
+            throw new ChatException($ce->getMessage());
         } catch (WanderException $we) {
             DB::rollback();
             throw new WanderException($we->getMessage());
@@ -935,6 +941,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         } catch (\Illuminate\Http\Client\ConnectionException $th) {
             DB::rollback();
             throw new WanderException(__('app.connection_error'));
+        } catch (ChatException $ce) {
+            throw new ChatException($ce->getMessage());
         } catch (WanderException $we) {
             DB::rollback();
             throw new WanderException($we->getMessage());

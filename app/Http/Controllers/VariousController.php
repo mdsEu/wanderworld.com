@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\WanderException;
+use App\Exceptions\ChatException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 
 use App\Models\Comment;
 use App\Models\AppUser;
+use App\Mail\GenericMail;
 
 use JWTAuth;
 
@@ -68,6 +70,24 @@ class VariousController extends Controller
             if(!$comment->save()) {
                 throw new WanderException(__('app.user_comment_not_received'));
             }
+
+            $receivers = setting('admin.comments_receiver_email', '');
+
+            if($receivers) {
+                $receivers = \explode(',', $receivers);
+                $button = array(
+                    'link' => secure_url("/admin/comments/{$comment->id}"),
+                    'text' => __('notification.see_comment'),
+                );
+    
+                sendMail((new GenericMail(
+                    __('notification.new_comment'),
+                    __('notification.new_comment_details'),
+                    $button
+                ))->subject(__('notification.subject_new_comment'))
+                    ->to($receivers));
+            }
+
 
             return sendResponse();
             

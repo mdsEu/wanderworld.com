@@ -46,4 +46,7 @@ return [
     'travel_already_schedule' => 'You already have a schedule travel with :name',
     'auto_message_host_guider' => 'Hello :user. I will travel to :place about :start_date to :end_date and, could you please be my host?',
     'auto_message_guider' => 'Hello :user. I will travel to :place about :start_date to :end_date and, could you please be my guider?',
+    'try_again_please' => 'Try again please',
+    'no_registration_try_again_please' => 'We can\'t create your account. Try again please.',
+
 ];

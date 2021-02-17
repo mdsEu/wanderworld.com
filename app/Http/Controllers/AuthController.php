@@ -328,7 +328,7 @@ class AuthController extends Controller
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (ChatException $ce) {
             DB::rollback();
-            return sendResponse(null, 'No fue posible realizar su regitro. Intente nuevamente.', false, $ce);
+            return sendResponse(null, __('app.no_registration_try_again_please'), false, $ce);
         } catch (\Exception $e) {
             DB::rollback();
             return sendResponse(null, $e->getMessage(), false, $e);
@@ -501,6 +501,8 @@ class AuthController extends Controller
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
             return sendResponse(null, __('app.user_not_found'), false, $notFoundE);
+        } catch (ChatException $ce) {
+            return sendResponse(null, __('app.try_again_please'), false, $ce);
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {

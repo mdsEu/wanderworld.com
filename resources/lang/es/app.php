@@ -45,5 +45,7 @@ return [
     'travel_not_accepted_by_host' => 'El viaje no ha sido aceptado por el hospedador',
     'travel_already_schedule' => 'Ya tienes un viaje programado con :name',
     'auto_message_host_guider' => 'Hola :user. Viajaré a :place aproximadamente entre :start_date al :end_date y me preguntaba si ¿me podría quedar en tu casa?',
-    'auto_message_guider' => 'Hola :user. Viajaré a :place aproximadamente entre :start_date al :end_date y me preguntaba si ¿me podrías ser mi guía?',
+    'auto_message_guider' => 'Hola :user. Viajaré a :place aproximadamente entre :start_date al :end_date y me preguntaba si ¿podrías ser mi guía?',
+    'try_again_please' => 'Intenta nuevamente por favor',
+    'no_registration_try_again_please' => 'No pudimos realizar tu registro. Intente nuevamente.',
 ];

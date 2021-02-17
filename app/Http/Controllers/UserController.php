@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\WanderException;
+use App\Exceptions\ChatException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
@@ -174,6 +175,8 @@ class UserController extends Controller
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
             return sendResponse(null, __('app.friend_not_found'), false, $notFoundE);
+        } catch (ChatException $ce) {
+            return sendResponse(null, __('app.try_again_please'), false, $ce);
         } catch (WanderException $we) {
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
@@ -289,7 +292,7 @@ class UserController extends Controller
             $sent = $invitation->sendNotification($typeNoti);
 
             if(!$sent) {
-                throw new WanderException(__('app.no_posible_send_invitation'));
+                throw new WanderException(__('app.no_posible_send_invitation').' <<<');
             }
 
             $invitation->status = Invitation::STATUS_PENDING;
