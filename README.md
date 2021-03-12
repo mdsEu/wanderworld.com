@@ -27,5 +27,12 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **admin.file_size_limit**
 - **admin.recommendations_list_limit**
 - **admin.comments_receiver_email**
+- **admin.friends_search_list_limit**
+
+
+
+### Available .ENV settings
+
+- **CHARS_LIMIT_SEARCH_FRIEND**
 
 

@@ -48,5 +48,6 @@ return [
     'auto_message_guider' => 'Hello :user. I will travel to :place about :start_date to :end_date and, could you please be my guider?',
     'try_again_please' => 'Try again please',
     'no_registration_try_again_please' => 'We can\'t create your account. Try again please.',
-
+    'search_val_necessary' => 'It\'s necessary a value to find.',
+    'more_than_n_chars' => 'Type more than :n letters',
 ];

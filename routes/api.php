@@ -44,6 +44,8 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
         Route::middleware(['auth:api'])->group(function () {
 
+            Route::get('/users', [UserController::class, 'getAllAppUsers']);
+
             Route::post('/comments', [VariousController::class, 'addComment']);
             
             Route::put('/change-status-friends/{action}', [UserController::class, 'changeFriendRelationshipStatus'])->where('action', 'unmute|mute|unblock|block|delete');

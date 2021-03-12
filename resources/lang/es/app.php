@@ -48,4 +48,6 @@ return [
     'auto_message_guider' => 'Hola :user. Viajaré a :place aproximadamente entre :start_date al :end_date y me preguntaba si ¿podrías ser mi guía?',
     'try_again_please' => 'Intenta nuevamente por favor',
     'no_registration_try_again_please' => 'No pudimos realizar tu registro. Intente nuevamente.',
+    'search_val_necessary' => 'Es necesario un valor a ser buscado.',
+    'more_than_n_chars' => 'Escribe más de :n letras',
 ];

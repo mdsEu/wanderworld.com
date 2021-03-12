@@ -145,6 +145,16 @@ if (!function_exists('checkFileExists')) {
     }
 }
 
+if(!function_exists('cloneAvatar')) {
+    /**
+     * @param string $path
+     * @return String
+     */
+    function cloneAvatar($path) {
+        return Storage::disk(config('voyager.storage.disk'))->putFile('avatars', new \Illuminate\Http\File($path), 'public');
+    }
+}
+
 if (!function_exists('getOrCreateUserFromFacebook')) {
     /**
      * @param string $accessToken
@@ -168,7 +178,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
 
         $password = bcrypt(Str::random(40));
 
-        $defaultAvatar = AppUser::DEFAULT_AVATAR;
+        $defaultAvatar = cloneAvatar(public_path('images/default_avatar.png'));//AppUser::DEFAULT_AVATAR;
 
         if (
             $userFBInfo['picture'] &&
@@ -249,7 +259,7 @@ if (!function_exists('getOrCreateUserFromApple')) {
         $user = AppUser::where('email', $emailLogin)->first();
 
         if (!$user) {
-            $defaultAvatar = AppUser::DEFAULT_AVATAR;
+            $defaultAvatar = cloneAvatar(public_path('images/default_avatar.png'));//AppUser::DEFAULT_AVATAR;
 
             $attrsCreate = [
                 'cid' => AppUser::getChatId(),
@@ -372,8 +382,8 @@ if (!function_exists('sendRecoveryAccountEmail')) {
             return sendMail((new GenericMail(
                 __('auth.recovery_account_title_email'),
                 __('auth.recovery_account_description_email'),
-                 $button,
-                 Storage::disk(config('voyager.storage.disk'))->url('mails/recovery-mailings.gif')
+                $button,
+                Storage::disk(config('voyager.storage.disk'))->url('mails/recovery-mailings.gif')
             ))->subject(__('auth.recovery_account_subject_email'))
                 ->to($user->email));
         } catch (\Exception $e) {

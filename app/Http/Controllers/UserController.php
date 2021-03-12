@@ -39,6 +39,66 @@ class UserController extends Controller
     /**
      * 
      */
+    public function getAllAppUsers(Request $request) {
+
+        try {
+            $search = trim($request->get('search', ''));
+
+            if(empty($search)) {
+                throw new WanderException(__('app.search_val_necessary'));
+            }
+
+            $nChars = intval(env('CHARS_LIMIT_SEARCH_FRIEND', 5));
+
+            if($nChars < 2) {
+                $nChars = 2;
+            }
+
+            if(\strlen($search) < $nChars) {
+                throw new WanderException(__('app.more_than_n_chars', ['n' => $nChars]));
+            }
+
+            $user = auth($this->guard)->user();
+
+            $limit = intval(setting('admin.friends_search_list_limit', 20));
+
+            $allUsers = DB::table($user->getTable())->select(['id'])->where('id', '<>', $user->id);
+
+            //$allUsers = AppUser::where('id', '<>', $user->id);
+            $allUsers->where(function($query) use ($search) {
+                $query->where('name',  'LIKE', '%' . $search . '%');
+                $query->orWhere('nickname',  'LIKE', '%' . $search . '%');
+                $query->orWhere('email',  'LIKE', '%' . $search . '%');
+            });
+
+            $listU = $allUsers->take($limit)->get();
+
+            $userTroubles = [];
+            $users = [];
+            foreach($listU as $user) {
+                try {
+                    $foundU = AppUser::findOrFail($user->id);
+                    $users[] = $foundU->toArray();
+                } catch(ChatException $ce) {
+                    $userTroubles[] = $user->id;
+                }
+            }
+
+            return sendResponse($users);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.friend_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * 
+     */
     public function showAvatar(Request $request, $user_id) {
         try {
             $token = $request->get('token', null);
@@ -393,9 +453,9 @@ class UserController extends Controller
                 'name' => 'required|max:40',
                 'nickname' => 'max:40',
                 'image' => 'image|mimes:jpeg,png,jpg|max:'.$sizeKb,
-                'aboutme' => 'required|max:300',
-                'interests' => 'required|array|max:15',
-                'languages' => 'required|array|max:6',
+                'aboutme' => 'max:300',
+                'interests' => 'array|max:15',
+                'languages' => 'array|max:6',
             ] : [
                 'birthday' => [
                     function ($attribute, $value, $fail) {
@@ -458,14 +518,19 @@ class UserController extends Controller
 
                 $user->updateMetaValue('is_avatar_private', $request->get('is_avatar_private', 'no'));
 
-                
-                $user->updateMetaValue('about_me', $params['aboutme']);
+                if(!empty($params['aboutme'])) {
+                    $user->updateMetaValue('about_me', $params['aboutme']);
+                }
                 $user->updateMetaValue('is_aboutme_private', $request->get('is_aboutme_private', 'no'));
 
-                $user->updateMetaValue('my_interests', $params['interests']);
+                if(!empty($params['interests'])) {
+                    $user->updateMetaValue('my_interests', $params['interests']);
+                }
                 $user->updateMetaValue('is_interests_private', $request->get('is_interests_private', 'no'));
 
-                $user->updateMetaValue('my_languages', $params['languages']);
+                if(!empty($params['languages'])) {
+                    $user->updateMetaValue('my_languages', $params['languages']);
+                }
                 $user->updateMetaValue('is_languages_private', $request->get('is_languages_private', 'no'));
 
                 $user->updateMetaValue('info_public_saved', 'yes');
@@ -589,9 +654,10 @@ class UserController extends Controller
      */
     public function meRemoveAvatar(Request $request) {
         try {
+            $defaultAvatar = cloneAvatar(public_path('images/default_avatar.png'));//AppUser::DEFAULT_AVATAR;
 
             $user = auth($this->guard)->user();
-            $user->avatar = AppUser::DEFAULT_AVATAR;
+            $user->avatar = $defaultAvatar;
             $user->updateMetaValue('is_default_avatar', 'yes');
 
             if (!$user->save()) {

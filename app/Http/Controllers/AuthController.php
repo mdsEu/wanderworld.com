@@ -282,7 +282,7 @@ class AuthController extends Controller
             }
             $foundCountry = $countries[$idxFoundCountry];
 
-            $defaultAvatar = AppUser::DEFAULT_AVATAR;
+            $defaultAvatar = cloneAvatar(public_path('images/default_avatar.png'));//AppUser::DEFAULT_AVATAR;
 
             DB::beginTransaction();
 
