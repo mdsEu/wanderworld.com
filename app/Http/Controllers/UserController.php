@@ -352,7 +352,7 @@ class UserController extends Controller
             $sent = $invitation->sendNotification($typeNoti);
 
             if(!$sent) {
-                throw new WanderException(__('app.no_posible_send_invitation').' <<<');
+                throw new WanderException(__('app.no_posible_send_invitation'));
             }
 
             $invitation->status = Invitation::STATUS_PENDING;
@@ -473,14 +473,12 @@ class UserController extends Controller
                         }
                     }
                 ],
-                'gender' => [
-                    'required',
+                /*'gender' => [
                     Rule::in(['male','female','other']),
                 ],
                 'personal_status' => [
-                    'required',
                     Rule::in(['single','married','inrelation']),
-                ],
+                ],*/
                 'city.name' => 'required',
                 'city.place_id' => 'required',
                 'city.country.name' => 'required',
@@ -575,9 +573,15 @@ class UserController extends Controller
                 $user->updateMetaValue('phone_dial', $params['cellphone']['dial']);
                 $user->updateMetaValue('phone_number', $params['cellphone']['number']);
                 $user->updateMetaValue('is_phone_private', $request->get('is_phone_private', 'no'));
-                $user->updateMetaValue('gender', $params['gender']);
+                
+                if(!empty($params['gender']) && in_array($params['gender'], ['male','female','other'])) {
+                    $user->updateMetaValue('gender', $params['gender']);
+                }
                 $user->updateMetaValue('is_gender_private', $request->get('is_gender_private', 'no'));
-                $user->updateMetaValue('personal_status', $params['personal_status']);
+
+                if(!empty($params['personal_status']) && in_array($params['personal_status'], ['single','married','inrelation'])) {
+                    $user->updateMetaValue('personal_status', $params['personal_status']);
+                }
                 $user->updateMetaValue('is_personal_status_private', $request->get('is_personal_status_private', 'no'));
 
                 $user->updateMetaValue('is_email_private', $request->get('is_email_private', 'no'));

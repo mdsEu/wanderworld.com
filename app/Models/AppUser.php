@@ -972,7 +972,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                     ->get();
 
                 if($list->count() === 1) {
-                    return self::find($list->first());
+                    return self::find($list->first()->user_id);
                 }
 
             }
