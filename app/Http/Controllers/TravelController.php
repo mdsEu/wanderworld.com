@@ -243,8 +243,28 @@ class TravelController extends Controller
         }
     }
 
+
     /**
-     * Get user's travels
+     * Get user's accepted travels
+     */
+    public function getUserAcceptedTravels(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            
+            return sendResponse($user->acceptedTravelsWithExtra());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Get user's schedule travels
      */
     public function getUserScheduleTravels(Request $request) {
         try {
@@ -260,7 +280,7 @@ class TravelController extends Controller
         } catch (\Exception $e) {
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
-    }
+    }    
 
     /**
      * Get user's requests travels

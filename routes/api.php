@@ -56,6 +56,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
             Route::get('/finished-travels', [TravelController::class, 'getUserFinishedTravels']);
             Route::get('/schedule-travels', [TravelController::class, 'getUserScheduleTravels']);
+            Route::get('/accepted-travels', [TravelController::class, 'getUserAcceptedTravels']);
             Route::get('/requests-travels', [TravelController::class, 'getUserRequestsTravels']);
             
             
@@ -124,6 +125,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::post('/me/report-image', [PhotoController::class, 'reportImage']);
             
             Route::get('/me/markers-map', [VariousController::class, 'markersMap']);
+            Route::get('/me/markers-map-continents', [VariousController::class, 'markersMapContinents']);
 
             Route::put('/me/change-password', [AuthController::class, 'updatePassword']);
             

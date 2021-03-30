@@ -174,6 +174,12 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
 
         $userFBInfo = $response->json();
 
+        \logActivity($userFBInfo);
+
+        if(empty($userFBInfo['email'])) {
+            throw new WanderException(__('No correo asociado'));
+        }
+
         $user = AppUser::where('email',$userFBInfo['email'])->first();
 
         $password = bcrypt(Str::random(40));

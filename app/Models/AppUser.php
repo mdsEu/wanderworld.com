@@ -375,6 +375,20 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                         ]);
     }
 
+
+    /**
+     * Return user's accepted travels with additional relationship information
+     * @return hasMany
+     */
+    public function acceptedTravelsWithExtra() {
+        $modelUser = AppUser::with(['acceptedTravels' => function($relationTravel){
+            $relationTravel->with('activeAlbums');
+            $relationTravel->with('host');
+            $relationTravel->with('contacts');
+        }])->find($this->id);
+        return $modelUser->acceptedTravels;
+    }
+
     /**
      * Return user's schedule travels with additional relationship information
      * @return hasMany
@@ -387,6 +401,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }])->find($this->id);
         return $modelUser->scheduleTravels;
     }
+    
 
     /**
      * Return user's requests travels with additional relationship information

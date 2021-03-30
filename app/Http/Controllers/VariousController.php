@@ -229,4 +229,39 @@ class VariousController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+    /**
+     * Simplified friends for maps (markers)
+     */
+    public function markersMapContinents(Request $request) {
+        try {
+
+            
+            $user = auth($this->guard)->user();
+
+            $lang = app()->getLocale();
+
+            $friendsGrouped = $user->activeFriendsLevel( 2 )->groupBy('continent_code');
+
+            $collectResults = collect([]);
+            foreach($friendsGrouped as $code=>$arrUsers) {
+                $continentGroup = new \stdClass;
+
+                $continentGroup->continent_code = $code;
+                $continentGroup->number = count($arrUsers);
+                
+                $collectResults->push($continentGroup);
+            }
+
+            return sendResponse($collectResults);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
 }
