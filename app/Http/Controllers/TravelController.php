@@ -134,6 +134,7 @@ class TravelController extends Controller
             $travel = Travel::create([
                 'user_id' => $user->id,
                 'host_id' => $host->id,
+                'country_code' => $host->country_code,
                 'start_at' => $startDate->format('Y-m-d'),
                 'end_at' => $endDate->format('Y-m-d'),
                 'request_type' => $params['request_type'],
