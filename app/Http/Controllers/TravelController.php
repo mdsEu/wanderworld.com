@@ -668,7 +668,7 @@ class TravelController extends Controller
                 'accepted_travels' => $user->acceptedTravels()->count(),
                 'schedule_travels' => $user->scheduleTravels()->count(),
                 'requests_travels' => $user->pendingTravels()->count(),
-                'recommendations' => $user->visitRecommendations()->count(),
+                'recommendations' => $user->visitRecommendations()->where('seen', 0)->count(),
             ));
 
         } catch (QueryException $qe) {
