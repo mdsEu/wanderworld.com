@@ -464,12 +464,6 @@ if (!function_exists('getGeoPlaceName')) {
         switch ($key) {
             case 'city':
                 
-                $addressCompPlace = arrayFind($address_components,function($adrComp) {
-                    return !(array_search('locality', $adrComp['types']) === false);
-                });
-                if ($addressCompPlace) {
-                    return $addressCompPlace;
-                }
                 
                 $addressCompPlace = arrayFind($address_components,function($adrComp) {
                     return !(array_search('administrative_area_level_2', $adrComp['types']) === false);
@@ -480,6 +474,13 @@ if (!function_exists('getGeoPlaceName')) {
                 
                 $addressCompPlace = arrayFind($address_components,function($adrComp) {
                     return !(array_search('administrative_area_level_1', $adrComp['types']) === false);
+                });
+                if ($addressCompPlace) {
+                    return $addressCompPlace;
+                }
+
+                $addressCompPlace = arrayFind($address_components,function($adrComp) {
+                    return !(array_search('locality', $adrComp['types']) === false);
                 });
                 if (!$addressCompPlace) {
                     return null;

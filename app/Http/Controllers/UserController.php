@@ -748,7 +748,8 @@ class UserController extends Controller
                 $relationTravel->with('invited');
                 $relationTravel->with('travel.host');
             }])->find($user->id);
-            $pagedRecommendations = getPaginate($modelUser->visitRecommendations, $recommendationsLimit);
+            $visitRecommendations = $modelUser->visitRecommendations()->with(['user', 'travel.host', 'invited']);
+            $pagedRecommendations = getPaginate($visitRecommendations->get()->sortBy('seen'), $recommendationsLimit);
 
             $idsRecommendations = $pagedRecommendations->getCollection()->pluck('id');
 

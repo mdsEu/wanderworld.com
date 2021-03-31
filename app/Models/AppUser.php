@@ -185,7 +185,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $myAppends['times_change_city'] = $this->getTimesChangeCity();
         }
 
-        if( $request->is('api/auth/me/friends') ) {
+        if( 
+            $request->is('api/auth/me/friends') ||  
+            $request->is('api/auth/me/visit-recommendations') 
+        ) {
             $user = auth('api')->user();
             $myAppends['has_any_travel'] = $this->hasAnyTravel($user);
         }
