@@ -266,4 +266,45 @@ class VariousController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+    public function facebookFriends(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            
+            $FB_GRAPH_VERSION = '7.0';
+    
+            $token = $request->get('token', "");
+    
+            $response = Http::get("https://graph.facebook.com/v$FB_GRAPH_VERSION/me/friends?fields=id,name,email&access_token=$token");
+        
+            if(!$response->successful()) {
+                throw new WanderException(__('app.connection_error'));
+            }
+            $arrayData = $response->json();
+            $list = [];
+            foreach($arrayData['data'] as $friend) {
+                $userFb = $user->getFriendByFacebookId($friend['id']);
+                $itemFriend = array(
+                    'id' => $friend['id'],
+                    'name' => $friend['name'],
+                );
+                if($userFb) {
+                    $itemFriend['user_id'] = $userFb->id;
+                    $itemFriend['chat_user_id'] = $userFb->chat_user_id;
+                    $itemFriend['has_any_travel'] = $user->hasAnyTravel($userFb);
+                }
+                $list[] = $itemFriend;
+            }
+
+            return sendResponse($list);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
 }

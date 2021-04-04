@@ -566,7 +566,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getNameAttribute($name) {
         $request = request();
-        if( $request->is('admin/app-users/*') ) {
+        if( $request->is('admin/app-users/*') || $request->is('admin/app-users') ) {
             return $name;
         }
         return !empty($this->nickname) ? $this->nickname : $name;
@@ -1313,5 +1313,23 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
                     ],
                     ['status' => $status]
             );
+    }
+
+
+    /**
+     * 
+     * @return AppUser
+     */
+    public function getFriendByFacebookId($facebook_id) {
+        $activeFriends = $this->activeFriends()->get();
+
+        $filtered = $activeFriends->filter(function ($friend, $key) use ($facebook_id) {
+            return $friend->getMetaValue('facebook_user_id') === $facebook_id;
+        });
+
+        if($filtered->count() === 1) {
+            return $filtered->first();
+        }
+        return null;
     }
 }
