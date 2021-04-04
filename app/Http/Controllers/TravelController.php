@@ -47,22 +47,6 @@ class TravelController extends Controller
             ]);
 
             $rules = [
-                'start' => [
-                    function ($attribute, $value, $fail) {
-                        if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
-                            $fail(__('app.start_date_travel_not_valid'));
-                            return;
-                        }
-                    }
-                ],
-                'end' => [
-                    function ($attribute, $value, $fail) {
-                        if (!preg_match('/^\d{4}-\d{2}-\d{2}/',$value)) {
-                            $fail(__('app.end_date_travel_not_valid'));
-                            return;
-                        }
-                    }
-                ],
                 'request_type' => [
                     'required',
                     Rule::in([
@@ -118,16 +102,21 @@ class TravelController extends Controller
                 throw new WanderException(__('app.no_accepting_host_request'));
             }
 
-            $startDate = Carbon::createFromFormat('Y-m-d',$params['start']);
-            $endDate = Carbon::createFromFormat('Y-m-d',$params['end']);
-
-            $now = Carbon::now('UTC');
-
-            if($now->diffInDays($startDate, false) <= 0) {
-                throw new WanderException(__('app.dates_range_not_valid'));
-            }
-            if($startDate->diffInDays($endDate, false) <= 0) {
-                throw new WanderException(__('app.dates_range_not_valid'));
+            $startDate = null;
+            $endDate = null;
+            if(isset($params['start']) && preg_match('/^\d{4}-\d{2}-\d{2}/',$params['start']) && isset($params['end']) && preg_match('/^\d{4}-\d{2}-\d{2}/',$params['end'])) {
+                
+                $startDate = Carbon::createFromFormat('Y-m-d',$params['start']);
+                $endDate = Carbon::createFromFormat('Y-m-d',$params['end']);
+        
+                $now = Carbon::now('UTC');
+        
+                if($now->diffInDays($startDate, false) <= 0) {
+                    throw new WanderException(__('app.dates_range_not_valid'));
+                }
+                if($startDate->diffInDays($endDate, false) <= 0) {
+                    throw new WanderException(__('app.dates_range_not_valid'));
+                }
             }
 
 
@@ -135,8 +124,8 @@ class TravelController extends Controller
                 'user_id' => $user->id,
                 'host_id' => $host->id,
                 'country_code' => $host->country_code,
-                'start_at' => $startDate->format('Y-m-d'),
-                'end_at' => $endDate->format('Y-m-d'),
+                'start_at' => $startDate ? $startDate->format('Y-m-d') : null,
+                'end_at' => $endDate ? $endDate->format('Y-m-d') : null,
                 'request_type' => $params['request_type'],
                 'status' => Travel::STATUS_PENDING,
             ]);

@@ -59,14 +59,14 @@ class Travel extends Model
         return $this->hasMany(Recommendation::class,'travel_id');
     }
 
-    private function getCustomAutoMessage() {
+    private function getCustomAutoMessage($withDates = true) {
         switch ($this->request_type) {
             case Travel::RTYPE_HOST_GUIDER:
-                return 'app.auto_message_host_guider';
+                return $withDates ? 'app.auto_message_host_guider' : 'app.auto_message_host_guider_optionaly';
             case Travel::RTYPE_GUIDER:
-                return 'app.auto_message_guider';
+                return $withDates ? 'app.auto_message_guider' : 'app.auto_message_guider_optionaly';
             default:
-                return 'app.auto_message_host_guider';
+                return $withDates ? 'app.auto_message_host_guider' : 'app.auto_message_host_guider_optionaly';
         }
     }
 
@@ -80,18 +80,29 @@ class Travel extends Model
 
         try {
 
+            if(!$this->host) {
+                return;
+            }
+
 
             $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
             $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
 
+            $place = $this->getPlaceName();
 
-            $startDate = Carbon::createFromFormat('Y-m-d',$this->start_at);
-            $endDate = Carbon::createFromFormat('Y-m-d',$this->end_at);
+            if($this->start_at && $this->end_at) {
+                
+                $startDate = Carbon::createFromFormat('Y-m-d',$this->start_at);
+                $endDate = Carbon::createFromFormat('Y-m-d',$this->end_at);
+    
+                $msgChat = __($this->getCustomAutoMessage(), ['user' => $host->name, 'place' => $place, 'start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d')]);
 
-            $place = $host->city_name.' / '.$host->country_name;
-
+            } else {
+                $msgChat = __($this->getCustomAutoMessage(false), ['user' => $host->name, 'place' => $place]);
+            }
+            
             $json = array(
-                'txt' => __($this->getCustomAutoMessage(), ['user' => $host->name, 'place' => $place, 'start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d')]),
+                'txt' => $msgChat,
                 'fmt' => [
                     array(
                         'at' => 0,
@@ -100,7 +111,6 @@ class Travel extends Model
                     )
                 ],
             );
-
             $response = Http::withHeaders([
                 'Authorization' => "Basic $apiKeyMiddleware",
             ])->post("$urlWanbox/api/chatmessages", [
@@ -128,5 +138,20 @@ class Travel extends Model
         /**
          * To DO
          */
+    }
+
+    public function getPlaceName() {
+        if($this->host) {
+            return $host->city_name.' / '.$host->country_name;
+        }
+        $countries = readJsonCountries();
+
+        $idxFoundCountry = findInArray($params['city']['country']['code'], $countries, 'country_code');
+
+        if ($idxFoundCountry === false) {
+            return "";
+        }
+        $foundCountry = $countries[$idxFoundCountry];
+        return $foundCountry['name'];
     }
 }
