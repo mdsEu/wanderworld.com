@@ -443,7 +443,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function myInterests() {
         $tblName = 'app_user_interests';
-        return DB::table($tblName)->select('interest_id AS id')->where('user_id',$this->id)->get();
+        return DB::table($tblName)->select('interest_id')->where('user_id',$this->id)->get()->pluck('interest_id');
     }
 
     /**

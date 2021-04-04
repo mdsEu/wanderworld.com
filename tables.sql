@@ -162,5 +162,5 @@ CREATE TABLE `app_user_interests` (
   `user_id` bigint unsigned,
   `interest_id` bigint unsigned,
   PRIMARY KEY (`user_id`, `interest_id`),
-  CONSTRAINT `fk_app_users_user` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_app_users_user` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 )
