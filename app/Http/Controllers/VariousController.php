@@ -175,6 +175,8 @@ class VariousController extends Controller
                 $userInfo->country_name = $appUser->country_name;
                 $userInfo->number_commons = $user->getCommonContacts($appUser)->count();
                 
+                $userInfo->has_any_travel = $user->hasAnyTravel($appUser);
+
                 $collectResults->push($userInfo);
             }
 

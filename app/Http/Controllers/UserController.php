@@ -748,8 +748,15 @@ class UserController extends Controller
                 $relationTravel->with('invited');
                 $relationTravel->with('travel.host');
             }])->find($user->id);
+            $visitRecommendations = $modelUser->visitRecommendations()->with(['user', 'travel.host', 'invited']);
+            $pagedRecommendations = getPaginate($visitRecommendations->get()->sortBy('seen'), $recommendationsLimit);
 
-            return sendResponse(getPaginate($modelUser->visitRecommendations, $recommendationsLimit));
+            $idsRecommendations = $pagedRecommendations->getCollection()->pluck('id');
+
+            $recommendationTable = (new Recommendation())->getTable();
+            DB::table($recommendationTable)->whereIn('id', $idsRecommendations)->update(array('seen' => 1));
+            
+            return sendResponse($pagedRecommendations);
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {

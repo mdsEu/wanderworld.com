@@ -123,6 +123,7 @@ class TravelController extends Controller
             $travel = Travel::create([
                 'user_id' => $user->id,
                 'host_id' => $host->id,
+                'country_code' => $host->country_code,
                 'start_at' => $startDate ? $startDate->format('Y-m-d') : null,
                 'end_at' => $endDate ? $endDate->format('Y-m-d') : null,
                 'request_type' => $params['request_type'],
@@ -657,7 +658,7 @@ class TravelController extends Controller
                 'accepted_travels' => $user->acceptedTravels()->count(),
                 'schedule_travels' => $user->scheduleTravels()->count(),
                 'requests_travels' => $user->pendingTravels()->count(),
-                'recommendations' => $user->visitRecommendations()->count(),
+                'recommendations' => $user->visitRecommendations()->where('seen', 0)->count(),
             ));
 
         } catch (QueryException $qe) {
