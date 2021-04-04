@@ -359,7 +359,13 @@ class AuthController extends Controller
                 throw new WanderException(__('auth.something_wrong_updating_user_info'));
             }
 
-            return sendResponse($user);
+            $token = auth($this->guard)->login($user);
+
+            if (!$token) {
+                return sendResponse(null,__('auth.credentials_not_valid'), false);
+            }
+
+            return sendResponse($token);
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
