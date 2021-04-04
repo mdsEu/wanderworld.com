@@ -438,7 +438,9 @@ class UserController extends Controller
                 'image',
                 'aboutme',
                 'interests',
+                'interests_ids',
                 'languages',
+                'languages_ids',
             ] : [
                 'birthday',
                 'city',
@@ -455,7 +457,9 @@ class UserController extends Controller
                 'image' => 'image|mimes:jpeg,png,jpg|max:'.$sizeKb,
                 'aboutme' => 'max:300',
                 'interests' => 'array|max:15',
+                'interests_ids' => 'array|max:15',
                 'languages' => 'array|max:6',
+                'languages_ids' => 'array|max:6',
             ] : [
                 'birthday' => [
                     function ($attribute, $value, $fail) {
@@ -524,10 +528,16 @@ class UserController extends Controller
                 if(!empty($params['interests'])) {
                     $user->updateMetaValue('my_interests', $params['interests']);
                 }
+                if(!empty($params['interests_ids'])) {
+                    $user->updateMyInterests($params['interests_ids']);
+                }
                 $user->updateMetaValue('is_interests_private', $request->get('is_interests_private', 'no'));
 
                 if(!empty($params['languages'])) {
                     $user->updateMetaValue('my_languages', $params['languages']);
+                }
+                if(!empty($params['languages_ids'])) {
+                    $user->updateMyLanguages($params['languages_ids']);
                 }
                 $user->updateMetaValue('is_languages_private', $request->get('is_languages_private', 'no'));
 

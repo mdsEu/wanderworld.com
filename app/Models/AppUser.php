@@ -438,6 +438,73 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
+     * Return user's interests
+     * @return hasMany
+     */
+    public function myInterests() {
+        $tblName = 'app_user_interests';
+        return DB::table($tblName)->select('interest_id')->where('user_id',$this->id)->get()->pluck('interest_id');
+    }
+
+    /**
+     * Update user's interests
+     * @return 
+     */
+    public function updateMyInterests($interests_ids) {
+        $tblName = 'app_user_interests';
+
+        DB::table($tblName)->where('user_id', $this->id)->delete();
+
+        $insert = array();
+        foreach($interests_ids as $interest_id) {
+            $id = intval($interest_id);
+            if(findInArray($id, $insert, 'interest_id') === false) {
+                $insert[] = array(
+                    'user_id' => $this->id,
+                    'interest_id' => $id,
+                );
+
+            }
+        }
+
+        return DB::table($tblName)->insert($insert);
+    }
+
+    /**
+     * Return user's idioms
+     * @return hasMany
+     */
+    public function myLanguages() {
+        $tblName = 'app_user_languages';
+        return DB::table($tblName)->select('language_id')->where('user_id',$this->id)->get()->pluck('language_id');
+    }
+
+    /**
+     * Update user's idioms
+     * @return 
+     */
+    public function updateMyLanguages($languages_ids) {
+        $tblName = 'app_user_languages';
+
+        DB::table($tblName)->where('user_id', $this->id)->delete();
+
+        $insert = array();
+        foreach($languages_ids as $language_id) {
+            $id = intval($language_id);
+            if(findInArray($id, $insert, 'language_id') === false) {
+                $insert[] = array(
+                    'user_id' => $this->id,
+                    'language_id' => $id,
+                );
+
+            }
+        }
+
+        return DB::table($tblName)->insert($insert);
+    }
+    
+
+    /**
      * Attribute function
      * Get chat_key
      * @return String
@@ -1119,12 +1186,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         if(\isJsonString($bundle->interests)) {
             $bundle->interests = \parseStrToJson($bundle->interests);
         }
+        $bundle->interests_ids = $this->myInterests();
         $bundle->is_interests_private = $this->getMetaValue('is_interests_private', 'no');
 
         $bundle->languages = $this->getMetaValue('my_languages', []);
         if(\isJsonString($bundle->languages)) {
             $bundle->languages = \parseStrToJson($bundle->languages);
         }
+        $bundle->languages_ids = $this->myLanguages();
         $bundle->is_languages_private = $this->getMetaValue('is_languages_private', 'no');
 
         $bundle->birthday = $this->getMetaValue('birthday', null);
