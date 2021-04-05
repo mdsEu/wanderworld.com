@@ -81,7 +81,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
 
             Route::post('/search-connections', [VariousController::class, 'searchCountryConnections']);
             Route::post('/facebook-friends', [VariousController::class, 'facebookFriends']);
-            Route::post('/friends-contacts', [UserController::class, 'getFriendsContacts']);
+            Route::get('/friends-contacts', [UserController::class, 'getFriendsContacts']);
         });
     });
 });
