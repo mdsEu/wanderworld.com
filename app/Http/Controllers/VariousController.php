@@ -283,6 +283,11 @@ class VariousController extends Controller
             $arrayData = $response->json();
             $list = [];
             foreach($arrayData['data'] as $friend) {
+                $foundUser = AppUser::findUserByFacebookId($friend['id']);
+
+                if($foundUser) {
+                    makeFriendRelationship($user, $foundUser);
+                }
                 $userFb = $user->getFriendByFacebookId($friend['id']);
                 $itemFriend = array(
                     'id' => $friend['id'],

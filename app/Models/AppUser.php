@@ -1332,4 +1332,21 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         }
         return null;
     }
+
+    /**
+     * 
+     * @return AppUser
+     */
+    public static function findUserByFacebookId($facebook_id) {
+        $facebook_id = getStrFakeVal($facebook_id);
+
+        $list = AppUserMeta::where('meta_key','facebook_user_id')
+            ->where('meta_value',$facebook_id)
+            ->get();
+
+        if($list->count() === 1) {
+            return self::find($list->first()->user_id);
+        }
+        return null;
+    }
 }
