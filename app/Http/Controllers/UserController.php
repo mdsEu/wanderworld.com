@@ -132,7 +132,7 @@ class UserController extends Controller
     public function meFriends(Request $request) {
         try {
 
-            $user = JWTAuth::parseToken()->authenticate();
+            $user = auth($this->guard)->user();
 
             $friendsLimit = intval(setting('admin.friends_list_limit', 20));
 
@@ -788,12 +788,18 @@ class UserController extends Controller
             
             $friendsLimit = intval(setting('admin.friends_list_limit', 20));
 
-            $friends = $user->activeFriendsLevel( 2 );
+            $level = intval($request->get('level', 2));
+
+            if($level > 2) {
+                $level = 2;
+            }
+
+            $friends = $user->activeFriendsLevel( $level );
 
             $paged = intval($request->get('page', 1));
 
             if($paged === -1) {
-                return sendResponse($friends);
+                return sendResponse(getPaginate($friends, $friendsLimit));
             }
 
             return sendResponse(getPaginate($friends, $friendsLimit));
