@@ -790,6 +790,12 @@ class UserController extends Controller
 
             $friends = $user->activeFriendsLevel( 2 );
 
+            $paged = intval($request->get('page', 1));
+
+            if($paged === -1) {
+                return sendResponse($friends);
+            }
+
             return sendResponse(getPaginate($friends, $friendsLimit));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
