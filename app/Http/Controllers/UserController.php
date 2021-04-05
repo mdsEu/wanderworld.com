@@ -799,7 +799,7 @@ class UserController extends Controller
             $paged = intval($request->get('page', 1));
 
             if($paged === -1) {
-                return sendResponse(getPaginate($friends, $friendsLimit));
+                return sendResponse($friends);
             }
 
             return sendResponse(getPaginate($friends, $friendsLimit));
