@@ -218,7 +218,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return bool
      */
     public function hasAnyTravel($friend) {
-        $count = $this->acceptedTravels()->where('host_id', $friend->id)->get()->count();
+        $count = $this->finishedTravels()->where('host_id', $friend->id)->get()->count();
         return $count > 0;
     }
 
