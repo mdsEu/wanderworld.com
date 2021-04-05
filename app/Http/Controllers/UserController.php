@@ -704,8 +704,8 @@ class UserController extends Controller
 
             $contactUser = AppUser::findOrFail($contact_id);
 
-            $myFriendsIds = $user->activeFriends()->pluck('id');
-            $commons = $contactUser->activeFriends()->whereIn('id',$myFriendsIds);
+            $myFriendsIds = $user->activeFriends()->get()->pluck('id');
+            $commons = $contactUser->activeFriends()->get()->whereIn('id',$myFriendsIds);
 
             return sendResponse($commons->values());
         } catch (QueryException $qe) {
