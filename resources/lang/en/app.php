@@ -18,6 +18,7 @@ return [
     'action_denied' => 'Action denied.',
     'is_it_you' => 'This person is it you?',
     'already_send_invitation' => 'You already sent a invitation for this person.',
+    'already_have_friend_relationship' => 'You already have a friend relationshiop with this person.',
     'no_posible_send_invitation' => 'It was not posible to send the invitation. Try again.',
     'connection_error' => 'Connection error.',
     'action_not_valid' => 'Action not valid.',

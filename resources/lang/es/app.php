@@ -18,6 +18,7 @@ return [
     'action_denied' => 'Acceso denegado.',
     'is_it_you' => '¿Esta persona es usted?',
     'already_send_invitation' => 'Ya has enviado una invitación a esta persona.',
+    'already_have_friend_relationship' => 'Ya eres amigo de esta persona.',
     'no_posible_send_invitation' => 'No fue posible enviar la invitación. Intente nuevamente.',
     'connection_error' => 'Error de conexión.',
     'action_not_valid' => 'Acción no válida.',

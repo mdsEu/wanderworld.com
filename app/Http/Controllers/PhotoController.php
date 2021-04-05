@@ -97,6 +97,7 @@ class PhotoController extends Controller
             ]);
 
             if((!$report) || empty($report->id)) {
+                DB::rollback();
                 return sendResponse();
             }
 

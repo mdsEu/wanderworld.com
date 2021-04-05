@@ -60,9 +60,11 @@ class UserController extends Controller
 
             $user = auth($this->guard)->user();
 
+            $allMyFriendsIds = $user->friends()->get()->pluck('id');
+
             $limit = intval(setting('admin.friends_search_list_limit', 20));
 
-            $allUsers = DB::table($user->getTable())->select(['id'])->where('id', '<>', $user->id);
+            $allUsers = DB::table($user->getTable())->select(['id'])->where('id', '<>', $user->id)->whereNotIn('id', $allMyFriendsIds);
 
             //$allUsers = AppUser::where('id', '<>', $user->id);
             $allUsers->where(function($query) use ($search) {
@@ -304,6 +306,11 @@ class UserController extends Controller
                 if($user->id === $invited->id) {
                     throw new WanderException(__('app.is_it_you'));
                 }
+
+                if($user->isMyFriend($invited, false)) {
+                    return sendResponse(null, __('app.already_have_friend_relationship'));
+                }
+
                 //Validate if user rejected me before or pending
                 $result = $invited->invitations()
                         ->where('user_id', $user->id)

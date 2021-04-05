@@ -1232,7 +1232,10 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * Return if an user is my friend
      * @return bool
      */
-    public function isMyFriend($user) {
+    public function isMyFriend($user, $onlyActives = true) {
+        if(!$onlyActives) {
+            return !!($this->friends()->find($user) || $user->id === $this->id);    
+        }
         return !!($this->activeFriends()->find($user) || $user->id === $this->id);
     }
 
