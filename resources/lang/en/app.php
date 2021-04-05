@@ -52,4 +52,5 @@ return [
     'no_registration_try_again_please' => 'We can\'t create your account. Try again please.',
     'search_val_necessary' => 'It\'s necessary a value to find.',
     'more_than_n_chars' => 'Type more than :n letters',
+    'no_album_name_specified' => '- No name -',
 ];

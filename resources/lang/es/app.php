@@ -52,4 +52,5 @@ return [
     'no_registration_try_again_please' => 'No pudimos realizar tu registro. Intente nuevamente.',
     'search_val_necessary' => 'Es necesario un valor a ser buscado.',
     'more_than_n_chars' => 'Escribe más de :n letras',
+    'no_album_name_specified' => '- Sin nombre -',
 ];

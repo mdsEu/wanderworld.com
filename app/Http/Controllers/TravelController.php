@@ -723,6 +723,12 @@ class TravelController extends Controller
                     switch ($newStatus) {
                         case Travel::STATUS_ACCEPTED:
                             $travel->notifyAcceptHostRequest();
+                            $nameAlbum = $travel->getPlaceName();
+                            $album = $travel->albums()->create([
+                                'name' => !empty($nameAlbum) ? $nameAlbum : __('app.no_album_name_specified'),
+                                'status' => Album::STATUS_ACCEPTED,
+                            ]);
+                            $newStatus = Travel::STATUS_FINISHED;
                             break;
                         case Travel::STATUS_REJECTED:
                             $travel->notifyRejectHostRequest();
