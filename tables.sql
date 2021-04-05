@@ -152,7 +152,7 @@ CREATE TABLE `faqs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `question` varchar(150) NOT NULL,
   `answer` varchar(255) NOT NULL,
-  `is_active` tinyint(255) DEFAULT 0,
+  `is_active` tinyint(1) DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -162,7 +162,17 @@ CREATE TABLE `app_user_interests` (
   `user_id` bigint unsigned,
   `interest_id` bigint unsigned,
   PRIMARY KEY (`user_id`, `interest_id`),
-  CONSTRAINT `fk_app_user_interests_user` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_app_user_interests_user` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_app_user_interests_interests` FOREIGN KEY (`interest_id`) REFERENCES `interests` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+CREATE TABLE `interests` (
+  `id` bigint unsigned,
+  `name` bigint unsigned,
+  `is_active` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
 )
 
 CREATE TABLE `app_user_languages` (
