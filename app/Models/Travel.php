@@ -142,7 +142,7 @@ class Travel extends Model
 
     public function getPlaceName() {
         if($this->host) {
-            return $host->city_name.' / '.$host->country_name;
+            return $this->host->city_name.' / '.$this->host->country_name;
         }
         $countries = readJsonCountries();
 
