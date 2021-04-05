@@ -910,33 +910,13 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
 
-    private function updateChatTopicStatus($friends, $action, $friend_id, $times = 1) {
+    private function updateChatTopicStatus($myFriend, $action, $times = 1) {
         if($times > 3) {
-            return;
+            return null;
         }
         $urlWanbox = env('APP_ENV','local') === 'production' ? env('WANBOX_MIDDLEWARE_URL', '') : env('TEST_WANBOX_MIDDLEWARE_URL', '');
         $apiKeyMiddleware = env('TOKEN_WANBOX_MIDDLEWARE', '');
 
-
-        $myFriend = $friends->find($friend_id);
-
-        
-        if(empty($myFriend)) {
-            $activeFriends2 = $this->activeFriendsLevel( 2 );
-            $hostFoundIndex = $activeFriends2->search(function ($appUser) use ($friend_id) {
-                return $appUser->id === $friend_id;
-            });
-
-            if($hostFoundIndex === false) {
-                throw new WanderException(__('app.no_friend_selected'));
-            }
-
-            $myFriend = $activeFriends2->get($hostFoundIndex);
-
-            if(!$myFriend) {
-                throw new WanderException(__('app.no_friend_selected'));
-            }
-        }
 
         $chat_user_id = $myFriend->chat_user_id;
 
@@ -957,12 +937,12 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         if(!$response->successful()) {
 
             if( $response->getStatusCode() == 500 ) {
-                return $this->updateChatTopicStatus($friends, $action, $friend_id, $times + 1);
+                $this->updateChatTopicStatus($myFriend, $action, $times + 1);
+                return;
                 //throw new ChatException(__('app.no_action_no_ini_conversation'));
             }
             //throw new ChatException(__('app.chat_connection_error').' '.$response->getStatusCode());
         }
-        return $myFriend;
     }
 
     /**
@@ -978,7 +958,31 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
             $friends = $this->friends();
 
-            $myFriend = $this->updateChatTopicStatus($friends, $action, $friend_id);
+            $myFriend = $friends->find($friend_id);
+        
+            if(empty($myFriend)) {
+                $activeFriends2 = $this->activeFriendsLevel( 2 );
+                $hostFoundIndex = $activeFriends2->search(function ($appUser) use ($friend_id) {
+                    return $appUser->id === $friend_id;
+                });
+
+                if($hostFoundIndex === false) {
+                    throw new WanderException(__('app.no_friend_selected'));
+                }
+
+                $myFriend = $activeFriends2->get($hostFoundIndex);
+
+                if(!$myFriend) {
+                    throw new WanderException(__('app.no_friend_selected'));
+                }
+            }
+
+            switch ($action) {
+                case 'mute':
+                case 'unmute':
+                    $this->updateChatTopicStatus($myFriend, $action, $friend_id);
+                    break;
+            }
             
 
             if($this->isMyFriend($myFriend)) {
