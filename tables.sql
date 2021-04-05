@@ -167,8 +167,8 @@ CREATE TABLE `app_user_interests` (
 )
 
 CREATE TABLE `interests` (
-  `id` bigint unsigned,
-  `name` bigint unsigned,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
   `is_active` tinyint(1) DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,

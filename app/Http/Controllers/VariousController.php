@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 
 use App\Models\Comment;
 use App\Models\AppUser;
+use App\Models\Interest;
 use App\Mail\GenericMail;
 
 use JWTAuth;
@@ -302,6 +303,21 @@ class VariousController extends Controller
             }
 
             return sendResponse($list);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    
+    public function getInterests(Request $request) {
+        try {
+            return sendResponse( Interest::withTranslations()->get() );
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
