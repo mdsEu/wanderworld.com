@@ -835,10 +835,13 @@ class UserController extends Controller
 
             $list = $myFriends->map(function($friend) use ($user) {
                 $reducedFriend = new \stdClass;
+
                 $reducedFriend->id = $friend->id;
                 $reducedFriend->email = $friend->email;
                 $reducedFriend->phone = $friend->getMetaValue('phone');
                 $reducedFriend->has_any_travel = $user->hasAnyTravel($friend);
+                $reducedFriend->chat_user_id = $friend->chat_user_id;
+                
                 return $reducedFriend;
             });
 
