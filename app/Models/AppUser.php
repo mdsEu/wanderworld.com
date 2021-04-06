@@ -180,7 +180,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             //'path' => $request->path(),
         ];
         if( $request->is('api/auth/me') ) {
-            $myAppends['number_of_friend_requests'] = $this->getNumberOfFriendRelationshipInvitations();
+            //$myAppends['number_of_friend_requests'] = $this->getNumberOfFriendRelationshipInvitations();
+            $myAppends['number_of_friend_requests'] = 0;
             $myAppends['completed_profile'] = $this->getMetaValue('info_public_saved') === 'yes' && $this->getMetaValue('info_private_saved') === 'yes' ? 'yes' : 'no';
             $myAppends['times_change_city'] = $this->getTimesChangeCity();
         }

@@ -875,4 +875,19 @@ class UserController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+    public function getNumberOfFriendRelationshipInvitations(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            return sendResponse($user->getNumberOfFriendRelationshipInvitations());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
 }
