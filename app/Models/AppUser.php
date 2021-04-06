@@ -219,18 +219,19 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return bool
      */
     public function hasAnyFinishedTravel($friend) {
-        
-        $exists1 = DB::table((new Travel())->getTable())
+        $tblName = (new Travel())->getTable();
+
+        $exists1 = DB::table($tblName)
                         ->where('user_id', $this->id)
                         ->where('host_id', $friend->id)
                         ->where('status', Travel::STATUS_FINISHED)->exists();
 
-        $exists2 = DB::table((new Travel())->getTable())
+        $exists2 = DB::table($tblName)
                         ->where('user_id', $friend->id)
                         ->where('host_id', $this->id)
                         ->where('status', Travel::STATUS_FINISHED)->exists();
 
-        return $exists1 || $exists2;
+        return $exists1 || $exists2 || $this->isMyFriend($friend, false);
     }
 
     /**
@@ -1245,9 +1246,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function isMyFriend($user, $onlyActives = true) {
         if(!$onlyActives) {
-            return !!($this->friends()->find($user) || $user->id === $this->id);    
+            return !!($this->friends()->find($user->id) || $user->id === $this->id);    
         }
-        return !!($this->activeFriends()->find($user) || $user->id === $this->id);
+        return !!($this->activeFriends()->find($user->id) || $user->id === $this->id);
     }
 
 
