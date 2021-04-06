@@ -1148,7 +1148,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $myPendingInvitations = $this->myPendingInvitations()->get();
 
         foreach($myPendingInvitations as $invitation) {
-            if(!$invitation->user) {
+            if(!$invitation->invited) {
                 continue;
             }
             if( areFriends($invitation->invited,$oldFriend) ) {
