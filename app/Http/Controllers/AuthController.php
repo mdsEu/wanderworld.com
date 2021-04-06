@@ -232,7 +232,7 @@ class AuthController extends Controller
 
             $validator = Validator::make($params, [
                 'fullname' => 'required|max:40',
-                'nickname' => 'max:40',
+                'nickname' => 'min:5|max:40',
                 'email' => 'required|email|max:75|unique:app_users,email',
                 'password' => [
                     'required',

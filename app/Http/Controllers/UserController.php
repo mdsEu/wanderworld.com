@@ -460,7 +460,7 @@ class UserController extends Controller
             
             $rules = $isPublic ? [
                 'name' => 'required|max:40',
-                'nickname' => 'max:40',
+                'nickname' => 'min:5|max:40',
                 'image' => 'image|mimes:jpeg,png,jpg|max:'.$sizeKb,
                 'aboutme' => 'max:300',
                 'interests' => 'array|max:15',
