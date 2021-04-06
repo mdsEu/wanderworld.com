@@ -1148,6 +1148,9 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         $myPendingInvitations = $this->myPendingInvitations()->get();
 
         foreach($myPendingInvitations as $invitation) {
+            if(!$invitation->user) {
+                continue;
+            }
             if( areFriends($invitation->invited,$oldFriend) ) {
                 $info = parseStrToJson($invitation->invited_info, (new \stdClass));
                 $n = getAtrValue($info, 'numberContacts', 0);
