@@ -130,7 +130,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::get('/me/markers-map-continents', [VariousController::class, 'markersMapContinents']);
 
             Route::put('/me/change-password', [AuthController::class, 'updatePassword']);
-            Route::put('/me/counter-friends-invitations', [UserController::class, 'getNumberOfFriendRelationshipInvitations']);
+            Route::get('/me/counter-friends-invitations', [UserController::class, 'getNumberOfFriendRelationshipInvitations']);
             
             
             
