@@ -190,7 +190,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $request->is('api/auth/me/visit-recommendations') 
         ) {
             $user = auth('api')->user();
-            $myAppends['has_any_travel'] = $this->hasAnyTravel($user);
+            $myAppends['has_any_travel'] = $this->hasAnyFinishedTravel($user);
         }
         
         if( 
@@ -213,13 +213,23 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
     }
 
     /**
-     * Check if has any active travel with friend
+     * Check if has any finished travel with friend
      * @param AppUser $friend
      * @return bool
      */
-    public function hasAnyTravel($friend) {
-        $count = $this->finishedTravels()->where('host_id', $friend->id)->get()->count();
-        return $count > 0;
+    public function hasAnyFinishedTravel($friend) {
+        
+        $exists1 = DB::table((new Travel())->getTable())
+                        ->where('user_id', $this->id)
+                        ->where('host_id', $friend->id)
+                        ->where('status', Travel::STATUS_FINISHED)->exists();
+
+        $exists2 = DB::table((new Travel())->getTable())
+                        ->where('user_id', $friend->id)
+                        ->where('host_id', $this->id)
+                        ->where('status', Travel::STATUS_FINISHED)->exists();
+
+        return $exists1 || $exists2;
     }
 
     /**
