@@ -176,7 +176,7 @@ class VariousController extends Controller
                 $userInfo->country_name = $appUser->country_name;
                 $userInfo->number_commons = $user->getCommonContacts($appUser)->count();
                 
-                $userInfo->has_any_travel = $user->hasAnyTravel($appUser);
+                $userInfo->has_any_travel = $user->hasAnyFinishedTravel($appUser);
 
                 $collectResults->push($userInfo);
             }
@@ -297,7 +297,7 @@ class VariousController extends Controller
                 if($userFb) {
                     $itemFriend['user_id'] = $userFb->id;
                     $itemFriend['chat_user_id'] = $userFb->chat_user_id;
-                    $itemFriend['has_any_travel'] = $user->hasAnyTravel($userFb);
+                    $itemFriend['has_any_travel'] = $user->hasAnyFinishedTravel($userFb);
                 }
                 $list[] = $itemFriend;
             }

@@ -858,7 +858,7 @@ class UserController extends Controller
                 $reducedFriend->id = $friend->id;
                 $reducedFriend->email = $friend->email;
                 $reducedFriend->phone = $friend->getMetaValue('phone');
-                $reducedFriend->has_any_travel = $user->hasAnyTravel($friend);
+                $reducedFriend->has_any_travel = $user->hasAnyFinishedTravel($friend);
                 $reducedFriend->chat_user_id = $friend->chat_user_id;
                 
                 return $reducedFriend;
