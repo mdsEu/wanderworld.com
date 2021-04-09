@@ -42,7 +42,7 @@ return [
     'something_wrong_changing_travel_status' => 'Something was wrong changing the travel status',
     'something_wrong_changing_travel_dates' => 'Something was wrong changing the travel dates',
     'reached_city_change_limit' => 'You have reached the limit for changing the city',
-    'email_necessary_invitation' => 'It\'s necessary the email of this person to send an invitacion',
+    'email_necessary_invitation' => 'It has not posible to send the invitation. There\'re 0 or more users with the same number phone.',
     'travel_not_accepted_by_host' => 'The trip was not accepted by the host',
     'travel_already_schedule' => 'You already have a schedule travel with :name',
     'auto_message_host_guider' => 'Hello :user. I will travel to :place about :start_date to :end_date and, could you please be my host?',
