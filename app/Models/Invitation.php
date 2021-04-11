@@ -100,7 +100,7 @@ class Invitation extends Model
                     return false;
                 }
                 $button = array(
-                    'link' => secure_url("app/invitation"),
+                    'link' => str_replace('{screen}','invitation',env('URL_APP_PAGE',"https://wanderworld.com/app?screen={screen}")),
                     'text' => __('auth.continue_to_app'),
                 );
                 $userPName = $this->user->getPublicName();

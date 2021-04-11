@@ -350,7 +350,7 @@ if (!function_exists('sendVerificationEmail')) {
             $token64 = base64_encode("{$user->email}::$token");
 
             $button = array(
-                'link' => secure_url("app/email-verification?token=$token64"),
+                'link' => str_replace('{screen}','email-verification',env('URL_APP_PAGE',"https://wanderworld.com/app?screen={screen}&token=$token64")),
                 'text' => __('auth.continue_to_app'),
             );
 
@@ -381,7 +381,7 @@ if (!function_exists('sendRecoveryAccountEmail')) {
             $token64 = base64_encode("{$user->email}::$token");
 
             $button = array(
-                'link' => secure_url("app/recovery-account?token=$token64"),
+                'link' => str_replace('{screen}','recovery-account',env('URL_APP_PAGE',"https://wanderworld.com/app?screen={screen}&token=$token64")),
                 'text' => __('auth.continue_to_app'),
             );
 
