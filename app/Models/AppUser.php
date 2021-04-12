@@ -1244,7 +1244,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return int
      */
     public function getTimesChangeCity() {
-        return intval($this->getMetaValue(Carbon::now('UTC')->format('YYYY').'_times_change_city', 0));
+        return intval($this->getMetaValue(Carbon::now('UTC')->format('Y').'_times_change_city', 0));
     }
 
     /**

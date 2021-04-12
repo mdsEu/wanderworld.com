@@ -642,7 +642,7 @@ class UserController extends Controller
             }
 
             if ($user->city_gplace_id !== $new_gplace_id) {
-                $user->updateMetaValue(Carbon::now('UTC')->format('YYYY').'_times_change_city', $timesChangeCity + 1);
+                $user->updateMetaValue(Carbon::now('UTC')->format('Y').'_times_change_city', $timesChangeCity + 1);
                 $user->city_gplace_id = $new_gplace_id;
                 $user->refreshCityName();
 
