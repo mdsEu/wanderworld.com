@@ -575,6 +575,7 @@ class UserController extends Controller
                 }
 
                 if ($user->city_gplace_id !== $new_gplace_id) {
+                    logActivity("{$user->id} $user->city_gplace_id !== $new_gplace_id ".Carbon::now('UTC')->format('YYYY').'_times_change_city    times: '.($timesChangeCity + 1));
                     $user->updateMetaValue(Carbon::now('UTC')->format('YYYY').'_times_change_city', $timesChangeCity + 1);
                     $user->city_gplace_id = $new_gplace_id;
                 }
