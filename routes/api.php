@@ -115,6 +115,7 @@ Route::group(['prefix' => 'auth'], function () {
             Route::get('/me/profile', [UserController::class, 'meGetProfileInfo']);
             Route::post('/me/profile', [UserController::class, 'meUpdateProfileInfo']);
             Route::post('/me/remove-avatar', [UserController::class, 'meRemoveAvatar']);
+            Route::post('/me/change-city', [UserController::class, 'meUpdateUserCityInfo']);
             
             Route::get('/me/common-friends/{contact_id}', [UserController::class, 'getCommonFriends']);
             Route::get('/me/blocked-friends', [UserController::class, 'getBlockedFriends']);

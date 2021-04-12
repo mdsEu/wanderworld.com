@@ -450,7 +450,6 @@ class UserController extends Controller
                 'languages_ids',
             ] : [
                 'birthday',
-                'city',
                 'cellphone',
                 'gender',
                 'personal_status',
@@ -483,19 +482,6 @@ class UserController extends Controller
                             return;
                         }
                     }
-                ],
-                /*'gender' => [
-                    Rule::in(['male','female','other']),
-                ],
-                'personal_status' => [
-                    Rule::in(['single','married','inrelation']),
-                ],*/
-                'city.name' => 'required',
-                'city.place_id' => 'required',
-                'city.country.name' => 'required',
-                'city.country.code' => [
-                    'required',
-                    Rule::in(LIST_COUNTRYS_CODES),
                 ],
                 'cellphone.dial' => 'required',
                 'cellphone.number' => 'required',
@@ -553,35 +539,6 @@ class UserController extends Controller
                 
             } else {
 
-
-                $countries = readJsonCountries();
-
-                $idxFoundCountry = findInArray($params['city']['country']['code'], $countries, 'country_code');
-
-                if ($idxFoundCountry === false) {
-                    //Never will happen. Previously validated....
-                }
-                $foundCountry = $countries[$idxFoundCountry];
-
-                $user->continent_code = $foundCountry['continent_code'];
-                $user->country_code = $foundCountry['country_code'];
-
-                $new_gplace_id = trim($params['city']['place_id']);
-                $timesChangeCity = $user->getTimesChangeCity();
-                $limitChangeCity = intval( $user->getMetaValue('limit_change_city', setting('admin.limit_change_city', 2)) );
-                if ($user->city_gplace_id !== $new_gplace_id && $timesChangeCity >= $limitChangeCity) {
-                    DB::rollback();
-                    return sendResponse(null,['city' => __('app.reached_city_change_limit')],false);
-                }
-
-                if ($user->city_gplace_id !== $new_gplace_id) {
-                    logActivity("{$user->id} $user->city_gplace_id !== $new_gplace_id ".Carbon::now('UTC')->format('YYYY').'_times_change_city    times: '.($timesChangeCity + 1));
-                    $user->updateMetaValue(Carbon::now('UTC')->format('YYYY').'_times_change_city', $timesChangeCity + 1);
-                    $user->city_gplace_id = $new_gplace_id;
-                    $user->refreshCityName();
-                }
-
-                $user->refreshCityName();
                 $user->updateMetaValue('is_city_private', $request->get('is_city_private', 'no'));
 
                 $user->updateMetaValue('birthday', $params['birthday']);
@@ -614,6 +571,87 @@ class UserController extends Controller
             }
 
             $user->updateChatDataAccount();
+
+            DB::commit();
+
+            return sendResponse();
+        } catch (QueryException $qe) {
+            DB::rollback();
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            DB::rollback();
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            DB::rollback();
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Function to update public user profile data
+     */
+    public function meUpdateUserCityInfo(Request $request) {
+        try {
+
+
+            $params = $request->only([
+                'city',
+            ]);
+            
+            $rules = [
+                'city.name' => 'required',
+                'city.place_id' => 'required',
+                'city.country.name' => 'required',
+                'city.country.code' => [
+                    'required',
+                    Rule::in(LIST_COUNTRYS_CODES),
+                ],
+            ] ;
+
+            $validator = Validator::make($params, $rules);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+
+            DB::beginTransaction();
+
+            $user = auth($this->guard)->user();
+
+            $countries = readJsonCountries();
+
+            $idxFoundCountry = findInArray($params['city']['country']['code'], $countries, 'country_code');
+
+            if ($idxFoundCountry === false) {
+                //Never will happen. Previously validated....
+            }
+            $foundCountry = $countries[$idxFoundCountry];
+
+            $user->continent_code = $foundCountry['continent_code'];
+            $user->country_code = $foundCountry['country_code'];
+
+            $new_gplace_id = trim($params['city']['place_id']);
+            $timesChangeCity = $user->getTimesChangeCity();
+            $limitChangeCity = intval( $user->getMetaValue('limit_change_city', setting('admin.limit_change_city', 2)) );
+            if ($user->city_gplace_id !== $new_gplace_id && $timesChangeCity >= $limitChangeCity) {
+                DB::rollback();
+                return sendResponse(null,['city' => __('app.reached_city_change_limit')],false);
+            }
+
+            if ($user->city_gplace_id !== $new_gplace_id) {
+                $user->updateMetaValue(Carbon::now('UTC')->format('YYYY').'_times_change_city', $timesChangeCity + 1);
+                $user->city_gplace_id = $new_gplace_id;
+                $user->refreshCityName();
+
+                if (!$user->save()) {
+                    throw new WanderException(__('app.connection_error'));
+                }
+                $user->updateChatDataAccount();
+            }
+
 
             DB::commit();
 

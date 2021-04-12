@@ -1223,6 +1223,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
         $bundle->country_code = $this->country_code;
         $bundle->city_name = $this->city_name;
+        $bundle->city_gplace_id = $this->city_gplace_id;
 
         $bundle->gender = $this->getMetaValue('gender', null);
         $bundle->is_gender_private = $this->getMetaValue('is_gender_private', 'no');
