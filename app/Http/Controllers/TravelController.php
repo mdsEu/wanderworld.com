@@ -864,6 +864,7 @@ class TravelController extends Controller
                     
                     if(!$foundR) {
                         $recommendationsArr[] = [
+                            'country_code' => $travel->country_code,
                             'user_id' => $user->id,
                             'invited_id' => $friend_id,
                         ];

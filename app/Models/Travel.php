@@ -146,7 +146,7 @@ class Travel extends Model
         }
         $countries = readJsonCountries();
 
-        $idxFoundCountry = findInArray($params['city']['country']['code'], $countries, 'country_code');
+        $idxFoundCountry = findInArray($this->country_code, $countries, 'country_code');
 
         if ($idxFoundCountry === false) {
             return "";
