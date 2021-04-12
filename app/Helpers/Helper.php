@@ -150,7 +150,10 @@ if(!function_exists('cloneAvatar')) {
      * @param string $path
      * @return String
      */
-    function cloneAvatar($path) {
+    function cloneAvatar($path, $fromUrl = false) {
+        if($fromUrl) {
+            return Storage::disk(config('voyager.storage.disk'))->putFile('avatars', file_get_contents($path), 'public');
+        }
         return Storage::disk(config('voyager.storage.disk'))->putFile('avatars', new \Illuminate\Http\File($path), 'public');
     }
 }
@@ -192,7 +195,7 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
             $userFBInfo['picture']['data']['url'] &&
             checkFileExists($userFBInfo['picture']['data']['url'])
             ) {
-            $defaultAvatar = $userFBInfo['picture']['data']['url'];
+            $defaultAvatar = cloneAvatar($userFBInfo['picture']['data']['url'], true);
         }
 
         if (!$user) {
