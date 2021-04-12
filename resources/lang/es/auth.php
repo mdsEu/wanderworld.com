@@ -32,4 +32,6 @@ return [
     'recovery_account_subject_email' => 'Recuperación de Cuenta - Wander World',
     'recovery_account_description_email' => 'Presione el siguiente botón para continuar con el proceso de recuperación de cuenta:',
     'something_was_wrong_login_process' => 'Algo salió mal durante el proceso de ingreso.',
+    'facebook_access_failed' => 'Algo salió mal durante el proceso de ingreso. Intente nuevamente.',
+    'facebook_access_email_failed' => 'No fue posible obtener un email desde su cuenta de facebook. Intente con otra cuenta.',
 ];

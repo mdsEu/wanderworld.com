@@ -78,8 +78,13 @@ class AuthController extends Controller
         $accessToken = $request->get('accessToken', null);
 
         try {
-            if (!fbValidAccessToken($accessToken)) {
+            
+            if(empty($accessToken)) {
                 return sendResponse(null,__('auth.facebook_access_failed'), false);
+            }
+
+            if (!fbValidAccessToken($accessToken)) {
+                return sendResponse(null,__('auth.facebook_access_email_failed'), false);
             }
 
 

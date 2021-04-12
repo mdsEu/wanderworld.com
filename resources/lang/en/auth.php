@@ -32,4 +32,6 @@ return [
     'recovery_account_subject_email' => 'Recovery Account - Wander World',
     'recovery_account_description_email' => 'Click below button to continue with the recovery account process:',
     'something_was_wrong_login_process' => 'Something was wrong during login process.',
+    'facebook_access_failed' => 'Something was wrong during login process. Try again.',
+    'facebook_access_email_failed' => 'It was not posible to get your email from your facebook account. Use other account.',
 ];
