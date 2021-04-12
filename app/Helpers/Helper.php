@@ -152,7 +152,7 @@ if(!function_exists('cloneAvatar')) {
      */
     function cloneAvatar($path, $fromUrl = false) {
         if($fromUrl) {
-            return Storage::disk(config('voyager.storage.disk'))->putFile('avatars', file_get_contents($path), 'public');
+            return Storage::disk(config('voyager.storage.disk'))->put('avatars', file_get_contents($path), 'public');
         }
         return Storage::disk(config('voyager.storage.disk'))->putFile('avatars', new \Illuminate\Http\File($path), 'public');
     }
