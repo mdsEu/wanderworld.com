@@ -17,8 +17,10 @@
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "league/flysystem-aws-s3-v3": "^1.0",
+        "manuel90/export-bread": "*",
         "mds/voyager-field-imageprecrop": "dev-stage",
         "nesbot/carbon": "^2.41",
+        "phpoffice/phpspreadsheet": "^1.17",
         "tcg/voyager": "^1.4",
         "tymon/jwt-auth": "^1.0"
     },
