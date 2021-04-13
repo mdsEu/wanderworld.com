@@ -1,0 +1,79 @@
+#selection-columns .row-selection {
+    border: 1px solid #353d47;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+#selection-columns .row-selection .row-selection {
+    border-radius: 0;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    display: none;
+}
+
+#selection-columns .row-selection label.checked ~ .row-selection {
+    display: block;
+}
+
+#wrap-second-button {
+    position: fixed;
+    left: calc(60px + 10px);
+    display: none;
+    z-index: 10;
+}
+#wrap-second-button .btn {
+    opacity: 1;
+}
+#selection-columns label {
+    cursor: pointer;
+}
+
+.app-container.expanded .content-container #wrap-second-button {
+    left: calc(250px + 10px);
+}
+
+.app-container .content-container.fix-export-second-button #wrap-second-button {
+    display: block;
+}
+
+
+.app-container .content-container.fix-export-second-button #first-button-export {
+    opacity: 0;
+}
+
+
+#export-bread-check-all {
+    margin: 30px 0 20px 0;
+}
+
+#export-bread-check-all label {
+    margin: 0;
+    padding-left: 30px;
+    position: relative;
+}
+#export-bread-check-all .icon-check {
+    border: 1px solid #000000;
+    border-radius: 4px;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 25px;
+    width: 25px;
+}
+#export-bread-check-all .icon-check i {
+    color: #000000;
+    font-size: 20px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+#export-bread-check-all label.checked .icon-check i {
+    display: table;
+}

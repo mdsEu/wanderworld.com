@@ -578,7 +578,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getNameAttribute($name) {
         $request = request();
-        if( $request->is('admin/app-users/*') || $request->is('admin/app-users') ) {
+        if( $request->is('admin/*') ) {
             return $name;
         }
         return !empty($this->nickname) ? $this->nickname : $name;
@@ -1374,5 +1374,31 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             return self::find($list->first()->user_id);
         }
         return null;
+    }
+
+
+
+
+
+
+    public static function exportForeigns() {
+        return array(
+        );
+    }
+
+    public static function exportColumnsName() {
+        return array(
+            "id" => "ID",
+            "name" => "Name",
+            "email" => "Email",
+            "nickname" => "Nickname",
+            "status" => "Status",
+            "continent_code" => "Continent Code",
+            "country_code" => "Country Code",
+            "city_gplace_id" => "City Place ID",
+            "email_verified_at" => "Email Verified",
+            "created_at" => "Created at",
+            "updated_at" => "Updated at",
+        );
     }
 }

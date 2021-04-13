@@ -1,0 +1,23 @@
+{
+    "name": "manuel90/export-bread",
+    "description": "Export bread table data in cvs",
+    "authors": [
+        {
+            "name": "Manuel",
+            "email": "testmlzra@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Manuel90\\ExportBread\\": "src/"
+        }
+    },
+    "extra": {
+    	"laravel": {
+    		"providers": [
+    			"Manuel90\\ExportBread\\ExportBreadServiceProvider"
+            ]
+    	}
+    }
+}
