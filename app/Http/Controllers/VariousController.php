@@ -175,6 +175,7 @@ class VariousController extends Controller
                 $userInfo->city_name = $appUser->city_name;
                 $userInfo->country_name = $appUser->country_name;
                 $userInfo->slug_city = $appUser->slug_city;
+                $userInfo->chat_user_id = $appUser->chat_user_id;
                 $userInfo->number_commons = $user->getCommonContacts($appUser)->count();
                 
                 $userInfo->has_any_travel = $user->hasAnyFinishedTravel($appUser);
