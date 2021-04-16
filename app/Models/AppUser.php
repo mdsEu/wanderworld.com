@@ -203,7 +203,7 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
             $temp = array_merge($this->attributesToArray(), $this->relationsToArray(), $myAppends);
             $re = [];
             foreach($temp as $key=>$item) {
-                if(!in_array($key,['id','name','avatar','city_name','country_code','country_name','level','city_gplace_id'])) {
+                if(!in_array($key,['id','name','avatar','city_name','country_code','country_name','level','city_gplace_id','chat_user_id', 'slug_city'])) {
                     continue;
                 }
                 $re[$key] = $item;
