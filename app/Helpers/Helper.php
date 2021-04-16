@@ -797,8 +797,8 @@ function sanitize_title( $title, $lower = true, $fallback_title = '', $context =
     if ( '' === $title || false === $title ) {
         $title = $fallback_title;
     }
- 
-    return $lower ? strtolower($title) : $title;
+    $title = $lower ? strtolower($title) : $title;
+    return str_replace(' ', '', $title);
 }
 function remove_accents( $string ) {
     if ( ! preg_match( '/[\x80-\xff]/', $string ) ) {
