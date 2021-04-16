@@ -174,6 +174,7 @@ class VariousController extends Controller
                 $userInfo->city_gplace_id = $appUser->city_gplace_id;
                 $userInfo->city_name = $appUser->city_name;
                 $userInfo->country_name = $appUser->country_name;
+                $userInfo->slug_city = $appUser->slug_city;
                 $userInfo->number_commons = $user->getCommonContacts($appUser)->count();
                 
                 $userInfo->has_any_travel = $user->hasAnyFinishedTravel($appUser);
@@ -181,7 +182,7 @@ class VariousController extends Controller
                 $collectResults->push($userInfo);
             }
 
-            $grouped = $collectResults->groupBy('city_gplace_id');
+            $grouped = $collectResults->groupBy('slug_city');
 
             $grouped->all();
 
