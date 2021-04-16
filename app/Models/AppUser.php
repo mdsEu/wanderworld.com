@@ -83,7 +83,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         'chat_key',
         'city_name',
         'country_name',
-        'is_default_avatar'
+        'is_default_avatar',
+        'slug_city',
         //'level',
     ];
 
@@ -600,6 +601,14 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         return !empty($this->nickname) ? $this->nickname : $this->name;
     }
     
+    /**
+     * Get user's country name
+     * @return String
+     */
+    public function getSlugCityAttribute($name) {
+        $slugCity = sanitize_title("{$this->city_name}__{$this->country_code}");
+        return $slugCity;
+    }
 
     /**
      * 
@@ -1265,8 +1274,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      */
     public function getCommonContacts($contactUser) {
 
-        $myFriendsIds = $this->activeFriendsLevel( 2 )->pluck('id');
-        $commons = $contactUser->activeFriendsLevel( 2 )->whereIn('id',$myFriendsIds);
+        $myFriendsIds = $this->activeFriendsLevel()->pluck('id');
+        $commons = $contactUser->activeFriendsLevel()->whereIn('id',$myFriendsIds);
 
         return collect($commons->values());
     }
