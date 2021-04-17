@@ -156,7 +156,7 @@ class VariousController extends Controller
                     }
                     $foundCountry = $countries[$indexFoundCountry];
                 } else if(in_array('political', $predi['types']) && in_array('locality', $predi['types'])) {//is city?
-                    $foundCountry = ggetCountryOfPlaceId($predi['place_id'], $sessionToken);
+                    $foundCountry = ggetCountryOfPlaceId($predi['place_id']);
                 }
 
                 if(!$foundCountry) {

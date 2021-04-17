@@ -704,44 +704,51 @@ if (!function_exists('showImage')) {
 }
 
 
-function ggetCountryOfPlaceId($place_id, $sessionToken = '') {
+function ggetCountryOfPlaceId($place_id) {
 
-    $googleKey = setting('admin.google_maps_key', env('GOOGLE_KEY', ''));
-    $lang = app()->getLocale();
+    try {
+        $googleKey = setting('admin.google_maps_key', env('GOOGLE_KEY', ''));
+        $lang = app()->getLocale();
 
-    $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json?input=$input&sensor=true&sessiontoken=$sessionToken&key=$googleKey&language=$lang");
-    
-    if(!$response->successful()) {
-        throw new WanderException(__('app.connection_error'));
-    }
-    $arrayData = $response->json();
+        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json?place_id=$place_id&sensor=true&key=$googleKey&language=$lang");
+        
+        if(!$response->successful()) {
+            throw new WanderException(__('app.connection_error'));
+        }
+        $arrayData = $response->json();
 
-    if($arrayData['status'] !== 'OK') {
-        return sendResponse([]);
-    }
+        if($arrayData['status'] !== 'OK') {
+            return sendResponse([]);
+        }
 
-    if(count($arrayData['results']) <= 0) {
+        if(count($arrayData['results']) <= 0) {
+            return null;
+        }
+        $place = reset($arrayData['results']);
+
+        $address_components = $place['address_components'];
+
+        $country = getGeoPlaceName($address_components,'country');
+
+        $country_code = strtoupper($country['short_name']);
+
+
+        $countries = readJsonCountries();
+        $indexFoundCountry = findInArray($country_code,$countries,'country_code');
+
+        if($indexFoundCountry === false) {
+            return null;
+        }
+
+        $foundCountry = $countries[$indexFoundCountry];
+
+        return $foundCountry;
+    } catch (\Illuminate\Http\Client\ConnectionException $th) {
+        return null;
+    } catch (\Exception $e) {
+        logActivity($e->getMessage());
         return null;
     }
-    $place = reset($arrayData['results']);
-
-    $address_components = $place['address_components'];
-
-    $country = getGeoPlaceName($address_components,'country');
-
-    $country_code = strtoupper($country['short_name']);
-
-
-    $countries = readJsonCountries();
-    $indexFoundCountry = findInArray($country_code,$countries,'country_code');
-
-    if($indexFoundCountry === false) {
-        return null;
-    }
-
-    $foundCountry = $countries[$indexFoundCountry];
-
-    return $foundCountry;
 }
 
 function getOptimizedImage($pathImage) {
