@@ -181,3 +181,15 @@ CREATE TABLE `app_user_languages` (
   PRIMARY KEY (`user_id`, `language_id`),
   CONSTRAINT `fk_app_user_languages_user` FOREIGN KEY (`user_id`) REFERENCES `app_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 )
+
+
+CREATE TABLE `chat_files` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) NOT NULL,
+  `disk` varchar(10) DEFAULT NULL,
+  `mime` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)

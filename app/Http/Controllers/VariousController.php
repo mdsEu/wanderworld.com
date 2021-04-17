@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Http;
 use App\Models\Comment;
 use App\Models\AppUser;
 use App\Models\Interest;
+use App\Models\ChatFile;
 use App\Mail\GenericMail;
 
 use JWTAuth;
@@ -327,6 +328,99 @@ class VariousController extends Controller
     public function getInterests(Request $request) {
         try {
             return sendResponse( Interest::withTranslations()->get() );
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+
+    /**
+     * Upload chat file
+     */
+    public function uploadChatFile(Request $request) {
+        try {
+
+            
+            $token = $request->get('token', null);
+
+            if(!$token) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+            $user = auth($this->guard)->setToken($token)->user();
+
+            if(!$user) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+
+            $params = $request->only([
+                'file',
+            ]);
+
+            $sizeKb = setting('admin.file_size_limit', 2048);
+            $rules = [
+                'file' => 'file|mimes:xlxs,docx,pdf,svg,jpeg,png,jpg|max:'.$sizeKb,
+            ];
+
+            $validator = Validator::make($params, $rules);
+
+            if ($validator->fails()) {
+                return sendResponse(null,$validator->messages(),false);
+            }
+            $disk = config('voyager.storage.disk');
+            $uploadedFile = $request->file('file');
+            $path = $uploadedFile->store('chat-files', [
+                'disk' => $disk,
+                'visibility' => 'public',
+            ]);
+
+            $myChatFile = new ChatFile();
+
+            $myChatFile->path = $path;
+            $myChatFile->disk = $disk;
+            $myChatFile->mime = $uploadedFile->getMimeType();
+
+            
+            if(!$myChatFile->save()) {
+                throw new WanderException(__('app.connection_error'));
+            }
+
+            return sendResponse($myChatFile->id);
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Url chat file
+     */
+    public function showChatFile(Request $request, ChatFile $chatFile) {
+        try {
+
+            
+            $token = $request->get('token', null);
+
+            if(!$token) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+            $user = auth($this->guard)->setToken($token)->user();
+
+            if(!$user) {
+                return \abort(Response::HTTP_UNAUTHORIZED);
+            }
+
+            return $chatFile->show();
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
