@@ -399,7 +399,7 @@ class VariousController extends Controller
     /**
      * Url chat file
      */
-    public function showChatFile(Request $request, ChatFile $chatFile) {
+    public function showChatFile(Request $request, ChatFile $chatfile) {
         try {
 
             
@@ -414,7 +414,7 @@ class VariousController extends Controller
                 return \abort(Response::HTTP_UNAUTHORIZED);
             }
 
-            return $chatFile->show();
+            return $chatfile->show();
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
