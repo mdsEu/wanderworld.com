@@ -30,22 +30,22 @@ Route::group(['prefix' => 'services/v1/'], function () {
     
     Route::get('/photos/{photo}', [PhotoController::class, 'show']);
     Route::get('/users/{user_id}/avatar', [UserController::class, 'showAvatar']);
-    Route::post('/chatfiles', [VariousController::class, 'uploadChatFile']);
     Route::get('/chatfiles/{chatfile}', [VariousController::class, 'showChatFile']);
-
+    
     Route::middleware([SwitchLanguageMiddleware::class,ModelActiveMiddleware::class])->group(function () {
-
+        
         Route::get('/onboarding-items', [MultiPage::class, 'allOnboardingItems'])->name('all-onboarding-item');
-
+        
         Route::get('/version', [MultiPage::class, 'getVersion']);
-
+        
         Route::get('/settings', [SettingsController::class, 'filterSettings']);
-
+        
         Route::get('/pages/{slug}', [MultiPage::class, 'getPage'])->name('single-page');
         Route::get('/faqs', [MultiPage::class, 'getFaqs'])->name('all-faqs');
-
+        
         Route::middleware(['auth:api'])->group(function () {
-
+            Route::post('/chatfiles', [VariousController::class, 'uploadChatFile']);
+            
             Route::get('/users', [UserController::class, 'getAllAppUsers']);
 
             Route::post('/comments', [VariousController::class, 'addComment']);

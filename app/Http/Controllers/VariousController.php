@@ -7,9 +7,15 @@ use App\Exceptions\ChatException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
+use TCG\Voyager\Facades\Voyager;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
