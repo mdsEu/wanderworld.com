@@ -25,6 +25,7 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **admin.laravel_time_zone**
 - **admin.limit_change_city** (Exists this same param por each user)
 - **admin.file_size_limit**
+- **admin.mimes_allowed_chat**
 - **admin.recommendations_list_limit**
 - **admin.comments_receiver_email**
 - **admin.friends_search_list_limit**

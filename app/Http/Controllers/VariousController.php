@@ -357,8 +357,9 @@ class VariousController extends Controller
             ]);
 
             $sizeKb = setting('admin.file_size_limit', 2048);
+            $mimesAllowed = setting('admin.mimes_allowed_chat', 'xlxs,docx,pdf,svg,jpeg,png,jpg');
             $rules = [
-                'file' => 'file|mimes:xlxs,docx,pdf,svg,jpeg,png,jpg|max:'.$sizeKb,
+                'file' => 'file|mimes:'.$mimesAllowed.'|max:'.$sizeKb,
             ];
 
             $validator = Validator::make($params, $rules);
