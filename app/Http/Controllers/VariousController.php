@@ -145,6 +145,8 @@ class VariousController extends Controller
             $listUsersFound = collect([]);
 
             foreach($predictions as $predi) {
+                $foundCountry = null;
+
                 if( in_array('country', $predi['types']) ) {
 
                     $indexFoundCountry = findInArray($predi['place_id'],$countries,'place_id');
@@ -152,14 +154,19 @@ class VariousController extends Controller
                     if($indexFoundCountry === false) {
                         continue;
                     }
-
                     $foundCountry = $countries[$indexFoundCountry];
+                } else if(in_array('political', $predi['types']) && in_array('locality', $predi['types'])) {//is city?
+                    $foundCountry = ggetCountryOfPlaceId($predi['place_id'], $sessionToken);
+                }
 
-                    $usersFound = $user->activeFriendsLevel( 2 )->where('country_code', $foundCountry['country_code'])
+                if(!$foundCountry) {
+                    continue;
+                }
+
+                $usersFound = $user->activeFriendsLevel( 2 )->where('country_code', $foundCountry['country_code'])
                                                                 ->whereNotIn('id', $listUsersFound->pluck('id'));
-                    if($usersFound->count() > 0) {
-                        $listUsersFound = $listUsersFound->merge($usersFound);
-                    }
+                if($usersFound->count() > 0) {
+                    $listUsersFound = $listUsersFound->merge($usersFound);
                 }
             }
 
