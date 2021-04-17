@@ -352,18 +352,6 @@ class VariousController extends Controller
     public function uploadChatFile(Request $request) {
         try {
 
-            
-            $token = $request->get('token', null);
-
-            if(!$token) {
-                return \abort(Response::HTTP_UNAUTHORIZED);
-            }
-            $user = auth($this->guard)->setToken($token)->user();
-
-            if(!$user) {
-                return \abort(Response::HTTP_UNAUTHORIZED);
-            }
-
             $params = $request->only([
                 'file',
             ]);
