@@ -152,12 +152,33 @@ class UserController extends Controller
 
     /**
      * Return user's friends logins (Chat)
-     * (Paginated)
      */
     public function meFriendsChatLogins(Request $request) {
         try {
             $user = auth($this->guard)->user();
             return sendResponse($user->friends()->get()->pluck('chat_user_id'));
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.friend_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    /**
+     * Return user's friends filter ids
+     */
+    public function meFriendsChatFilterIds(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            return sendResponse(array(
+                'friends' => $user->friends()->get()->pluck('chat_user_id'),
+                'possible_hosts' => $user->finishedTravels()->whereNotNull('host_id')->get()->pluck('host_id'),
+                'possible_guests' => $user->hostFinishedTravels()->get()->pluck('user_id'),
+            ));
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
         } catch (ModelNotFoundException $notFoundE) {
