@@ -30,7 +30,6 @@ Route::group(['prefix' => 'services/v1/'], function () {
     
     Route::get('/photos/{photo}', [PhotoController::class, 'show']);
     Route::get('/users/{user_id}/avatar', [UserController::class, 'showAvatar']);
-    Route::get('/chatfiles/{chatfile}', [VariousController::class, 'showChatFile']);
     
     Route::middleware([SwitchLanguageMiddleware::class,ModelActiveMiddleware::class])->group(function () {
         
@@ -45,6 +44,7 @@ Route::group(['prefix' => 'services/v1/'], function () {
         
         Route::middleware(['auth:api'])->group(function () {
             Route::post('/chatfiles', [VariousController::class, 'uploadChatFile']);
+            Route::get('/chatfiles/{chatfile}', [VariousController::class, 'showChatFile']);
             
             Route::get('/users', [UserController::class, 'getAllAppUsers']);
 

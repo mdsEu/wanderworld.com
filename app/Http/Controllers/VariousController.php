@@ -402,19 +402,17 @@ class VariousController extends Controller
      */
     public function showChatFile(Request $request, ChatFile $chatfile) {
         try {
-
-            
-            $token = $request->get('token', null);
-
-            if(!$token) {
-                return \abort(Response::HTTP_UNAUTHORIZED);
-            }
-            $user = auth($this->guard)->setToken($token)->user();
+            $user = auth($this->guard)->user();
 
             if(!$user) {
                 return \abort(Response::HTTP_UNAUTHORIZED);
             }
 
+            $useragent = $_SERVER['HTTP_USER_AGENT'];
+
+            if(!(strpos(strtolower($useragent),'iphone') === false)) {
+                return redirect($chatfile->storageUrl());
+            }
             return $chatfile->show();
         } catch (QueryException $qe) {
             return sendResponse(null, __('app.database_query_exception'), false, $qe);
