@@ -1,5 +1,6 @@
 @extends('voyager::master')
 @section('css')
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
 <link rel="stylesheet" href="{{route('exportbread.assets')}}?path=styles.css" />
 @stop
 
@@ -38,6 +39,16 @@
                             @endif
                             <hr/>
                             <a id="first-button-export" href="#export" class="export-button btn btn-primary">@lang('exportbread::general.export_selection')</a>
+                            <div class="panel-range-createdat">
+                                <br/>
+                                <div>
+                                    <h5>@lang('exportbread::general.filter_by_createdat')</h5>
+                                </div>
+                                <label for="from">@lang('exportbread::general.from')</label>
+                                <input id="from" type="text" name="from" autocomplete="off" />
+                                <label for="to">@lang('exportbread::general.to')</label>
+                                <input id="to" type="text" name="to" autocomplete="off" />
+                            </div>
                             <div id="selection-columns"></div>
                         </div>
                     </div>
@@ -48,6 +59,7 @@
 @stop
 
 @section('javascript')
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript">
 
         $(window).scroll(function() {
@@ -311,6 +323,9 @@
 
             $selModel.trigger('change');
 
+            var $to = jQuery("#to"); 
+            var $from = jQuery("#from");
+
             $('a.export-button').on('click', function(e) {
                 e.preventDefault();
                 var bundle = $panelSelection.data('selection');
@@ -334,6 +349,8 @@
                         data_type_id: parseInt($selModel.val()),
                         schema_export: JSON.stringify(bundle),
                         _token: '{{ csrf_token() }}',
+                        createdat_start: $from.val(),
+                        createdat_end: $to.val(),
                     }
                 }).done(function(result){
                     $loader.fadeOut();
@@ -350,6 +367,39 @@
                 }).fail(fail);
             });
             
+
+            /**
+             * Created at selection
+             */
+            var dateFormat = "mm/dd/yy";
+            $from.datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 3,
+                dateFormat: "yy-mm-dd",
+            }).on( "change", function() {
+                $to.datepicker( "option", "minDate", getDate( this ) );
+            });
+                
+            $to.datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 3,
+                dateFormat: "yy-mm-dd",
+            }).on( "change", function() {
+                $from.datepicker( "option", "maxDate", getDate( this ) );
+            });
+        
+            function getDate( element ) {
+                var date;
+                try {
+                    date = jQuery.datepicker.parseDate( dateFormat, element.value );
+                } catch( error ) {
+                    date = null;
+                }
+            
+                return date;
+            }
         });
     </script>
 @stop

@@ -123,8 +123,24 @@ class Controller extends BaseController
             /**
              * Csv Rows
              */
+            $filterCreatedAtStart = $request->get('createdat_start', null);
+            $filterCreatedAtEnd = $request->get('createdat_end', null);
+            
+            $modelRecords = null;
+
+            if($filterCreatedAtStart && $filterCreatedAtEnd && strtotime($filterCreatedAtStart) <= strtotime($filterCreatedAtEnd)) {
+                $sD = date('Y-m-d 00:00:00', strtotime($filterCreatedAtStart));
+                $eD = date('Y-m-d 23:59:59', strtotime($filterCreatedAtEnd));
+                try {
+                    $modelRecords = $modelInstance::where('created_at', '>=', $sD)->where('created_at', '<=', $eD)->get();
+                } catch (\Exception $ie) {
+                    throw new ExportBreadException(__('exportbread::general.no_column_createdat_error', ['origin' => $dataType->display_name_plural]));
+                }
+            } else {
+                $modelRecords = $modelInstance::all();
+            }
+            
             $this->colIdx = 'A';
-            $modelRecords = $modelInstance::all();
             foreach($modelRecords as $modelRow) {
                 foreach($schema as $infoModel) {
                     if(!\array_key_exists($infoModel['column'], $this->schemaSelected)) {
