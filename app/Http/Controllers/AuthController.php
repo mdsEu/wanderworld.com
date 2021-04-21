@@ -354,9 +354,9 @@ class AuthController extends Controller
             $token64 = $request->get('token64');
 
             
-            list($email,$token) = explode('::',base64_decode($token64));
+            list($email,$token2) = explode('::',base64_decode($token64));
             
-            $user = AppUser::where('email',$email)->first();
+            $user = AppUser::where('email',$email)->firstOrFail();
             
             $user->email_verified_at = strNowTime();
             $user->status = AppUser::STATUS_ACTIVE;

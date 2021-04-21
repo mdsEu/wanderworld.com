@@ -424,7 +424,7 @@ if (!function_exists('checkRecoveryToken')) {
             ->where('email',$email)
             ->first();
 
-        $user = AppUser::where('email',$email)->first();
+        $user = AppUser::where('email',$email)->firstOrFail();
 
         if (!$rowToken || !$user) {
             throw new WanderException(__('auth.recovery_token_not_valid'));
