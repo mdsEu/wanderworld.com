@@ -348,18 +348,21 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function verifyEmail(Request $request) {
+        $user = null;
+        
         try {
             $token64 = $request->get('token64');
 
-            checkRecoveryToken($token64);
-
+            
             list($email,$token) = explode('::',base64_decode($token64));
-
+            
             $user = AppUser::where('email',$email)->first();
-
+            
             $user->email_verified_at = strNowTime();
             $user->status = AppUser::STATUS_ACTIVE;
 
+            checkRecoveryToken($token64);
+            
             if (!$user->save()) {
                 throw new WanderException(__('auth.something_wrong_updating_user_info'));
             }
@@ -376,6 +379,10 @@ class AuthController extends Controller
         } catch (ModelNotFoundException $notFoundE) {
             return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
         } catch (WanderException $we) {
+            if($user) {
+                sendVerificationEmail($user);
+                return sendResponse(null, __('auth.token_has_been_sent_again_registration'), false, $we);
+            }
             return sendResponse(null, $we->getMessage(), false, $we);
         } catch (\Exception $e) {
             return sendResponse(null, $e->getMessage(), false, $e);
