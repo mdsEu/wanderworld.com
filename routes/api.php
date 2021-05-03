@@ -135,6 +135,8 @@ Route::group(['prefix' => 'auth'], function () {
 
             Route::put('/me/change-password', [AuthController::class, 'updatePassword']);
             Route::get('/me/counter-friends-invitations', [UserController::class, 'getNumberOfFriendRelationshipInvitations']);
+
+            Route::get('/me/disconnect-facebook', [UserController::class, 'disconnectAccountOfFacebook']);
             
             
             

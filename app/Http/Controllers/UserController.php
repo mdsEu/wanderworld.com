@@ -27,13 +27,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        //$this->middleware('auth:api', ['except' => ['login']]);
         $this->guard = 'api';
-    }
-
-
-    public function authenticate(Request $request) {
-        return null;
     }
 
     /**
@@ -906,7 +900,9 @@ class UserController extends Controller
         }
     }
 
-    
+    /**
+     * Returns the user's active friend but with specific attributes
+     */
     public function getFriendsContacts(Request $request) {
         try {
             $user = auth($this->guard)->user();
@@ -937,6 +933,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Returns number of user's friend relationship invitations
+     */
     public function getNumberOfFriendRelationshipInvitations(Request $request) {
         try {
             $user = auth($this->guard)->user();
@@ -951,4 +950,24 @@ class UserController extends Controller
             return sendResponse(null, __('app.something_was_wrong'), false, $e);
         }
     }
+
+    /**
+     * Disconnect user's account of facebook
+     */
+    public function disconnectAccountOfFacebook(Request $request) {
+        try {
+            $user = auth($this->guard)->user();
+            return sendResponse(null, "", $user->disconnectFacebookAccount());
+        } catch (QueryException $qe) {
+            return sendResponse(null, __('app.database_query_exception'), false, $qe);
+        } catch (ModelNotFoundException $notFoundE) {
+            return sendResponse(null, __('app.data_not_found'), false, $notFoundE);
+        } catch (WanderException $we) {
+            return sendResponse(null, $we->getMessage(), false, $we);
+        } catch (\Exception $e) {
+            return sendResponse(null, __('app.something_was_wrong'), false, $e);
+        }
+    }
+
+    
 }

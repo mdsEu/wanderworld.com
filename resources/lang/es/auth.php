@@ -35,4 +35,5 @@ return [
     'something_was_wrong_login_process' => 'Algo salió mal durante el proceso de ingreso.',
     'facebook_access_failed' => 'Algo salió mal durante el proceso de ingreso. Intente nuevamente.',
     'facebook_access_email_failed' => 'No fue posible obtener un email desde su cuenta de facebook. Intente con otra cuenta.',
+    'invalid_fb_access_token' => 'Acceso inválido a información de facebook.',
 ];

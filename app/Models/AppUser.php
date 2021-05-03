@@ -1087,12 +1087,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
 
                 $invitedFbid = getStrFakeVal($invitedFbid);
 
-                $list = AppUserMeta::where('meta_key','facebook_user_id')
-                    ->where('meta_value',$invitedFbid)
-                    ->get();
+                $invitedUserByFb = self::where('facebook_id', $invitedFbid)->first();
 
-                if($list->count() === 1) {
-                    return self::find($list->first()->user_id);
+
+                if($invitedUserByFb) {
+                    return $invitedUserByFb;
                 }
 
             }
@@ -1366,16 +1365,11 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return AppUser
      */
     public function getFriendByFacebookId($facebook_id) {
-        $activeFriends = $this->activeFriends()->get();
-
-        $filtered = $activeFriends->filter(function ($friend, $key) use ($facebook_id) {
-            return $friend->getMetaValue('facebook_user_id') === $facebook_id;
-        });
-
-        if($filtered->count() === 1) {
-            return $filtered->first();
+        if(empty($facebook_id)) {
+            return null;
         }
-        return null;
+        $friend = $this->activeFriends()->where('facebook_id', $facebook_id)->first();
+        return $friend;
     }
 
     /**
@@ -1383,18 +1377,34 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
      * @return AppUser
      */
     public static function findUserByFacebookId($facebook_id) {
-        $facebook_id = getStrFakeVal($facebook_id);
-
-        $list = AppUserMeta::where('meta_key','facebook_user_id')
-            ->where('meta_value',$facebook_id)
-            ->get();
-
-        if($list->count() === 1) {
-            return self::find($list->first()->user_id);
+        if(empty($facebook_id)) {
+            return null;
         }
-        return null;
+        return self::where('facebook_id', $facebook_id)->first();
     }
 
+
+    /**
+     * Connect user with facebook
+     * @return boolean
+     */
+    public function connectFacebookAccount($accessToken) {
+        $userFBInfo = fbMeInfo($accessToken, ['id','name']);
+        if(empty($userFBInfo['id'])) {
+            return false;
+        }
+        $this->facebook_id = $userFBInfo['id'];
+        return !!($this->save());
+    }
+
+    /**
+     * Disconnect user with facebook
+     * @return boolean
+     */
+    public function disconnectFacebookAccount() {
+        $this->facebook_id = null;
+        return !!($this->save());
+    }
 
 
 

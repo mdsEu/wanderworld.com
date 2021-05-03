@@ -288,11 +288,15 @@ class VariousController extends Controller
         try {
             $user = auth($this->guard)->user();
             
-            $FB_GRAPH_VERSION = '7.0';
+            $FB_GRAPH_VERSION = env('FB_GRAPH_VERSION', '7.0');
     
-            $token = $request->get('token', "");
+            $accessToken = $request->get('token', "");
+
+            if(empty($user->facebook_id)) {
+                $user->connectFacebookAccount($accessToken);
+            }
     
-            $response = Http::get("https://graph.facebook.com/v$FB_GRAPH_VERSION/me/friends?fields=id,name,email&access_token=$token");
+            $response = Http::get("https://graph.facebook.com/v$FB_GRAPH_VERSION/me/friends?fields=id,name,email&access_token=$accessToken");
         
             if(!$response->successful()) {
                 throw new WanderException(__('app.connection_error'));

@@ -125,8 +125,35 @@ if (!function_exists('fbValidAccessToken')) {
         if (empty($accessToken)) {
             return false;
         }
-        $response = Http::get("https://graph.facebook.com/v8.0/me?fields=email&access_token=$accessToken");
-        return $response->ok() && !empty($response->json()['email']);
+        $FB_GRAPH_VERSION = env('FB_GRAPH_VERSION', '7.0');
+        $response = Http::get("https://graph.facebook.com/v$FB_GRAPH_VERSION/me?fields=email&access_token=$accessToken");
+        return $response->ok();
+    }
+}
+
+if (!function_exists('fbMeInfo')) {
+    /**
+     * @param string $accessToken
+     * @return Boolean
+     */
+    function fbMeInfo($accessToken, $fields = null) {
+        if($fields === null || !is_array($fields)) {
+            $fields = [
+                'name',
+                'first_name',
+                'last_name',
+                'email',
+                'picture.type(large)',
+            ];
+        }
+        $FB_GRAPH_VERSION = env('FB_GRAPH_VERSION', '7.0');
+            
+        $response = Http::get("https://graph.facebook.com/v$FB_GRAPH_VERSION/me?fields=".implode(',', $fields)."&access_token=$accessToken");
+        
+        if (!$response->ok()) {
+            throw new WanderException(__('auth.invalid_fb_access_token'));
+        }
+        return $response->json();
     }
 }
 
@@ -173,25 +200,17 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
             throw new WanderException(__('auth.invalid_fb_access_token'));
         }
 
-        $response = Http::get("https://graph.facebook.com/v8.0/me?fields=name,first_name,last_name,email,picture.type(large)&access_token=$accessToken");
-
-        if (!$response->ok()) {
-            throw new WanderException(__('auth.something_was_wrong_login_process'));
-        }
-
-        $userFBInfo = $response->json();
-
-        \logActivity($userFBInfo);
+        $userFBInfo = fbMeInfo($accessToken);
 
         if(empty($userFBInfo['email'])) {
-            throw new WanderException(__('No correo asociado'));
+            throw new WanderException(__('auth.facebook_access_email_failed'));
         }
 
         $user = AppUser::where('email',$userFBInfo['email'])->first();
 
         $password = bcrypt(Str::random(40));
 
-        $defaultAvatar = cloneAvatar(public_path('images/default_avatar.png'));//AppUser::DEFAULT_AVATAR;
+        $defaultAvatar = cloneAvatar(public_path('images/default_avatar.png'));
 
         if (
             $userFBInfo['picture'] &&
@@ -221,13 +240,11 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
         }
 
         $user->password = $password;
-
-        $user->updateMetaValue('facebook_user_id',$userFBInfo['id']);
+        $user->facebook_id = $userFBInfo['id'];
 
         if (!$user->save()) {
             throw new WanderException(__('auth.something_was_wrong_login_process'));
         }
-
 
         return $user;
     }

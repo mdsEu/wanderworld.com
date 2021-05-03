@@ -79,11 +79,13 @@ class AuthController extends Controller
 
         try {
             
-            if(empty($accessToken)) {
-                return sendResponse(null,__('auth.facebook_access_failed'), false);
-            }
-
             if (!fbValidAccessToken($accessToken)) {
+                throw new WanderException(__('auth.invalid_fb_access_token'));
+            }
+            
+            $userFBInfo = fbMeInfo($accessToken, ['name','email']);
+
+            if(empty($userFBInfo['email'])) {
                 return sendResponse(null,__('auth.facebook_access_email_failed'), false);
             }
 

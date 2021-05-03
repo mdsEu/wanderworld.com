@@ -1,3 +1,29 @@
+CREATE TABLE `app_users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `cid` varchar(40) NOT NULL,
+  `facebook_id` bigint unsigned DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `nickname` varchar(50) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT 'users/default.png',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '1=Pending,2=active,3=inactive',
+  `continent_code` char(2) NOT NULL,
+  `country_code` char(2) NOT NULL,
+  `city_gplace_id` varchar(255) NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `settings` text,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `app_users_email_unique` (`email`),
+  UNIQUE KEY `app_users_facebook_id_unique` (`facebook_id`),
+  UNIQUE KEY `uq_app_users_cid` (`cid`)
+);
+alter table app_users add column facebook_id bigint default null after cid;
+alter table app_users add constraint app_users_facebook_id_unique unique (facebook_id);
+
 CREATE TABLE `friends` (
   `user_id` bigint unsigned NOT NULL,
   `friend_id` bigint unsigned NOT NULL,
