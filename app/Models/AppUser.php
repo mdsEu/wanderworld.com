@@ -1393,7 +1393,8 @@ class AppUser extends \TCG\Voyager\Models\User implements JWTSubject
         if(empty($userFBInfo['id'])) {
             return false;
         }
-        if(getUserByFacebookId($userFBInfo['id'])) {
+        $userFb = getUserByFacebookId($userFBInfo['id']);
+        if($userFb && $userFb->id !== $this->id) {
             throw new WanderException(__('app.previous_user_with_same_facebook_id'));
         }
         $this->facebook_id = $userFBInfo['id'];

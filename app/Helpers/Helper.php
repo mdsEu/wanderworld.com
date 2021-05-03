@@ -238,8 +238,8 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
                 $attrsCreate
             ));
         }
-
-        if(getUserByFacebookId($userFBInfo['id'])) {
+        $userFb = getUserByFacebookId($userFBInfo['id']);
+        if($userFb && $userFb->id !== $user->id) {
             throw new WanderException(__('app.previous_user_with_same_facebook_id'));
         }
 
