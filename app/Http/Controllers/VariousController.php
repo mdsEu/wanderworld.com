@@ -293,7 +293,9 @@ class VariousController extends Controller
             $accessToken = $request->get('token', "");
 
             if(empty($user->facebook_id)) {
-                $user->connectFacebookAccount($accessToken);
+                try {
+                    $user->connectFacebookAccount($accessToken);
+                } catch (WanderException $we) {}
             }
     
             $response = Http::get("https://graph.facebook.com/v$FB_GRAPH_VERSION/me/friends?fields=id,name,email&access_token=$accessToken");

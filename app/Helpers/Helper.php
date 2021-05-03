@@ -318,6 +318,20 @@ if (!function_exists('getOrCreateUserFromApple')) {
     }
 }
 
+
+if (!function_exists('getUserByFacebookId')) {
+    /**
+     * @param int facebook id
+     * @return AppUser
+     */
+    function getUserByFacebookId($facebook_id) {
+        if(empty($facebook_id)) {
+            return null;
+        }
+        return AppUser::where('facebook_id', $facebook_id)->first();
+    }
+}
+
 if (!function_exists('findInArray')) {
     /**
      * @param mixed $value
