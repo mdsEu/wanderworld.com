@@ -239,6 +239,10 @@ if (!function_exists('getOrCreateUserFromFacebook')) {
             ));
         }
 
+        if(getUserByFacebookId($userFBInfo['id'])) {
+            throw new WanderException(__('app.previous_user_with_same_facebook_id'));
+        }
+
         $user->password = $password;
         $user->facebook_id = $userFBInfo['id'];
 
