@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+    /**
+     * Returns settings
+     */
     public function filterSettings(Request $request) {
         $settingsNames = $request->get('c',[]);
         if (empty($settingsNames)) {

@@ -31,7 +31,7 @@ class UserController extends Controller
     }
 
     /**
-     * 
+     * Returns all app_users. It's used for searching
      */
     public function getAllAppUsers(Request $request) {
 
@@ -60,7 +60,6 @@ class UserController extends Controller
 
             $allUsers = DB::table($user->getTable())->select(['id'])->where('id', '<>', $user->id)->whereNotIn('id', $allMyFriendsIds);
 
-            //$allUsers = AppUser::where('id', '<>', $user->id);
             $allUsers->where(function($query) use ($search) {
                 $query->where('name',  'LIKE', '%' . $search . '%');
                 $query->orWhere('nickname',  'LIKE', '%' . $search . '%');
@@ -93,7 +92,7 @@ class UserController extends Controller
     }
 
     /**
-     * 
+     * Show user's avatar
      */
     public function showAvatar(Request $request, $user_id) {
         try {

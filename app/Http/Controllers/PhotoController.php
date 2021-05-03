@@ -28,12 +28,11 @@ class PhotoController extends Controller
 
     public function __construct()
     {
-        //$this->middleware('auth:api', ['except' => ['login']]);
         $this->guard = 'api';
     }
 
     /**
-     * 
+     * Renders photo
      */
     public function show(Request $request, Photo $photo) {
         try {

@@ -26,6 +26,9 @@ class MultiPage extends Controller
         }
     }
 
+    /**
+     * Returns App Version
+     */
     public function getVersion(Request $request) {
         try {
             return sendResponse( setting('admin.appversion', null) );
@@ -34,6 +37,9 @@ class MultiPage extends Controller
         }
     }
 
+    /**
+     * Returns page by slug received
+     */
     public function getPage(Request $request, $slug) {
         try {
             return sendResponse( Page::withTranslations()->where('slug',$slug)->first() );

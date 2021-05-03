@@ -33,7 +33,6 @@ class VariousController extends Controller
 
     public function __construct()
     {
-        //$this->middleware('auth:api', ['except' => ['login']]);
         $this->guard = 'api';
     }
 
@@ -284,6 +283,10 @@ class VariousController extends Controller
         }
     }
 
+
+    /**
+     * Executes enpoint to return user's facebook friends. It connects user's account with facebook account also.
+     */
     public function facebookFriends(Request $request) {
         try {
             $user = auth($this->guard)->user();

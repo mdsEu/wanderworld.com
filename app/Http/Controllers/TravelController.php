@@ -27,7 +27,6 @@ class TravelController extends Controller
 
     public function __construct()
     {
-        //$this->middleware('auth:api', ['except' => ['login']]);
         $this->guard = 'api';
     }
 
@@ -156,23 +155,6 @@ class TravelController extends Controller
                 }, $contacts);
                 $travel->contacts()->createMany($createContacts);
             }
-            /*
-            $commonFriends = array(
-                array(
-                    'id' => {user id},
-                    'name' => "Crisina Rojas",
-                    'place_name' => "Rosario / Argentina",
-                ),
-                array(
-                    'id' => {user id},
-                    'name' => "Sofia Delgado",
-                    'place_name' => "Madrid / España",
-                ),
-                .
-                .
-                .
-            )
-             */
 
             return sendResponse();
         } catch (QueryException $qe) {
@@ -515,28 +497,12 @@ class TravelController extends Controller
 
                 $nameImage = uniqid($album_id);
 
-                \logActivity($opInfo);
-                
                 $path = Storage::disk($disk)->put("photos/album{$album->id}/$dt/$nameImage", file_get_contents($opInfo->output->url));
-
-                //\file_put_contents(\storage_path())
 
                 $album->photos()->create([
                     'path' => "photos/album{$album->id}/$dt/$nameImage",
                     'disk' => $disk,
                 ]);
-                /*
-                $disk = config('voyager.storage.disk');
-                $dt = Carbon::now('UTC')->format('FY');
-                $path = $uploadedPhoto->store("photos/album{$album->id}/$dt", [
-                    'disk' => $disk,
-                    //'visibility' => 'public',
-                ]);
-                $album->photos()->create([
-                    'path' => $path,
-                    'disk' => $disk,
-                ]);
-                */ 
             }
             
             DB::commit();
