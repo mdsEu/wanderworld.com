@@ -5,10 +5,7 @@ $bgColorPrimaryButton = '#FF2C55';
 $bgColorPrimaryButtonHover = '#200043';
 $orangeColor = '#ef5443';
 
-$logo = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/logo-mailings.png');
-$imageName = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/name-mailings.png');
-
-$imageNameDark = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/name-mailings-dark.png');
+$logo = \Illuminate\Support\Facades\Storage::disk(config('voyager.storage.disk'))->url('mails/logofull-mailings.png');
 
 
 ?>
@@ -53,37 +50,6 @@ $imageNameDark = \Illuminate\Support\Facades\Storage::disk(config('voyager.stora
 
         <!-- Web Font / @font-face : END -->
 
-        <!-- CSS Reset : BEGIN -->
-        <style>
-
-
-        </style>
-        <!-- CSS Reset : END -->
-
-        <!-- Progressive Enhancements : BEGIN -->
-        <style>
-            @media (prefers-color-scheme: dark) {
-                /* Shows Dark Mode-Only Content, Like Images */
-                .dark-image-logo {
-                    display: table !important;
-                }
-                
-                /* Hides Light Mode-Only Content, Like Images */
-                .light-image-logo {
-                    display: none;
-                    display: none !important;
-                }
-            }
-            [data-ogsc] .dark-image-logo {
-                display: table !important;
-            }
-            [data-ogsc] .light-image-logo {
-                display: none;
-                display: none !important;
-            }
-        </style>
-        <!-- Progressive Enhancements : END -->
-
     </head>
     <body style="padding: 0;background: <?php echo $bgColor; ?>;">
         <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
@@ -102,40 +68,13 @@ $imageNameDark = \Illuminate\Support\Facades\Storage::disk(config('voyager.stora
                                                             <td style="line-height:32px;padding:0px 30px 0px 30px;" valign="baseline">
                                                                 <span>
                                                                     <div style="padding: 25px 0 0 0;">
-                                                                        <img src="{{$logo}}" alt="" width="50" height="43" style="border: 0px solid transparent;"/>
-                                                                        
+                                                                        <img src="{{$logo}}" alt="" width="550" height="70" style="border: 0px solid transparent;"/>
                                                                     </div>
                                                                 </span>
                                                             </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                                <table class="light-image-logo" align="center" style="text-align:center;line-height:1.6;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:#444;" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td style="line-height:32px;padding:0px 30px 0px 30px;" valign="baseline">
-                                                                <span>
-                                                                    <div style="padding: 0 0 25px 0;">
-                                                                    <img src="{{$imageName}}" alt="" width="180" height="21" style="border: 0px solid transparent;"/>
-                                                                    </div>
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                <!--[if !mso]><! --><table class="dark-image-logo" align="center" style="text-align:center;line-height:1.6;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:#444;display: none;" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td style="line-height:32px;padding:0px 30px 0px 30px;" valign="baseline">
-                                                                <span>
-                                                                    <div style="padding: 0 0 25px 0;">
-                                                                    <img src="{{$imageNameDark}}" alt="" width="180" height="21" style="border: 0px solid transparent;"/>
-                                                                    </div>
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table><!--<![endif]-->
                                                 
                                                 <table width="550" align="center" style="text-align:center;padding:0;color:#444;line-height:1.6;font-size:12px;font-family:Arial,sans-serif;" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="<?php echo $bgColor; ?>">
                                                     <tbody>
