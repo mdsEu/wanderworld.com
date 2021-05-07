@@ -33,3 +33,8 @@ Route::middleware([SwitchLanguageMiddleware::class])->group(function () {
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
+
+Route::get('/app-facebook-login', function () {
+    return view('appfacebooklogin');
+});
