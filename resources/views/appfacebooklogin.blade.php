@@ -162,7 +162,6 @@
                 function startLogin() {
                     try {
                         FB.login(function(response) {}, {
-                            auth_type: 'reauthenticate',
                             scope: 'email,public_profile,user_friends',
                             return_scopes: true,
                         });
