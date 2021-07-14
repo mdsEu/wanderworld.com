@@ -35,6 +35,6 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 
-Route::get('/app-facebook-login', function () {
+Route::middleware([SwitchLanguageMiddleware::class])->get('/app-facebook-login', function () {
     return view('appfacebooklogin');
 });

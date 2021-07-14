@@ -55,4 +55,6 @@ return [
     'more_than_n_chars' => 'Type more than :n letters',
     'no_album_name_specified' => '- No name -',
     'previous_user_with_same_facebook_id' => 'There\'s other user using this same facebook account.',
+    'loading_dots' => 'Loading...',
+    'connecting_dots' => 'Connecting...',
 ];

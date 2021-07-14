@@ -83,10 +83,13 @@
                     </g>
                 </g>
             </svg>
-            <h1 id="text-loading">{{request()->get('access_token','') ? 'Ingresando...' : 'Conectando....'}}</h1>
+            <h1 id="text-loading">{{request()->get('access_token','') ? __('app.loading_dots') : __('app.connecting_dots')}}</h1>
         </div>
         <script type="text/javascript">
-            (!!window.ReactNativeWebView) && ((function(){
+            (!!window.ReactNativeWebView) && 
+            ((function(){
+
+                var fbAppId = "{{env('FACEBOOK_APP_ID','363122571749423')}}";
 
 
                 function getHashUrlVars(){
@@ -103,7 +106,6 @@
 
                 // Get all URL parameters
                 var allVars = getHashUrlVars();
-                console.log('valrss '+ JSON.stringify(allVars));
 
 
                 var accessTokenHash = allVars.access_token;
@@ -113,33 +115,77 @@
                     return;
                 }
 
+                if(typeof(allVars.cb) === "string") {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        action: 'send_refresh',
+                    }));
+                    return;
+                }
+
 
                 console.log('Yes it\'s react native');
 
                 function statusChangeCallback(response) {
                     console.log(JSON.stringify(response) + ' <<< status');
-                    if (response.status === 'connected') {   // Logged into your webpage and Facebook.
-                        FB.logout(function(responseLogout){
-                            console.log(JSON.stringify(responseLogout)+'  <-------- response logout');
-                            startLogin();
-                        });
+                    if (response.status === 'connected') {
+                        try {
+                            var accessToken = response.authResponse ? response.authResponse.accessToken : null;
+                            if(accessToken) {
+                                window.ReactNativeWebView.postMessage(JSON.stringify({
+                                    action: 'send_auth_token',
+                                    access_token: accessToken,
+                                }));
+                            }
+                        } catch(ee) {
+                            console.log('error  '+JSON.stringify(ee));
+                        }
                     } else {
                         startLogin();
                     }
                 }
+
+                var getAccessToken = function() {
+                    var returnAccessToken = "{{request()->get('access_token','')}}";
+                    if(!returnAccessToken && ("sessionStorage" in window)) {
+                        var fbssls = window.sessionStorage.getItem('fbssls_'+fbAppId);
+                        console.log('fbssls:');
+                        console.log(fbssls);
+                        console.log('--------');
+                        if(fbssls) {
+                            try {
+                                fbssls = JSON.parse(fbssls);
+                                returnAccessToken = fbssls.authResponse ? fbssls.authResponse.accessToken : null;
+                            } catch(parE) {}
+                        }
+                    }
+                    if(!returnAccessToken && allVars.indexOf('cb') !== -1) {
+                        FB.getLoginStatus(function(response) {
+                            console.log('((((((')
+                            
+                            console.log('response.status',response.status);
+
+                            console.log('((((((((((((((((')
+                            console.log('((((((((((((((((')
+                            if (response.status === 'connected') {
+                                //response.authResponse.accessToken;
+                            } 
+                        });
+                    }
+                    return returnAccessToken;
+                };
 
 
                 window.fbAsyncInit = function() {
 
 
                     FB.init({
-                        appId      : '363122571749423',
-                        cookie     : false,// Enable cookies to allow the server to access the session.
+                        appId      : fbAppId,
+                        cookie     : true,// Enable cookies to allow the server to access the session.
                         xfbml      : false,// Parse social plugins on this webpage.
                         version    : 'v10.0',
                     });
 
-                    var accessToken = "{{request()->get('access_token','')}}";
+                    var accessToken = getAccessToken();
                     if(accessToken) {
                         try {
                             console.log('token sent '+accessToken);

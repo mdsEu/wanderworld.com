@@ -55,4 +55,6 @@ return [
     'more_than_n_chars' => 'Escribe más de :n letras',
     'no_album_name_specified' => '- Sin nombre -',
     'previous_user_with_same_facebook_id' => 'Ya hay otro usuario usando esta misma cuenta de facebook.',
+    'loading_dots' => 'Cargando...',
+    'connecting_dots' => 'Conectando...',
 ];
